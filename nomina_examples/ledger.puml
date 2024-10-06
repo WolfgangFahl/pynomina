@@ -1,0 +1,65 @@
+hide circle
+note top of ledger
+Created on 2024-10-04
+@author: wf
+end note
+
+package ledger {
+class Account {
+    +account_id: str
+    +name: str
+    +account_type: str
+    +description: Optional[str]
+    +currency: str
+    +parent_account_id: Optional[str]
+}
+note top of Account
+    Represents a ledger account.
+end note
+
+class Split {
+    +amount: float
+    +account_id: str
+    +memo: Optional[str]
+    +reconciled: bool
+}
+note top of Split
+    Represents a split in a transaction.
+end note
+
+class Transaction {
+    +isodate: str
+    +description: str
+    +splits: List[Split]
+    +payee: Optional[str]
+    +memo: Optional[str]
+    +total_amount() : float
+}
+note top of Transaction
+    Represents a transaction in the ledger.
+end note
+
+class Book {
+    +name: Optional[str]
+    +owner: Optional[str]
+    +since: Optional[str]
+    +url: Optional[str]
+    +accounts: Dict[str, Account]
+    +transactions: Dict[str, Transaction]
+    +__post_init__()
+    +get_stats() : Stats
+    +filter(start_date: str, end_date: str) : Book
+    +create_account(name: str, account_type: str, parent_account_id: Optional[str]) : Account
+    +add_account(account: Account) : Account
+    +lookup_account(account_id: str) : Optional[Account]
+}
+note top of Book
+    Represents a ledger book containing accounts and transactions.
+end note
+
+Book "1" *-- "*" Account : contains
+Book "1" *-- "*" Transaction : contains
+Transaction "1" *-- "*" Split : contains
+Split "*" --> "1" Account : references
+}
+
