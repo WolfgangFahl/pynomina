@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pynomaina"
+name = "pynomina"
 description = "Personal finance management utility"
-keywords = ["finance", "money", "management"]
+keywords = ["finance", "money", "management","nicegui"]
 authors = [
   {name = "Wolfgang Fahl", email = "wf@bitplan.com"}
 ]
