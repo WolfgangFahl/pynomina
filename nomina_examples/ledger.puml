@@ -1,3 +1,4 @@
+@startuml
 hide circle
 note top of ledger
 Created on 2024-10-04
@@ -62,4 +63,4 @@ Book "1" *-- "*" Transaction : contains
 Transaction "1" *-- "*" Split : contains
 Split "*" --> "1" Account : references
 }
-
+@enduml
