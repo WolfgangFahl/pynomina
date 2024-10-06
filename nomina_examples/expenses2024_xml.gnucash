@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<gnc-v2
+     xmlns:gnc="http://www.gnucash.org/XML/gnc"
+     xmlns:act="http://www.gnucash.org/XML/act"
+     xmlns:book="http://www.gnucash.org/XML/book"
+     xmlns:cd="http://www.gnucash.org/XML/cd"
+     xmlns:cmdty="http://www.gnucash.org/XML/cmdty"
+     xmlns:price="http://www.gnucash.org/XML/price"
+     xmlns:slot="http://www.gnucash.org/XML/slot"
+     xmlns:split="http://www.gnucash.org/XML/split"
+     xmlns:sx="http://www.gnucash.org/XML/sx"
+     xmlns:trn="http://www.gnucash.org/XML/trn"
+     xmlns:ts="http://www.gnucash.org/XML/ts"
+     xmlns:fs="http://www.gnucash.org/XML/fs"
+     xmlns:bgt="http://www.gnucash.org/XML/bgt"
+     xmlns:recurrence="http://www.gnucash.org/XML/recurrence"
+     xmlns:lot="http://www.gnucash.org/XML/lot"
+     xmlns:addr="http://www.gnucash.org/XML/addr"
+     xmlns:billterm="http://www.gnucash.org/XML/billterm"
+     xmlns:bt-days="http://www.gnucash.org/XML/bt-days"
+     xmlns:bt-prox="http://www.gnucash.org/XML/bt-prox"
+     xmlns:cust="http://www.gnucash.org/XML/cust"
+     xmlns:employee="http://www.gnucash.org/XML/employee"
+     xmlns:entry="http://www.gnucash.org/XML/entry"
+     xmlns:invoice="http://www.gnucash.org/XML/invoice"
+     xmlns:job="http://www.gnucash.org/XML/job"
+     xmlns:order="http://www.gnucash.org/XML/order"
+     xmlns:owner="http://www.gnucash.org/XML/owner"
+     xmlns:taxtable="http://www.gnucash.org/XML/taxtable"
+     xmlns:tte="http://www.gnucash.org/XML/tte"
+     xmlns:vendor="http://www.gnucash.org/XML/vendor">
+<gnc:count-data cd:type="book">1</gnc:count-data>
+<gnc:book version="2.0.0">
+<book:id type="guid">f44c4156251d4b68a5c42b7d2b003b8b</book:id>
+<gnc:count-data cd:type="account">3</gnc:count-data>
+<gnc:count-data cd:type="transaction">2</gnc:count-data>
+<gnc:count-data cd:type="commodity">1</gnc:count-data>
+<gnc:commodity
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Commodity">
+  <cmdty:space>CURRENCY</cmdty:space>
+  <cmdty:id>EUR</cmdty:id>
+</gnc:commodity>
+<gnc:account version="2.0.0">
+  <act:name>Expenses</act:name>
+  <act:id type="guid">7a5af8a885c64a8398e61a279cd7ce30</act:id>
+  <act:type>EXPENSE</act:type>
+  <act:commodity>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </act:commodity>
+  <act:commodity-scu>100</act:commodity-scu>
+  <act:description>General Expenses</act:description>
+</gnc:account>
+<gnc:account version="2.0.0">
+  <act:name>Dining</act:name>
+  <act:id type="guid">9d649f70e17e45a79543720d70e9a3f8</act:id>
+  <act:type>EXPENSE</act:type>
+  <act:commodity>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </act:commodity>
+  <act:commodity-scu>100</act:commodity-scu>
+  <act:description>Expenses for Food</act:description>
+  <act:parent type="guid">7a5af8a885c64a8398e61a279cd7ce30</act:parent>
+</gnc:account>
+<gnc:account version="2.0.0">
+  <act:name>Cash in Wallet of Wolfgang</act:name>
+  <act:id type="guid">1db8d7abe4114e39a01883c1165c7e4e</act:id>
+  <act:type>EXPENSE</act:type>
+  <act:commodity>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </act:commodity>
+  <act:commodity-scu>100</act:commodity-scu>
+  <act:description>Cash in Wallet</act:description>
+</gnc:account>
+<gnc:transaction version="2.0.0">
+  <trn:id type="guid">a7fe39f758944a72a9b95d5e7de32fc4</trn:id>
+  <trn:currency>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </trn:currency>
+  <trn:date-posted>
+    <ts:date>2024-10-06 00:00:00 +0000</ts:date>
+  </trn:date-posted>
+  <trn:date-entered>
+    <ts:date>2024-10-06 00:00:00 +0000</ts:date>
+  </trn:date-entered>
+  <trn:description>Bread</trn:description>
+  <trn:slots>
+    <slot>
+      <slot:key>date-posted</slot:key>
+      <slot:value type="gdate">
+        <gdate>2024-10-06</gdate>
+      </slot:value>
+    </slot>
+  </trn:slots>
+  <trn:splits>
+    <trn:split>
+      <split:id type="guid">fbb7273b3730453a82985ef053634e5a</split:id>
+      <split:memo/>
+      <split:reconciled-state>n</split:reconciled-state>
+      <split:value>-350/100</split:value>
+      <split:quantity>-350/100</split:quantity>
+      <split:account type="guid">1db8d7abe4114e39a01883c1165c7e4e</split:account>
+    </trn:split>
+    <trn:split>
+      <split:id type="guid">a198c846dd50487cba89be02799bc1df</split:id>
+      <split:memo/>
+      <split:reconciled-state>n</split:reconciled-state>
+      <split:value>350/100</split:value>
+      <split:quantity>350/100</split:quantity>
+      <split:account type="guid">9d649f70e17e45a79543720d70e9a3f8</split:account>
+    </trn:split>
+  </trn:splits>
+</gnc:transaction>
+<gnc:transaction version="2.0.0">
+  <trn:id type="guid">246a931bd32641b3b0076ea5860c391b</trn:id>
+  <trn:currency>
+    <cmdty:space>CURRENCY</cmdty:space>
+    <cmdty:id>EUR</cmdty:id>
+  </trn:currency>
+  <trn:date-posted>
+    <ts:date>2024-10-06 00:00:00 +0000</ts:date>
+  </trn:date-posted>
+  <trn:date-entered>
+    <ts:date>2024-10-06 00:00:00 +0000</ts:date>
+  </trn:date-entered>
+  <trn:description>Buns for Breakfast</trn:description>
+  <trn:slots>
+    <slot>
+      <slot:key>date-posted</slot:key>
+      <slot:value type="gdate">
+        <gdate>2024-10-06</gdate>
+      </slot:value>
+    </slot>
+  </trn:slots>
+  <trn:splits>
+    <trn:split>
+      <split:id type="guid">f41dec83492a49c59fa06c748491ea6c</split:id>
+      <split:memo/>
+      <split:reconciled-state>n</split:reconciled-state>
+      <split:value>-240/100</split:value>
+      <split:quantity>-240/100</split:quantity>
+      <split:account type="guid">1db8d7abe4114e39a01883c1165c7e4e</split:account>
+    </trn:split>
+    <trn:split>
+      <split:id type="guid">8dcf40ee7ac84de09e684e9f4821d2b3</split:id>
+      <split:memo/>
+      <split:reconciled-state>n</split:reconciled-state>
+      <split:value>240/100</split:value>
+      <split:quantity>240/100</split:quantity>
+      <split:account type="guid">9d649f70e17e45a79543720d70e9a3f8</split:account>
+    </trn:split>
+  </trn:splits>
+</gnc:transaction>
+</gnc:book>
+</gnc-v2>
+

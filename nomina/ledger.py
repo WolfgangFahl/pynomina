@@ -8,8 +8,10 @@ from copy import deepcopy
 from dataclasses import field
 from datetime import datetime
 from typing import Dict, List, Optional
-from nomina.stats import Stats
+
 from lodstorage.yamlable import lod_storable
+
+from nomina.stats import Stats
 
 
 @lod_storable
@@ -100,9 +102,8 @@ class Book:
             accounts=len(self.accounts),
             transactions=len(self.transactions),
             start_date=min_date,
-            end_date=max_date
+            end_date=max_date,
         )
-
 
     def filter(self, start_date: str = None, end_date: str = None) -> "Book":
         """

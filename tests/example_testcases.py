@@ -12,6 +12,7 @@ import requests
 from lodstorage.persistent_log import Log
 
 from nomina.gnucash import GncV2, GnuCashXml
+from nomina.ledger import Book
 from nomina.qif import SimpleQifParser
 from nomina.stats import Stats
 
@@ -28,13 +29,13 @@ class NominaExample:
         url: str,
         example_path: Path,
         expected_stats: Stats,
-        is_qif: bool=False,
+        is_qif: bool = False,
         do_log: bool = False,
     ):
         self.name = name
         self.owner = owner
         self.url = url
-        self.expected_stats=expected_stats
+        self.expected_stats = expected_stats
         # example paths
         self.example_path = example_path
         self.gnu_cash_xml_file = self.example_path / f"{name}_xml.gnucash"
@@ -42,7 +43,7 @@ class NominaExample:
         # parsers
         self.gcxml = GnuCashXml()
         self.sqp = SimpleQifParser()
-        self.is_qif=is_qif
+        self.is_qif = is_qif
         # setup a persistent log
         self.plog = Log()
         self.plog.do_log = do_log
@@ -62,27 +63,65 @@ class NominaExample:
                 "Henning Jakobs",
                 True,
                 "https://raw.githubusercontent.com/hjacobs/gnucash-qif-import/refs/heads/master/examples/expenses.qif",
-                Stats(accounts=5, transactions=2, start_date='2014-01-02', end_date='2014-01-02')
+                Stats(
+                    accounts=5,
+                    transactions=2,
+                    start_date="2014-01-02",
+                    end_date="2014-01-02",
+                ),
+            ),
+            (
+                "expenses2024",
+                "Wolfgang Fahl",
+                "",
+                False,
+                Stats(
+                    accounts=3,
+                    transactions=2,
+                    start_date="2024-10-06",
+                    end_date="2024-10-06",
+                ),
             ),
             (
                 "simple_sample",
                 "Sebastien de Menten",
                 False,
                 "https://github.com/sdementen/piecash/blob/master/gnucash_books/simple_sample.gnucash",
-                Stats(accounts=7, transactions=5, start_date='2014-11-30', end_date='2014-12-24')
+                Stats(
+                    accounts=7,
+                    transactions=5,
+                    start_date="2014-11-30",
+                    end_date="2014-12-24",
+                ),
             ),
             (
                 "empty",
                 "Wolfgang Fahl",
                 False,
                 None,
-                Stats(accounts=64, transactions=0, start_date=None, end_date=None)
+                Stats(accounts=64, transactions=0, start_date=None, end_date=None),
             ),
         ]:
             example_path = Path(__file__).parent.parent / "nomina_examples"
-            example = NominaExample(name, owner, url, example_path, expected_stats,is_qif=is_qif, do_log=do_log)
+            example = NominaExample(
+                name,
+                owner,
+                url,
+                example_path,
+                expected_stats,
+                is_qif=is_qif,
+                do_log=do_log,
+            )
             examples[name] = example
         return examples
+
+    def get_ledger_book(self) -> Book:
+        """
+        read the ledger book
+        """
+        ledger_file = self.example_path / f"{self.name}.yaml"
+        ledger_book = Book.load_from_yaml_file(ledger_file)
+        return ledger_book
 
     def get_parsed_qif(self) -> SimpleQifParser:
         """
@@ -104,26 +143,33 @@ class NominaExample:
         self.gcxml.write_gnucash_xml(gncv2, str(output_file))
         return output_file
 
-    def check_gncv2_file(self, gcf: Path):
-        if not gcf.exists():
-            self.log("❌", "file_existence", "Output file was not created.")
-        elif gcf.stat().st_size == 0:
-            self.log("❌", "file_size", "Output file is empty.")
+    def check_file(self, file: Path):
+        if not file.exists():
+            self.log("❌", "file_existence", "File was not created.")
+        elif file.stat().st_size == 0:
+            self.log("❌", "file_size", "File is empty.")
         else:
-            self.log("✅", "file_check", "Output file exists and is not empty.")
+            self.log("✅", "file_check", "File exists and is not empty.")
 
-    def check_stats(self, gncv2: GncV2, expected_stats: Dict):
-        actual_stats = self.gcxml.get_stats(gncv2)
-        for key, expected_value in expected_stats.items():
-            actual_value = actual_stats.get(key)
+    def check_stats(self, stats: Stats, expected_stats: Stats = None):
+        """
+        check the statistics
+        """
+        if expected_stats is None:
+            expected_stats = self.expected_stats
+
+        for attr in vars(expected_stats):
+            expected_value = getattr(expected_stats, attr)
+            actual_value = getattr(stats, attr)
+
             if actual_value != expected_value:
                 self.log(
                     "⚠️",
-                    f"{key}_mismatch",
-                    f"Stat mismatch for {key}. Expected: {expected_value}, Got: {actual_value}",
+                    f"{attr}_mismatch",
+                    f"Stat mismatch for {attr}. Expected: {expected_value}, Got: {actual_value}"
                 )
             else:
-                self.log("✅", f"{key}_match", f"Stat match for {key}: {actual_value}")
+                self.log("✅", f"{attr}_match", f"Stat match for {attr}: {actual_value}")
 
     def expenses_qif(self) -> str:
         qif = """!Account

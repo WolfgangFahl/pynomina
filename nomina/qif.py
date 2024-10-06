@@ -20,6 +20,7 @@ from lodstorage.yamlable import lod_storable
 from nomina.date_utils import DateUtils
 from nomina.stats import Stats
 
+
 @dataclass
 class SplitTarget:
     target: str
@@ -31,21 +32,21 @@ class SplitTarget:
     account_action: Optional[str] = field(init=False, default=None)
 
     def __post_init__(self):
-        if '[' in self.target and ']' in self.target:
-            match = re.match(r'\[([^\]]+)\]', self.target)
+        if "[" in self.target and "]" in self.target:
+            match = re.match(r"\[([^\]]+)\]", self.target)
             if match:
                 self.transfer_account = match.group(1)
-        elif '|' in self.target:
-            match = re.match(r'([^|]+)\|x', self.target)
+        elif "|" in self.target:
+            match = re.match(r"([^|]+)\|x", self.target)
             if match:
                 self.account_action = match.group(1)
-        elif '/' in self.target:
-            match = re.match(r'([^/]+)/([^/]+)', self.target)
+        elif "/" in self.target:
+            match = re.match(r"([^/]+)/([^/]+)", self.target)
             if match:
                 self.account_category = match.group(1)
                 self.category = match.group(2)
-        elif ':' in self.target:
-            match = re.match(r'([^:]+):([^:]+)', self.target)
+        elif ":" in self.target:
+            match = re.match(r"([^:]+):([^:]+)", self.target)
             if match:
                 self.account = match.group(1)
                 self.subaccount = match.group(2)
@@ -53,8 +54,11 @@ class SplitTarget:
             self.account = self.target
 
     def __repr__(self):
-        attrs = ', '.join(f"{k}={v!r}" for k, v in self.__dict__.items() if v is not None)
+        attrs = ", ".join(
+            f"{k}={v!r}" for k, v in self.__dict__.items() if v is not None
+        )
         return f"SplitTarget({attrs})"
+
 
 @dataclass
 class ParseRecord:
@@ -484,9 +488,8 @@ class SimpleQifParser:
             classes=len(self.classes),
             categories=len(self.categories),
             errors=len(self.errors),
-            other=other_stats
+            other=other_stats,
         )
-
 
     def _get_field_histogram(self) -> Dict[str, int]:
         field_counter = Counter()
@@ -564,12 +567,12 @@ class SimpleQifParser:
 
         # Display field and error histograms
         print("Field histogram:")
-        field_histogram = stats.other.get('field_histogram', {})
+        field_histogram = stats.other.get("field_histogram", {})
         for field, count in field_histogram.items():
             print(f"  {field}: {count}")
 
         print("Error histogram:")
-        error_histogram = stats.other.get('error_histogram', {})
+        error_histogram = stats.other.get("error_histogram", {})
         for field, count in error_histogram.items():
             print(f"  {field}: {count}")
 
@@ -585,4 +588,3 @@ class SimpleQifParser:
         # Generate and display error report
         error_report = self.generate_error_report()
         print(error_report)
-

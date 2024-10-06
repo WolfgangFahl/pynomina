@@ -17,7 +17,7 @@ from xsdata.formats.dataclass.serializers.config import SerializerConfig
 from xsdata.models.datatype import XmlDate
 
 from nomina.date_utils import DateUtils
-
+from nomina.stats import Stats
 
 @dataclass
 class VersionedElement:
@@ -65,8 +65,9 @@ class TsDate:
         """
         format date to 1970-01-01 00:00:00 +0000
         """
-        if self.date and len(self.date)==10:
+        if self.date and len(self.date) == 10:
             self.date += " 00:00:00 +0000"
+
 
 @dataclass
 class CountData:
@@ -393,6 +394,33 @@ class GncV2:
         },
     )
 
+    def get_stats(self) -> Stats:
+        """
+        get statistics
+        """
+        gncv2=self
+        dates = []
+
+        if dates:
+            min_date = min(dates).strftime("%Y-%m-%d")
+            max_date = max(dates).strftime("%Y-%m-%d")
+        else:
+            min_date = max_date = None
+
+        return Stats(
+            accounts=len(gncv2.book.accounts),
+            transactions=len(gncv2.book.transactions),
+            start_date=min_date,
+            end_date=max_date,
+        )
+
+    def show_summary(self):
+        stats = self.get_stats()
+        print(f"#accounts: {stats.accounts}")
+        print(f"#transactions: {stats.transactions}")
+        print(f"Date range: {stats.start_date} to {stats.end_date}")
+        return stats
+
 
 class GnuCashXml:
     """
@@ -438,6 +466,9 @@ class GnuCashXml:
         }
 
     def parse_gnucash_xml(self, xml_file: str) -> GncV2:
+        """
+        parse the given gnucash xml file
+        """
         parser = XmlParser(config=ParserConfig(fail_on_unknown_properties=False))
         return parser.parse(xml_file, GncV2)
 
@@ -476,7 +507,6 @@ class GnuCashXml:
         """
         serializer = XmlSerializer(
             config=SerializerConfig(
-                pretty_print=True,
                 xml_declaration=True,
                 encoding="utf-8",
                 indent=self.indent,
@@ -494,35 +524,4 @@ class GnuCashXml:
         with open(output_file, "w", encoding="UTF-8") as f:
             f.write(formatted_xml_string)
 
-    def get_stats(self, gncv2: GncV2) -> Dict:
-        dates = []
-        parse_errors = 0
-        for tx in gncv2.book.transactions:
-            if tx.date_posted and tx.date_posted.date:
-                parsed_date = DateUtils.parse_date(tx.date_posted.date)
-                if parsed_date:
-                    dates.append(datetime.strptime(parsed_date, "%Y-%m-%d"))
-                else:
-                    parse_errors += 1
 
-        if dates:
-            min_date = min(dates).strftime("%Y-%m-%d")
-            max_date = max(dates).strftime("%Y-%m-%d")
-        else:
-            min_date = max_date = None
-
-        return {
-            "#transactions": len(gncv2.book.transactions),
-            "#accounts": len(gncv2.book.accounts),
-            "date_range": {"start_date": min_date, "end_date": max_date},
-            "parse_errors": parse_errors,
-        }
-
-    def show_summary(self, gncv2: GncV2):
-        stats = self.get_stats(gncv2)
-        self.stats = stats
-        print(f"#accounts: {stats['#accounts']}")
-        print(f"#transactions: {stats['#transactions']}")
-        print(
-            f"Date range: {stats['date_range']['start_date']} to {stats['date_range']['end_date']}"
-        )

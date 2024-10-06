@@ -1,13 +1,17 @@
-'''
+"""
 Created on 2024-10-06
 
 @author: wf
-'''
+"""
+
 import os
+
 from ngwidgets.input_webserver import InputWebserver, InputWebSolution
 from ngwidgets.webserver import WebserverConfig
-from nomina.version import Version
 from nicegui import Client, app, ui
+
+from nomina.version import Version
+
 
 class NominaWebServer(InputWebserver):
     """
@@ -49,6 +53,7 @@ class NominaWebServer(InputWebserver):
         path = os.path.join(os.path.dirname(__file__), "../nomina_examples")
         path = os.path.abspath(path)
         return path
+
 
 class NominaSolution(InputWebSolution):
     """

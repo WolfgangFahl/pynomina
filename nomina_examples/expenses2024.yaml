@@ -1,0 +1,46 @@
+#
+# Example ledger file for pynomina project
+# see https://github.com/WolfgangFahl/pynomina/issues/3
+#
+owner: Wolfgang Fahl
+url: https://github.com/WolfgangFahl/pynomina/blob/main/nomina_examples/expenses2024.yaml
+since: 2024-10-06
+accounts:
+  Expenses:
+    account_id: Expenses
+    name: Expenses
+    account_type: EXPENSE
+    description: 'General Expenses'
+    currency: EUR
+  Expenses:Food:
+    account_id: Expenses:Food
+    name: Food
+    account_type: EXPENSE
+    description: 'Expenses for Food'
+    currency: EUR
+    parent_account_id: Expenses
+  Cash:
+    account_id: Cash
+    name: Cash in Wallet of Wolfgang
+    account_type: EXPENSE
+    description: 'Cash in Wallet'
+    currency: EUR
+transactions:
+  Bakery2024-10-06_0900_1:
+    isodate: '2024-10-06'
+    description: Bread
+    splits:
+      - amount: -3.50
+        account_id: Cash
+      - amount: 3.50
+        account_id: Expenses:Food
+    memo: Fresh sourdough bread
+  Bakery2024-10-06_0900_2:
+    isodate: '2024-10-06'
+    description: Buns for Breakfast
+    splits:
+      - amount: -2.40
+        account_id: Cash
+      - amount: 2.40
+        account_id: Expenses:Food
+    memo: 4 whole grain buns

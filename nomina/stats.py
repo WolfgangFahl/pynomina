@@ -1,16 +1,21 @@
-'''
+"""
 Created on 2024-10-06
 
 @author: wf
-'''
+"""
+
 from dataclasses import field
-from lodstorage.yamlable import lod_storable
 from typing import Any, Dict, Optional
+
+from lodstorage.yamlable import lod_storable
+
+
 @lod_storable
 class Stats:
     """
     Ledger statistics
     """
+
     accounts: int
     transactions: int
     start_date: Optional[str] = None

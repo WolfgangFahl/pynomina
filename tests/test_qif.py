@@ -5,9 +5,11 @@ Created on 2024-09-30
 """
 
 import requests
+
 from nomina.qif import SimpleQifParser, SplitTarget
 from tests.basetest import Basetest
 from tests.example_testcases import NominaExample
+
 
 class Test_QifParser(Basetest):
     """
@@ -28,14 +30,13 @@ class Test_QifParser(Basetest):
             "Checking",
             "Expenses:Groceries",
             "Checking/Groceries",
-            "Kursgewinne:Realisierte Gewinne|[PrivatGiro]"
+            "Kursgewinne:Realisierte Gewinne|[PrivatGiro]",
         ]
 
         for test_target in test_targets:
-            split_target=SplitTarget(test_target)
+            split_target = SplitTarget(test_target)
             if self.debug:
                 print(f"{test_target}:{split_target}")
-
 
     def test_qif_examples(self):
         """
@@ -44,15 +45,14 @@ class Test_QifParser(Basetest):
         for name, example in self.examples.items():
             if example.is_qif:
                 with self.subTest(f"Testing {name}"):
-                    sqp=example.get_parsed_qif()
+                    sqp = example.get_parsed_qif()
                     if self.debug:
                         sqp.show_summary()
-                    stats=sqp.get_stats()
-                    self.assertEqual(stats.transactions,example.expected_stats.transactions)
-                    self.assertEqual(stats.start_date,example.expected_stats.start_date)
-                    self.assertEqual(stats.end_date,example.expected_stats.end_date)
-
-
-
-
-
+                    stats = sqp.get_stats()
+                    self.assertEqual(
+                        stats.transactions, example.expected_stats.transactions
+                    )
+                    self.assertEqual(
+                        stats.start_date, example.expected_stats.start_date
+                    )
+                    self.assertEqual(stats.end_date, example.expected_stats.end_date)

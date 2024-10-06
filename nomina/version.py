@@ -11,6 +11,7 @@ class Version(object):
     """
     Version handling for MoneyBrowser
     """
+
     name = "pynomina"
     version = "0.0.1"
     date = "2024-10-06"
