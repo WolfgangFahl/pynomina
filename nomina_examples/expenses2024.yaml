@@ -2,6 +2,8 @@
 # Example ledger file for pynomina project
 # see https://github.com/WolfgangFahl/pynomina/issues/3
 #
+file_type: NOMINA-LEDGER-BOOK-YAML
+version: 0.1
 owner: Wolfgang Fahl
 url: https://github.com/WolfgangFahl/pynomina/blob/main/nomina_examples/expenses2024.yaml
 since: 2024-10-06

@@ -1,0 +1,32 @@
+!Account
+NExpenses:Dining
+^
+!Type:Cash
+
+!Account
+NCash in Wallet
+^
+!Type:Cash
+D2014/1/2
+MLunch at Marcy's
+SExpenses:Dining
+$-7.80
+^
+
+
+!Account
+NCash in Wallet
+^
+!Type:Cash
+D2014/1/2
+MExpensive PC
+SExpenses:Computer
+ESome note
+$-1234.56
+^
+
+
+!Account
+NExpenses:Computer
+^
+!Type:Cash"""

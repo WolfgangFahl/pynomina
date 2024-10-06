@@ -26,7 +26,7 @@ class Test_GnuCash(Basetest):
                 gncv2 = example.get_parsed_gnucash()
                 if self.debug:
                     gncv2.show_summary()
-                stats=gncv2.get_stats()
+                stats = gncv2.get_stats()
                 example.check_stats(stats)
 
     def test_gnucash_xml_write(self):
@@ -38,6 +38,6 @@ class Test_GnuCash(Basetest):
                 gncv2 = example.get_parsed_gnucash()
                 output_file = example.write_gnucash(gncv2, "/tmp", "roundtrip")
                 example.check_file(output_file)
-                gncv2_out=example.gcxml.parse_gnucash_xml(output_file)
-                stats=gncv2_out.get_stats()
+                gncv2_out = example.gcxml.parse_gnucash_xml(output_file)
+                stats = gncv2_out.get_stats()
                 example.check_stats(stats)

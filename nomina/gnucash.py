@@ -19,6 +19,7 @@ from xsdata.models.datatype import XmlDate
 from nomina.date_utils import DateUtils
 from nomina.stats import Stats
 
+
 @dataclass
 class VersionedElement:
     version: str = field(
@@ -398,7 +399,7 @@ class GncV2:
         """
         get statistics
         """
-        gncv2=self
+        gncv2 = self
         dates = []
 
         if dates:
@@ -523,5 +524,3 @@ class GnuCashXml:
         # Write the formatted XML string to the file
         with open(output_file, "w", encoding="UTF-8") as f:
             f.write(formatted_xml_string)
-
-

@@ -16,7 +16,7 @@ pynomina is intended as a personal accounting swiss army knife
 [Demo](http://nomina.bitplan.com/)
 
 ## Motivation
-In the past decades the autor used different personal accounting tools:
+In the past decades the author used different personal accounting tools:
 * [Quicken](https://en.wikipedia.org/wiki/Quicken)
 * [Microsoft Money](https://en.wikipedia.org/wiki/Microsoft_Money)
 * [Lexware Finanzmanager](https://www.wikidata.org/wiki/Q1822341)

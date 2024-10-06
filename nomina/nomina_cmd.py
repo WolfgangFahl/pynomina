@@ -9,6 +9,7 @@ from argparse import ArgumentParser
 
 from ngwidgets.cmd import WebserverCmd
 
+from nomina.converter import Converter
 from nomina.webserver import NominaWebServer
 
 
@@ -42,7 +43,30 @@ class NominaCmd(WebserverCmd):
             default=NominaWebServer.examples_path(),
             help="path to nomina files [default: %(default)s]",
         )
+        parser.add_argument(
+            "--convert",
+            help="Convert the specified file to the desired format",
+        )
+        parser.add_argument(
+            "--format",
+            choices=["ledger", "gcxml"],
+            default="ledger",
+            help="Output format for conversion [default: %(default)s]",
+        )
         return parser
+
+    def handle_args(self) -> bool:
+        """
+        handle the command line args
+        """
+        # Call the superclass handle_args to maintain base class behavior
+        handled = super().handle_args()
+        self.debug = self.args.debug
+        args = self.args
+        if args.convert:
+            converter = Converter()
+            result = converter.convert(args.convert, args.format)
+            print(result)
 
 
 def main(argv: list = None):

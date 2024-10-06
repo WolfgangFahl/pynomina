@@ -67,6 +67,8 @@ class Book:
     Represents a ledger book containing accounts and transactions.
     """
 
+    file_type: str = "NOMINA-LB-YAML"
+    version: str = "0.1"
     name: Optional[str] = None
     owner: Optional[str] = None
     since: Optional[str] = None

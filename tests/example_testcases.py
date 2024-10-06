@@ -166,10 +166,12 @@ class NominaExample:
                 self.log(
                     "⚠️",
                     f"{attr}_mismatch",
-                    f"Stat mismatch for {attr}. Expected: {expected_value}, Got: {actual_value}"
+                    f"Stat mismatch for {attr}. Expected: {expected_value}, Got: {actual_value}",
                 )
             else:
-                self.log("✅", f"{attr}_match", f"Stat match for {attr}: {actual_value}")
+                self.log(
+                    "✅", f"{attr}_match", f"Stat match for {attr}: {actual_value}"
+                )
 
     def expenses_qif(self) -> str:
         qif = """!Account
