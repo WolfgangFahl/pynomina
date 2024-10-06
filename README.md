@@ -10,6 +10,9 @@ personal accounting tool with file conversion
 [![API Docs](https://img.shields.io/badge/API-Documentation-blue)](https://WolfgangFahl.github.io/pynomina/)
 [![License](https://img.shields.io/github/license/WolfgangFahl/pynomina.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
+## Demo
+[Demo](http://nomina.bitplan.com/)
+
 ## Docs and Tutorials
 [Wiki](https://wiki.bitplan.com/index.php/pynomina)
 
