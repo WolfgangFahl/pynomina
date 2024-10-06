@@ -1,0 +1,121 @@
+owner: Sebastien de Menten
+url: https://github.com/sdementen/piecash/blob/master/gnucash_books/simple_sample.gnucash
+accounts:
+  00622dda21937b29e494179de5013f82:
+    account_id: 00622dda21937b29e494179de5013f82
+    name: Root Account
+    account_type: ROOT
+    description: ''
+    currency: EUR
+  fcd795021c976ba75621ec39e75f6214:
+    account_id: fcd795021c976ba75621ec39e75f6214
+    name: Asset
+    account_type: ASSET
+    description: ''
+    currency: EUR
+    parent_account_id: 00622dda21937b29e494179de5013f82
+  96ed7a45459fb5fe570e48fcd46f05d0:
+    account_id: 96ed7a45459fb5fe570e48fcd46f05d0
+    name: Liability
+    account_type: LIABILITY
+    description: ''
+    currency: EUR
+    parent_account_id: 00622dda21937b29e494179de5013f82
+  6bbc8f20544452cac1637fb9a9b851bb:
+    account_id: 6bbc8f20544452cac1637fb9a9b851bb
+    name: Income
+    account_type: INCOME
+    description: ''
+    currency: EUR
+    parent_account_id: 00622dda21937b29e494179de5013f82
+  af88d386d44b14acf244362b85ccaf4c:
+    account_id: af88d386d44b14acf244362b85ccaf4c
+    name: Expense
+    account_type: EXPENSE
+    description: ''
+    currency: EUR
+    parent_account_id: 00622dda21937b29e494179de5013f82
+  8056f425ecdc352cf6039e3a0d0d1e6c:
+    account_id: 8056f425ecdc352cf6039e3a0d0d1e6c
+    name: Equity
+    account_type: EQUITY
+    description: ''
+    currency: EUR
+    parent_account_id: 00622dda21937b29e494179de5013f82
+  1305127e63737f8c39afb49b5bbeca7a:
+    account_id: 1305127e63737f8c39afb49b5bbeca7a
+    name: Opening Balances - EUR
+    account_type: EQUITY
+    description: ''
+    currency: EUR
+    parent_account_id: 8056f425ecdc352cf6039e3a0d0d1e6c
+transactions:
+  2014-11-30 10:59:00 +0000:Opening Balance:
+    isodate: 2014-11-30 10:59:00 +0000
+    description: Opening Balance
+    splits:
+    - amount: 500.0
+      account_id: fcd795021c976ba75621ec39e75f6214
+      memo: ''
+      reconciled: false
+    - amount: -500.0
+      account_id: 1305127e63737f8c39afb49b5bbeca7a
+      memo: ''
+      reconciled: false
+    memo: Opening Balance
+  2014-12-24 10:59:00 +0000:initial load:
+    isodate: 2014-12-24 10:59:00 +0000
+    description: initial load
+    splits:
+    - amount: 1000.0
+      account_id: fcd795021c976ba75621ec39e75f6214
+      memo: ''
+      reconciled: false
+    - amount: -1000.0
+      account_id: 96ed7a45459fb5fe570e48fcd46f05d0
+      memo: ''
+      reconciled: false
+    memo: initial load
+  2014-12-24 10:59:00 +0000:expense 1:
+    isodate: 2014-12-24 10:59:00 +0000
+    description: expense 1
+    splits:
+    - amount: 200.0
+      account_id: af88d386d44b14acf244362b85ccaf4c
+      memo: ''
+      reconciled: false
+    - amount: -200.0
+      account_id: fcd795021c976ba75621ec39e75f6214
+      memo: ''
+      reconciled: false
+    memo: expense 1
+  2014-12-24 10:59:00 +0000:income 1:
+    isodate: 2014-12-24 10:59:00 +0000
+    description: income 1
+    splits:
+    - amount: 150.0
+      account_id: fcd795021c976ba75621ec39e75f6214
+      memo: ''
+      reconciled: false
+    - amount: -150.0
+      account_id: 6bbc8f20544452cac1637fb9a9b851bb
+      memo: ''
+      reconciled: false
+    memo: income 1
+  2014-12-24 10:59:00 +0000:loan payment:
+    isodate: 2014-12-24 10:59:00 +0000
+    description: loan payment
+    splits:
+    - amount: 100.0
+      account_id: 96ed7a45459fb5fe570e48fcd46f05d0
+      memo: capital
+      reconciled: false
+    - amount: 30.0
+      account_id: af88d386d44b14acf244362b85ccaf4c
+      memo: interest
+      reconciled: false
+    - amount: -130.0
+      account_id: fcd795021c976ba75621ec39e75f6214
+      memo: monthly payment
+      reconciled: false
+    memo: loan payment

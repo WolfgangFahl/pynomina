@@ -1,0 +1,74 @@
+owner: Henning Jakobs
+url: https://raw.githubusercontent.com/hjacobs/gnucash-qif-import/refs/heads/master/examples/expenses.qif
+accounts:
+  Class:
+    account_id: Class
+    name: Class
+    account_type: CLASS
+    description: ''
+    currency: EUR
+  Category:
+    account_id: Category
+    name: Category
+    account_type: CATEGORY
+    description: ''
+    currency: EUR
+  Dangling:
+    account_id: Dangling
+    name: Dangling
+    account_type: ERROR
+    description: ''
+    currency: EUR
+  Expenses:
+    account_id: Expenses
+    name: Expenses
+    account_type: EXPENSE
+    description: ''
+    currency: EUR
+  Expenses:Dining:
+    account_id: Expenses:Dining
+    name: Dining
+    account_type: EXPENSE
+    description: ''
+    currency: EUR
+    parent_account_id: Expenses
+  Cash in Wallet:
+    account_id: Cash in Wallet
+    name: Cash in Wallet
+    account_type: EXPENSE
+    description: ''
+    currency: EUR
+  Expenses:Computer:
+    account_id: Expenses:Computer
+    name: Computer
+    account_type: EXPENSE
+    description: ''
+    currency: EUR
+    parent_account_id: Expenses
+transactions:
+  Cash in Wallet:2014-01-02:10:
+    isodate: '2014-01-02'
+    description: Lunch at Marcy's
+    splits:
+    - amount: -7.8
+      account_id: Cash in Wallet
+      memo: Lunch at Marcy's
+      reconciled: false
+    - amount: 7.8
+      account_id: Expenses:Dining
+      memo: ''
+      reconciled: false
+    memo: Lunch at Marcy's
+  Cash in Wallet:2014-01-02:21:
+    isodate: '2014-01-02'
+    description: Expensive PC
+    splits:
+    - amount: -1234.56
+      account_id: Cash in Wallet
+      memo: Expensive PC
+      reconciled: false
+    - amount: 1234.56
+      account_id: Expenses:Computer
+      memo: Some note
+      reconciled: false
+    memo: Expensive PC

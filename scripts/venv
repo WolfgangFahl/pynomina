@@ -1,0 +1,5 @@
+#!/bin/bash
+# WF 2024-10-04
+python -m venv .venv
+# activate it
+source .venv/bin/activate

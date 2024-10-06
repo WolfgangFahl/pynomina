@@ -1,0 +1,449 @@
+owner: Wolfgang Fahl
+accounts:
+  963a1df2793c4b5b9c74bb3ff86a79ff:
+    account_id: 963a1df2793c4b5b9c74bb3ff86a79ff
+    name: Root Account
+    account_type: ROOT
+    description: ''
+    currency: EUR
+  cf5fc63b580b4b07b61ca9874c73094c:
+    account_id: cf5fc63b580b4b07b61ca9874c73094c
+    name: Aktiva
+    account_type: ASSET
+    description: Aktiva
+    currency: EUR
+    parent_account_id: 963a1df2793c4b5b9c74bb3ff86a79ff
+  18254dfbb68948fd800e88d024ffda76:
+    account_id: 18254dfbb68948fd800e88d024ffda76
+    name: Barvermögen
+    account_type: ASSET
+    description: Barvermögen
+    currency: EUR
+    parent_account_id: cf5fc63b580b4b07b61ca9874c73094c
+  2ccef7af897848c794310f10c8422c41:
+    account_id: 2ccef7af897848c794310f10c8422c41
+    name: Girokonto
+    account_type: BANK
+    description: Girokonto
+    currency: EUR
+    parent_account_id: 18254dfbb68948fd800e88d024ffda76
+  80d6d1afe6fc4314a63036dc6b6913f1:
+    account_id: 80d6d1afe6fc4314a63036dc6b6913f1
+    name: Sparkonto
+    account_type: BANK
+    description: Sparkonto
+    currency: EUR
+    parent_account_id: 18254dfbb68948fd800e88d024ffda76
+  b45ad2d9a9b84e69adf9d8d787478957:
+    account_id: b45ad2d9a9b84e69adf9d8d787478957
+    name: Bargeld
+    account_type: CASH
+    description: Bargeld
+    currency: EUR
+    parent_account_id: 18254dfbb68948fd800e88d024ffda76
+  799144e2d9a14845afbfed9a88468862:
+    account_id: 799144e2d9a14845afbfed9a88468862
+    name: Fremdkapital
+    account_type: LIABILITY
+    description: alle Verbindlichkeiten
+    currency: EUR
+    parent_account_id: 963a1df2793c4b5b9c74bb3ff86a79ff
+  8ddb24a493b943e3b0b5094128e0c879:
+    account_id: 8ddb24a493b943e3b0b5094128e0c879
+    name: Barverbindlichkeiten
+    account_type: LIABILITY
+    description: Barverbindlichkeiten (noch offenstehende Rechnungen)
+    currency: EUR
+    parent_account_id: 799144e2d9a14845afbfed9a88468862
+  84ad66a52b02450dbd6af435daef47ad:
+    account_id: 84ad66a52b02450dbd6af435daef47ad
+    name: Kreditkarte
+    account_type: CREDIT
+    description: Kreditkarte
+    currency: EUR
+    parent_account_id: 8ddb24a493b943e3b0b5094128e0c879
+  f7f8f842f1ef4c8b9421ff9f93133222:
+    account_id: f7f8f842f1ef4c8b9421ff9f93133222
+    name: Erträge
+    account_type: INCOME
+    description: Erträge
+    currency: EUR
+    parent_account_id: 963a1df2793c4b5b9c74bb3ff86a79ff
+  b18874f039fb4d49a85dfdf576730cbf:
+    account_id: b18874f039fb4d49a85dfdf576730cbf
+    name: Gehalt
+    account_type: INCOME
+    description: Gehalt und Zulagen
+    currency: EUR
+    parent_account_id: f7f8f842f1ef4c8b9421ff9f93133222
+  502e7977ca7e497aa657c11a1cd539dd:
+    account_id: 502e7977ca7e497aa657c11a1cd539dd
+    name: Gehalt
+    account_type: INCOME
+    description: Gehalt
+    currency: EUR
+    parent_account_id: b18874f039fb4d49a85dfdf576730cbf
+  65da21a6edb545be9798a49939501808:
+    account_id: 65da21a6edb545be9798a49939501808
+    name: Zulagen
+    account_type: INCOME
+    description: Zulagen und Bonus zum Gehalt
+    currency: EUR
+    parent_account_id: b18874f039fb4d49a85dfdf576730cbf
+  bdeaf3a06a2642ef8651710c3f57bf47:
+    account_id: bdeaf3a06a2642ef8651710c3f57bf47
+    name: Geschenke
+    account_type: INCOME
+    description: Empfangene Geschenke
+    currency: EUR
+    parent_account_id: f7f8f842f1ef4c8b9421ff9f93133222
+  aa4b4e630c7b4a68a22f50fc91682b11:
+    account_id: aa4b4e630c7b4a68a22f50fc91682b11
+    name: Sonstiges
+    account_type: INCOME
+    description: Sonstige Erträge
+    currency: EUR
+    parent_account_id: f7f8f842f1ef4c8b9421ff9f93133222
+  9a36909c50b74f4a9ad40eb07b961472:
+    account_id: 9a36909c50b74f4a9ad40eb07b961472
+    name: Zinsen
+    account_type: INCOME
+    description: Zinseinkommen
+    currency: EUR
+    parent_account_id: f7f8f842f1ef4c8b9421ff9f93133222
+  09917fb5039b4aaf9a7aa498b02ac1b7:
+    account_id: 09917fb5039b4aaf9a7aa498b02ac1b7
+    name: Girokonto
+    account_type: INCOME
+    description: Girokonto Zinsen
+    currency: EUR
+    parent_account_id: 9a36909c50b74f4a9ad40eb07b961472
+  f79df856074c47649614e4abbaf89f71:
+    account_id: f79df856074c47649614e4abbaf89f71
+    name: Sonstige
+    account_type: INCOME
+    description: Sonstige Zinsen
+    currency: EUR
+    parent_account_id: 9a36909c50b74f4a9ad40eb07b961472
+  531458b3c6b244f2a57106d48d948ba2:
+    account_id: 531458b3c6b244f2a57106d48d948ba2
+    name: Sparkonto
+    account_type: INCOME
+    description: Sparkonto Zinsen
+    currency: EUR
+    parent_account_id: 9a36909c50b74f4a9ad40eb07b961472
+  a2e9f22ff1ce4e8c8d4033bd66945c65:
+    account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+    name: Aufwendungen
+    account_type: EXPENSE
+    description: Aufwendungen
+    currency: EUR
+    parent_account_id: 963a1df2793c4b5b9c74bb3ff86a79ff
+  fde0c75d8696454fb04a7a6d2a5507b4:
+    account_id: fde0c75d8696454fb04a7a6d2a5507b4
+    name: Bildung
+    account_type: EXPENSE
+    description: Bildung
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  a6558da5354a4210823e0aea8d6fc26f:
+    account_id: a6558da5354a4210823e0aea8d6fc26f
+    name: Abonnements
+    account_type: EXPENSE
+    description: Abonnements
+    currency: EUR
+    parent_account_id: fde0c75d8696454fb04a7a6d2a5507b4
+  5b78834c99884bda9a219d05bdb9a65e:
+    account_id: 5b78834c99884bda9a219d05bdb9a65e
+    name: Bücher
+    account_type: EXPENSE
+    description: Bücher
+    currency: EUR
+    parent_account_id: fde0c75d8696454fb04a7a6d2a5507b4
+  9fde27dcf8004fcb98b2bab02bf606ea:
+    account_id: 9fde27dcf8004fcb98b2bab02bf606ea
+    name: Büroartikel
+    account_type: EXPENSE
+    description: Büroartikel
+    currency: EUR
+    parent_account_id: fde0c75d8696454fb04a7a6d2a5507b4
+  33ed63f98fd34eb9b3d406726976a557:
+    account_id: 33ed63f98fd34eb9b3d406726976a557
+    name: Zeitungen
+    account_type: EXPENSE
+    description: Zeitungen
+    currency: EUR
+    parent_account_id: fde0c75d8696454fb04a7a6d2a5507b4
+  ca41afe5a17b44ba8c4c09839b23801e:
+    account_id: ca41afe5a17b44ba8c4c09839b23801e
+    name: Computer
+    account_type: EXPENSE
+    description: Computer
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  2bc9811321b44ecc800ef4e1a342a9d3:
+    account_id: 2bc9811321b44ecc800ef4e1a342a9d3
+    name: Fahrtkosten
+    account_type: EXPENSE
+    description: Fahrtkosten
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  5d5044be396d4891b315c7ece4e271e3:
+    account_id: 5d5044be396d4891b315c7ece4e271e3
+    name: Fahrkarten
+    account_type: EXPENSE
+    description: Fahrkarten Bus, Bahn, Flugzeug
+    currency: EUR
+    parent_account_id: 2bc9811321b44ecc800ef4e1a342a9d3
+  adee0089a62246c1af821050d38f96c0:
+    account_id: adee0089a62246c1af821050d38f96c0
+    name: Geschenke
+    account_type: EXPENSE
+    description: Geschenke
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  8498192ead5d4f51859f09b945a3cd1e:
+    account_id: 8498192ead5d4f51859f09b945a3cd1e
+    name: Hobbies
+    account_type: EXPENSE
+    description: Hobbies
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  cbd3c0c76b5e405ebbd46f7ea467adef:
+    account_id: cbd3c0c76b5e405ebbd46f7ea467adef
+    name: Kleidung
+    account_type: EXPENSE
+    description: Kleidung
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  c840e371e4bd4214a46f3ad55e2dcd8d:
+    account_id: c840e371e4bd4214a46f3ad55e2dcd8d
+    name: Lebensmittel
+    account_type: EXPENSE
+    description: Lebensmittel
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  ee470bdf314d41ac98cb2c5a3f68e4fc:
+    account_id: ee470bdf314d41ac98cb2c5a3f68e4fc
+    name: Medikamente
+    account_type: EXPENSE
+    description: Medikamente
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  14bc5817f8bc4d37add84651147e4e27:
+    account_id: 14bc5817f8bc4d37add84651147e4e27
+    name: Sonstiges
+    account_type: EXPENSE
+    description: Sonstiges
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  682c36cc27604a8bb7c9e0b463e447e5:
+    account_id: 682c36cc27604a8bb7c9e0b463e447e5
+    name: Bankgebühren
+    account_type: EXPENSE
+    description: Konto- und Bankgebühren
+    currency: EUR
+    parent_account_id: 14bc5817f8bc4d37add84651147e4e27
+  9adb757971b449b0b1dd5acf6a9ea74b:
+    account_id: 9adb757971b449b0b1dd5acf6a9ea74b
+    name: Sonstiges
+    account_type: EXPENSE
+    description: nicht aufgegliederte Ausgaben
+    currency: EUR
+    parent_account_id: 14bc5817f8bc4d37add84651147e4e27
+  1669f127487f447c80c13110043fe851:
+    account_id: 1669f127487f447c80c13110043fe851
+    name: Spenden
+    account_type: EXPENSE
+    description: Wohltätige Spenden
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  f1df1334478745ccb0a6cb662c2bee61:
+    account_id: f1df1334478745ccb0a6cb662c2bee61
+    name: Steuern
+    account_type: EXPENSE
+    description: Steuern und Sozialabgaben
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  b4cafc2b7ecb48539771c446cf2b916c:
+    account_id: b4cafc2b7ecb48539771c446cf2b916c
+    name: Einkommensteuer
+    account_type: EXPENSE
+    description: Einkommensteuer
+    currency: EUR
+    parent_account_id: f1df1334478745ccb0a6cb662c2bee61
+  ee4ef99efe0746ad9eb24981a41abb56:
+    account_id: ee4ef99efe0746ad9eb24981a41abb56
+    name: Pflegeversicherung
+    account_type: EXPENSE
+    description: Pflegeversicherung
+    currency: EUR
+    parent_account_id: f1df1334478745ccb0a6cb662c2bee61
+  2263ed0ec80348c3a4a93767bb546000:
+    account_id: 2263ed0ec80348c3a4a93767bb546000
+    name: Rentenversicherung
+    account_type: EXPENSE
+    description: Rentenversicherung
+    currency: EUR
+    parent_account_id: f1df1334478745ccb0a6cb662c2bee61
+  52c55076d91045d39ff939d695f161b7:
+    account_id: 52c55076d91045d39ff939d695f161b7
+    name: Solidaritätszuschlag
+    account_type: EXPENSE
+    description: Solidaritätszuschlag
+    currency: EUR
+    parent_account_id: f1df1334478745ccb0a6cb662c2bee61
+  459a2680002047f28f6b95bea87a585b:
+    account_id: 459a2680002047f28f6b95bea87a585b
+    name: Sonstige
+    account_type: EXPENSE
+    description: Sonstige Steuern
+    currency: EUR
+    parent_account_id: f1df1334478745ccb0a6cb662c2bee61
+  9baae3da7e8e4870b711d9b331ecc81a:
+    account_id: 9baae3da7e8e4870b711d9b331ecc81a
+    name: Sozialabgaben
+    account_type: EXPENSE
+    description: Sonstige Sozialabgaben
+    currency: EUR
+    parent_account_id: f1df1334478745ccb0a6cb662c2bee61
+  eca052fa6507444b9872acaf2fe5c8aa:
+    account_id: eca052fa6507444b9872acaf2fe5c8aa
+    name: Telekommunikation
+    account_type: EXPENSE
+    description: Telekommunikation
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  ef77fb4321ed4335a6dd19ded1e7686f:
+    account_id: ef77fb4321ed4335a6dd19ded1e7686f
+    name: Fernsehen
+    account_type: EXPENSE
+    description: GEZ und Kabelfernsehen
+    currency: EUR
+    parent_account_id: eca052fa6507444b9872acaf2fe5c8aa
+  1fc3024e80054fe88c2cceec83bb6b40:
+    account_id: 1fc3024e80054fe88c2cceec83bb6b40
+    name: Online-Dienste
+    account_type: EXPENSE
+    description: Online-Dienste
+    currency: EUR
+    parent_account_id: eca052fa6507444b9872acaf2fe5c8aa
+  d30b4e620c1a410b9fd524e928eda6eb:
+    account_id: d30b4e620c1a410b9fd524e928eda6eb
+    name: Telefon
+    account_type: EXPENSE
+    description: Telefon
+    currency: EUR
+    parent_account_id: eca052fa6507444b9872acaf2fe5c8aa
+  0f1a069c994f4234ab87a602e37e756d:
+    account_id: 0f1a069c994f4234ab87a602e37e756d
+    name: Unterhaltung
+    account_type: EXPENSE
+    description: Unterhaltung
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  91726b95150049ce90e96bc75e42c69a:
+    account_id: 91726b95150049ce90e96bc75e42c69a
+    name: Ausgehen
+    account_type: EXPENSE
+    description: Auswärts Essen
+    currency: EUR
+    parent_account_id: 0f1a069c994f4234ab87a602e37e756d
+  0de17e9f27e340c89c9d7b2bf923fc8a:
+    account_id: 0de17e9f27e340c89c9d7b2bf923fc8a
+    name: Musik/Kino
+    account_type: EXPENSE
+    description: Musik/Kino
+    currency: EUR
+    parent_account_id: 0f1a069c994f4234ab87a602e37e756d
+  99966af30fa14778b6a4012203399529:
+    account_id: 99966af30fa14778b6a4012203399529
+    name: Reisen
+    account_type: EXPENSE
+    description: Reisen
+    currency: EUR
+    parent_account_id: 0f1a069c994f4234ab87a602e37e756d
+  c2be2c7efb434d80b400faa943ba91ce:
+    account_id: c2be2c7efb434d80b400faa943ba91ce
+    name: Sport
+    account_type: EXPENSE
+    description: Sport
+    currency: EUR
+    parent_account_id: 0f1a069c994f4234ab87a602e37e756d
+  c3967ca2e49741d1833cd8c97e8f7682:
+    account_id: c3967ca2e49741d1833cd8c97e8f7682
+    name: Versicherungen
+    account_type: EXPENSE
+    description: Versicherungen
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  55a7a90ad86f427abedb3d9390c9e31d:
+    account_id: 55a7a90ad86f427abedb3d9390c9e31d
+    name: Haftpflicht
+    account_type: EXPENSE
+    description: Haftpflichtversicherung
+    currency: EUR
+    parent_account_id: c3967ca2e49741d1833cd8c97e8f7682
+  fbd3dc26c3844b0dae245b32d3468324:
+    account_id: fbd3dc26c3844b0dae245b32d3468324
+    name: Krankenversicherung
+    account_type: EXPENSE
+    description: Krankenversicherung
+    currency: EUR
+    parent_account_id: c3967ca2e49741d1833cd8c97e8f7682
+  13230fb1774649769d16b7f49e2db6e4:
+    account_id: 13230fb1774649769d16b7f49e2db6e4
+    name: Wohnen
+    account_type: EXPENSE
+    description: Ausgaben für Wohnung/Haus
+    currency: EUR
+    parent_account_id: a2e9f22ff1ce4e8c8d4033bd66945c65
+  1423573fdb5840f7b5388cc2ebf5eb58:
+    account_id: 1423573fdb5840f7b5388cc2ebf5eb58
+    name: Miete
+    account_type: EXPENSE
+    description: Miete
+    currency: EUR
+    parent_account_id: 13230fb1774649769d16b7f49e2db6e4
+  b4189fa286ba43ac953e548779557a54:
+    account_id: b4189fa286ba43ac953e548779557a54
+    name: Nebenkosten
+    account_type: EXPENSE
+    description: Wohnnebenkosten
+    currency: EUR
+    parent_account_id: 13230fb1774649769d16b7f49e2db6e4
+  f2495388f39a47ec931f541928b7f75a:
+    account_id: f2495388f39a47ec931f541928b7f75a
+    name: Abfall
+    account_type: EXPENSE
+    description: Abfallentsorgung
+    currency: EUR
+    parent_account_id: b4189fa286ba43ac953e548779557a54
+  336254106761412a8c5f0ea8a0bd5e73:
+    account_id: 336254106761412a8c5f0ea8a0bd5e73
+    name: Gas
+    account_type: EXPENSE
+    description: Gas
+    currency: EUR
+    parent_account_id: b4189fa286ba43ac953e548779557a54
+  396a65db0ac14c74b587ff67faff2720:
+    account_id: 396a65db0ac14c74b587ff67faff2720
+    name: Strom
+    account_type: EXPENSE
+    description: Strom
+    currency: EUR
+    parent_account_id: b4189fa286ba43ac953e548779557a54
+  eb1e889b17d14ad9b123f5b58889410b:
+    account_id: eb1e889b17d14ad9b123f5b58889410b
+    name: Wasser
+    account_type: EXPENSE
+    description: Wasser
+    currency: EUR
+    parent_account_id: b4189fa286ba43ac953e548779557a54
+  27d9f825154e4e09851b212fc7931c68:
+    account_id: 27d9f825154e4e09851b212fc7931c68
+    name: Anfangsbestand
+    account_type: EQUITY
+    description: Anfangsbestand
+    currency: EUR
+    parent_account_id: 963a1df2793c4b5b9c74bb3ff86a79ff

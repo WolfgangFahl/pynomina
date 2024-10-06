@@ -1,0 +1,64 @@
+owner: Henning Jakobs
+url: https://raw.githubusercontent.com/hjacobs/gnucash-qif-import/refs/heads/master/examples/expenses.qif
+accounts:
+  c568f7195ad845458add7939d6fae41e:
+    account_id: c568f7195ad845458add7939d6fae41e
+    name: Root Account
+    account_type: ROOT
+    description: ''
+    currency: EUR
+  0806d53d6b7b42b690245e2db6e5d288:
+    account_id: 0806d53d6b7b42b690245e2db6e5d288
+    name: Cash in Wallet
+    account_type: BANK
+    description: ''
+    currency: EUR
+    parent_account_id: c568f7195ad845458add7939d6fae41e
+  1a12ee5a68574f2a878c17f088912b97:
+    account_id: 1a12ee5a68574f2a878c17f088912b97
+    name: Expenses
+    account_type: EXPENSE
+    description: ''
+    currency: EUR
+    parent_account_id: c568f7195ad845458add7939d6fae41e
+  d1f41261c5324c3cba30ad79e88e3d75:
+    account_id: d1f41261c5324c3cba30ad79e88e3d75
+    name: Computer
+    account_type: EXPENSE
+    description: ''
+    currency: EUR
+    parent_account_id: 1a12ee5a68574f2a878c17f088912b97
+  ae38e41552a74d0d85b8e82116b272b3:
+    account_id: ae38e41552a74d0d85b8e82116b272b3
+    name: Dining
+    account_type: EXPENSE
+    description: ''
+    currency: EUR
+    parent_account_id: 1a12ee5a68574f2a878c17f088912b97
+transactions:
+  2014-01-02 10:59:00 +0000:Expensive PC:
+    isodate: 2014-01-02 10:59:00 +0000
+    description: Expensive PC
+    splits:
+    - amount: 1234.56
+      account_id: d1f41261c5324c3cba30ad79e88e3d75
+      memo: Some note
+      reconciled: false
+    - amount: -1234.56
+      account_id: 0806d53d6b7b42b690245e2db6e5d288
+      memo: ''
+      reconciled: false
+    memo: Expensive PC
+  2014-01-02 10:59:00 +0000:Lunch at Marcy's:
+    isodate: 2014-01-02 10:59:00 +0000
+    description: Lunch at Marcy's
+    splits:
+    - amount: 7.8
+      account_id: ae38e41552a74d0d85b8e82116b272b3
+      memo: ''
+      reconciled: false
+    - amount: -7.8
+      account_id: 0806d53d6b7b42b690245e2db6e5d288
+      memo: ''
+      reconciled: false
+    memo: Lunch at Marcy's
