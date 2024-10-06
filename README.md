@@ -37,7 +37,7 @@ the [pain](https://wiki.bitplan.com/index.php/IT_Pain_Scale) the conversion betw
 ### Models
 
 #### Ledger
-![ledger module Class Diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/WolfgangFahl/nomina/main/nomina_exapmles/ledger.puml?fmt=svg&version=1)
+![ledger module Class Diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/WolfgangFahl/pynomina/refs/heads/main/nomina_examples/ledger.puml?fmt=svg&version=1)
 
 ### Authors
 * [Wolfgang Fahl](http://www.bitplan.com/Wolfgang_Fahl)
