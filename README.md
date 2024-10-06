@@ -2,9 +2,9 @@
 personal accounting tool with file conversion
 
 [![Join the discussion at https://github.com/WolfgangFahl/pynomina/discussions](https://img.shields.io/github/discussions/WolfgangFahl/pynomina)](https://github.com/WolfgangFahl/pynomina/discussions)
-[![pypi](https://img.shields.io/pypi/pyversions/pynomaina)](https://pypi.org/project/pynomaina/)
+[![pypi](https://img.shields.io/pypi/pyversions/pynomina)](https://pypi.org/project/pynomina/)
 [![Github Actions Build](https://github.com/WolfgangFahl/pynomina/actions/workflows/build.yml/badge.svg)](https://github.com/WolfgangFahl/pynomina/actions/workflows/build.yml)
-[![PyPI Status](https://img.shields.io/pypi/v/pynomaina.svg)](https://pypi.python.org/pypi/pynomaina/)
+[![PyPI Status](https://img.shields.io/pypi/v/pynomina.svg)](https://pypi.python.org/pypi/pynomina/)
 [![GitHub issues](https://img.shields.io/github/issues/WolfgangFahl/pynomina.svg)](https://github.com/WolfgangFahl/pynomina/issues)
 [![GitHub closed issues](https://img.shields.io/github/issues-closed/WolfgangFahl/pynomina.svg)](https://github.com/WolfgangFahl/pynomina/issues/?q=is%3Aissue+is%3Aclosed)
 [![API Docs](https://img.shields.io/badge/API-Documentation-blue)](https://WolfgangFahl.github.io/pynomina/)
