@@ -32,7 +32,6 @@ class Split:
     """
     Represents a split in a transaction.
     """
-
     amount: float
     account_id: str
     memo: Optional[str] = ""
@@ -44,7 +43,6 @@ class Transaction:
     """
     Represents a transaction in the ledger.
     """
-
     isodate: str
     description: str
     splits: List[Split] = field(default_factory=list)

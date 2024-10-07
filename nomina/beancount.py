@@ -46,6 +46,7 @@ class Beancount:
         self.errors: List[str] = []
         self.options_map: Dict = {}
 
+
     def load_file(self, file_path: str) -> None:
         """
         Load a Beancount file
@@ -73,7 +74,7 @@ class Beancount:
 
     def create_open_directive(self, fq_account_name: str, date: date, currencies: Optional[List[str]] = None, meta: Optional[Dict] = None) -> data.Open:
         """
-        Create a Beancount Open directive
+        Create a Beancount Open account directive
 
         Args:
             fq_account_name (str): fully qualifying Account name
@@ -129,6 +130,7 @@ class Beancount:
         if preamble:
             output.write(preamble.as_header())
 
+        output.write("* Expenses\n")
         # Print entries to the output
         printer.print_entries(entries_to_print, file=output)
 

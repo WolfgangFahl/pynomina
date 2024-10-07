@@ -57,7 +57,11 @@ class Test_LedgerBeancount(Basetest):
                 # Parse the Beancount output to ensure it's valid
                 beancount = Beancount()
                 beancount.load_string(beancount_output)
-                self.assertEqual(len(beancount.errors), 0, f"Errors in Beancount conversion for {name}: {beancount.errors}")
+                error_count=len(beancount.errors)
+                if error_count>0 and self.debug:
+                    for i,error in enumerate(beancount.errors):
+                        print(f"{i:3}:{error}")
+                self.assertEqual(error_count, 0, f"Errors in Beancount conversion for {name}: {beancount.errors}")
 
                 # Compare statistics
                 ledger_stats = ledger_book.get_stats()

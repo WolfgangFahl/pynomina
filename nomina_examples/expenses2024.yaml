@@ -24,9 +24,9 @@ accounts:
     parent_account_id: Expenses
   Cash:
     account_id: Cash
-    name: Cash in Wallet of Wolfgang
-    account_type: EXPENSE
-    description: 'Cash in Wallet'
+    name: CashInWallet
+    account_type: CASH
+    description: 'Cash in Wallet of Wolfgang'
     currency: EUR
 transactions:
   Bakery2024-10-06_0900_1:
