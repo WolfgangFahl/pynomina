@@ -23,7 +23,7 @@ class Stats:
     classes: Optional[int] = None
     categories: Optional[int] = None
     errors: Optional[int] = None
-    currencies: Dict[str,int] = field(default_factory=dict)
+    currencies: Dict[str, int] = field(default_factory=dict)
     other: Optional[Dict[str, Any]] = field(default_factory=dict)
 
     def show(self):
@@ -41,8 +41,9 @@ class Stats:
             print(f"# Errors: {self.errors}")
 
         if self.currencies:
-            print(f"# Currencies: {', '.join(f'{currency}: {count}' for currency, count in self.currencies.items())}")
-
+            print(
+                f"# Currencies: {', '.join(f'{currency}: {count}' for currency, count in self.currencies.items())}"
+            )
 
         if self.other:
             print("Other Details:")

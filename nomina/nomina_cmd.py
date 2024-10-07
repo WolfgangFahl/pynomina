@@ -49,8 +49,8 @@ class NominaCmd(WebserverCmd):
         )
         parser.add_argument(
             "--format",
-            choices=["ledger", "gcxml"],
-            default="ledger",
+            choices=["LB-YAML", "GC-XML", "BEAN"],
+            default="LB-YAML",
             help="Output format for conversion [default: %(default)s]",
         )
         return parser

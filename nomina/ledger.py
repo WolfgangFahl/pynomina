@@ -10,6 +10,7 @@ from datetime import datetime
 from typing import Dict, List, Optional
 
 from lodstorage.yamlable import lod_storable
+
 from nomina.date_utils import DateUtils
 from nomina.stats import Stats
 
@@ -19,6 +20,7 @@ class Account:
     """
     Represents a ledger account.
     """
+
     account_id: str
     name: str
     account_type: str
@@ -32,6 +34,7 @@ class Split:
     """
     Represents a split in a transaction.
     """
+
     amount: float
     account_id: str
     memo: Optional[str] = ""
@@ -43,6 +46,7 @@ class Transaction:
     """
     Represents a transaction in the ledger.
     """
+
     isodate: str
     description: str
     splits: List[Split] = field(default_factory=list)
@@ -78,7 +82,7 @@ class Book:
         post construct actions
         """
 
-    def fq_account_name(self, account: Account, separator: str = ':') -> str:
+    def fq_account_name(self, account: Account, separator: str = ":") -> str:
         """
         Returns the fully qualified name of the account, using the specified separator.
 
@@ -92,7 +96,7 @@ class Book:
         if account.parent_account_id:
             parent_account = self.lookup_account(account.parent_account_id)
             if parent_account:
-                parent_account_name=self.fq_account_name(parent_account, separator)
+                parent_account_name = self.fq_account_name(parent_account, separator)
                 return f"{parent_account_name}{separator}{account.name}"
         return account.name
 
@@ -120,7 +124,6 @@ class Book:
         for account in self.accounts.values():
             currency = account.currency
             currency_counts[currency] = currency_counts.get(currency, 0) + 1
-
 
         return Stats(
             accounts=len(self.accounts),

@@ -89,9 +89,7 @@ class DateUtils:
             range_length = base_range_length + (1 if i < extra_days else 0)
             current_end = current_start + timedelta(days=range_length - 1)
 
-            ranges.append(
-                (cls.iso_date(current_start),cls.iso_date(current_end))
-            )
+            ranges.append((cls.iso_date(current_start), cls.iso_date(current_end)))
             current_start = current_end + timedelta(days=1)
 
         # Ensure the last range ends on the specified end date

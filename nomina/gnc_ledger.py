@@ -35,7 +35,7 @@ class GnuCashToLedgerConverter(AccountingFileConverter):
     Convert GnuCash Book to Ledger Book
     """
 
-    def __init__(self, gnc_v2: GncV2):
+    def __init__(self, gnc_v2: GncV2=None):
         """
         Constructor
         """
@@ -111,7 +111,7 @@ class LedgerToGnuCashConverter(AccountingFileConverter):
     Convert Ledger Book to GnuCash Book
     """
 
-    def __init__(self, lbook: LedgerBook):
+    def __init__(self, lbook: LedgerBook=None):
         """
         Constructor
         """

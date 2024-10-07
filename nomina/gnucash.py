@@ -425,7 +425,7 @@ class GncV2:
             transactions=len(self.book.transactions),
             start_date=min_date,
             end_date=max_date,
-            currencies=currency_usage
+            currencies=currency_usage,
         )
 
 

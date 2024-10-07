@@ -4,11 +4,17 @@ Created on 2024-10-07
 @author: wf
 """
 
+import os
+
+from nomina.beancount import Beancount
+from nomina.beancount_ledger import (
+    BeancountToLedgerConverter,
+    LedgerToBeancountConverter,
+)
 from tests.basetest import Basetest
 from tests.example_testcases import NominaExample
-from nomina.beancount import Beancount
-from nomina.beancount_ledger import BeancountToLedgerConverter, LedgerToBeancountConverter
-import os
+
+
 class Test_LedgerBeancount(Basetest):
     """
     test Beancount handling
@@ -22,12 +28,11 @@ class Test_LedgerBeancount(Basetest):
         """
         test converting beancount format to ledger
         """
-        bc_example=self.examples_path + "/example.beancount"
-        converter= BeancountToLedgerConverter(bc_example)
-        ledger_book = converter.convert()
-        stats=ledger_book.get_stats()
+        bc_example = self.examples_path + "/example.beancount"
+        converter = BeancountToLedgerConverter(bc_example)
+        ledger_book = converter.convert_to_ledger_book()
+        stats = ledger_book.get_stats()
         print(stats)
-
 
     def test_ledger2beancount(self):
         """
@@ -57,11 +62,15 @@ class Test_LedgerBeancount(Basetest):
                 # Parse the Beancount output to ensure it's valid
                 beancount = Beancount()
                 beancount.load_string(beancount_output)
-                error_count=len(beancount.errors)
-                if error_count>0 and self.debug:
-                    for i,error in enumerate(beancount.errors):
+                error_count = len(beancount.errors)
+                if error_count > 0 and self.debug:
+                    for i, error in enumerate(beancount.errors):
                         print(f"{i:3}:{error}")
-                self.assertEqual(error_count, 0, f"Errors in Beancount conversion for {name}: {beancount.errors}")
+                self.assertEqual(
+                    error_count,
+                    0,
+                    f"Errors in Beancount conversion for {name}: {beancount.errors}",
+                )
 
                 # Compare statistics
                 ledger_stats = ledger_book.get_stats()
@@ -69,5 +78,3 @@ class Test_LedgerBeancount(Basetest):
 
                 # Use the check_stats method from NominaExample
                 example.check_stats(beancount_stats, ledger_stats)
-
-
