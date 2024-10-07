@@ -9,16 +9,17 @@ from typing import Dict, List
 from lodstorage.persistent_log import Log
 
 from nomina.ledger import Account, Book, Split, Transaction
+from nomina.nomina_converter import AccountingFileConverter
 from nomina.qif import SimpleQifParser
 from nomina.qif import Transaction as QifTransaction
-from nomina.nomina_converter import AccountingFileConverter
+
 
 class QifToLedgerConverter(AccountingFileConverter):
     """
     Convert Quicken QIF file to a Ledger Book.
     """
 
-    def __init__(self, qif_parser: SimpleQifParser=None):
+    def __init__(self, qif_parser: SimpleQifParser = None):
         """
         Constructor
         """
@@ -30,13 +31,13 @@ class QifToLedgerConverter(AccountingFileConverter):
         Convert the QIF file to a Ledger Book YAML string.
         """
         # Parse the QIF file
-        with open(input_file, 'r') as file:
+        with open(input_file, "r") as file:
             qif_content = file.read()
 
         self.qif_parser = SimpleQifParser()
         self.qif_parser.parse(qif_content)
-        ledger_book=self.convert_to_ledger_book()
-        yaml_str=ledger_book.to_yaml()
+        ledger_book = self.convert_to_ledger_book()
+        yaml_str = ledger_book.to_yaml()
         return yaml_str
 
     def create_account_lookup(self, ledger_book: Book):

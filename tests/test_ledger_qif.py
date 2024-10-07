@@ -3,6 +3,7 @@ Created on 2024-10-06
 
 @author: wf
 """
+
 from nomina.qif_ledger import QifToLedgerConverter
 from tests.basetest import Basetest
 from tests.example_testcases import NominaExample

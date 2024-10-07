@@ -33,6 +33,27 @@ class AccountingFileFormatDetector:
     def __init__(self):
         self.formats: List[AccountingFileFormat] = [
             AccountingFileFormat(
+                name="Beancount",
+                acronym="BEAN",
+                ext=".beancount",
+                wikidata_id="Q130456404",
+                content_pattern=r'option "title"',
+            ),
+            AccountingFileFormat(
+                name="GnuCash XML",
+                acronym="GC-XML",
+                ext=".gnucash",
+                wikidata_id="Q130445392",
+                content_pattern=r"<gnc-v2",
+            ),
+            AccountingFileFormat(
+                name="pyNomina Ledger Book YAML",
+                acronym="LB-YAML",
+                ext=".yaml",
+                wikidata_id="Q281876",
+                content_pattern=r"file_type:\s*NOMINA-LEDGER-BOOK-YAML\s*version:\s*0\.1",
+            ),
+            AccountingFileFormat(
                 name="Quicken Interchange Format",
                 acronym="QIF",
                 ext=".qif",
@@ -40,25 +61,11 @@ class AccountingFileFormatDetector:
                 content_pattern=r"!Account.*!Type:Cash",
             ),
             AccountingFileFormat(
-                "Subsembly JSON",
-                "BZV-JSON",
-                ".json",
-                "Q130443951",
+                name="Subsembly JSON",
+                acronym="BZV-JSON",
+                ext=".json",
+                wikidata_id="Q130443951",
                 content_pattern=r'"AcctId":\s*"\d+".*"OwnrAcctCcy":\s*"\w+"',
-            ),
-            AccountingFileFormat(
-                "GnuCash XML",
-                "GC-XML",
-                ".gnucash",
-                "Q130445392",
-                content_pattern=r"<gnc-v2",
-            ),
-            AccountingFileFormat(
-                "pyNomina Ledger Book YAML",
-                "LB-YAML",
-                ".yaml",
-                "Q281876",
-                content_pattern=r"file_type:\s*NOMINA-LEDGER-BOOK-YAML\s*version:\s*0\.1",
             ),
         ]
 

@@ -25,6 +25,9 @@ class Basetest(TestCase):
         self.profile = profile
         msg = f"test {self._testMethodName}, debug={self.debug}"
         self.profiler = Profiler(msg, profile=self.profile)
+        self.examples_path = os.path.join(
+            os.path.dirname(__file__), "../nomina_examples"
+        )
 
     def tearDown(self):
         TestCase.tearDown(self)

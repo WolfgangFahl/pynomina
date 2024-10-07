@@ -45,7 +45,10 @@ dependencies = [
     "SQLAlchemy==1.4.48",
     "SQLAlchemy-Utils==0.37.2",
     # https://github.com/chardet/chardet
-    "chardet>=5.2.0"
+    "chardet>=5.2.0",
+    # beancount
+    # https://github.com/beancount/beancount
+    "beancount>=3.0.0"
 ]
 
 dynamic = ["version"]

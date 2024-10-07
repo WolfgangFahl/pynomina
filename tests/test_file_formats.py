@@ -15,11 +15,8 @@ class Test_FileformatDetector(Basetest):
     test fileformat detection
     """
 
-    def setUp(self, debug=False, profile=True):
+    def setUp(self, debug=True, profile=True):
         Basetest.setUp(self, debug=debug, profile=profile)
-        self.examples_path = os.path.join(
-            os.path.dirname(__file__), "../nomina_examples"
-        )
         self.detector = AccountingFileFormatDetector()
 
     def yield_filenames(self):

@@ -27,8 +27,8 @@ from nomina.ledger import Account as LedgerAccount
 from nomina.ledger import Book as LedgerBook
 from nomina.ledger import Split as LedgerSplit
 from nomina.ledger import Transaction as LedgerTransaction
-
 from nomina.nomina_converter import AccountingFileConverter
+
 
 class GnuCashToLedgerConverter(AccountingFileConverter):
     """
