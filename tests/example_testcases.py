@@ -68,6 +68,7 @@ class NominaExample:
                     transactions=2,
                     start_date="2014-01-02",
                     end_date="2014-01-02",
+                    currencies={"EUR": 2},
                 ),
             ),
             (
@@ -80,6 +81,7 @@ class NominaExample:
                     transactions=2,
                     start_date="2024-10-06",
                     end_date="2024-10-06",
+                    currencies={"EUR": 2},
                 ),
             ),
             (
@@ -92,6 +94,7 @@ class NominaExample:
                     transactions=5,
                     start_date="2014-11-30",
                     end_date="2014-12-24",
+                    currencies={"EUR": 5},
                 ),
             ),
             (
@@ -99,7 +102,13 @@ class NominaExample:
                 "Wolfgang Fahl",
                 False,
                 None,
-                Stats(accounts=64, transactions=0, start_date=None, end_date=None),
+                Stats(
+                    accounts=64,
+                    transactions=0,
+                    start_date=None,
+                    end_date=None,
+                    currencies={},
+                ),
             ),
         ]:
             example_path = Path(__file__).parent.parent / "nomina_examples"

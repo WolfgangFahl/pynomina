@@ -30,5 +30,5 @@ class Test_Ledger(Basetest):
                 stats = ledger_book.get_stats()
                 if self.debug:
                     print(stats)
-                self.assertEqual(stats, example.expected_stats)
+                example.check_stats(stats)
                 pass

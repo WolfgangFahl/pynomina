@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Dict, List, Optional
 
 from lodstorage.yamlable import lod_storable
-
+from nomina.date_utils import DateUtils
 from nomina.stats import Stats
 
 
@@ -19,7 +19,6 @@ class Account:
     """
     Represents a ledger account.
     """
-
     account_id: str
     name: str
     account_type: str
@@ -81,6 +80,24 @@ class Book:
         post construct actions
         """
 
+    def fq_account_name(self, account: Account, separator: str = ':') -> str:
+        """
+        Returns the fully qualified name of the account, using the specified separator.
+
+        Args:
+            account (Account): The account for which to generate the fully qualified name.
+            separator (str): The separator to use between parent and child account names. Defaults to ':'.
+
+        Returns:
+            str: The fully qualified name of the account.
+        """
+        if account.parent_account_id:
+            parent_account = self.lookup_account(account.parent_account_id)
+            if parent_account:
+                parent_account_name=self.fq_account_name(parent_account, separator)
+                return f"{parent_account_name}{separator}{account.name}"
+        return account.name
+
     def get_stats(self) -> Stats:
         """
         Get statistics about the Book.
@@ -95,16 +112,24 @@ class Book:
             if tx.isodate
         ]
         if dates:
-            min_date = min(dates).strftime("%Y-%m-%d")
-            max_date = max(dates).strftime("%Y-%m-%d")
+            min_date = DateUtils.iso_date(min(dates))
+            max_date = DateUtils.iso_date(max(dates))
         else:
             min_date = max_date = None
+
+        # Calculate currency counts
+        currency_counts = {}
+        for account in self.accounts.values():
+            currency = account.currency
+            currency_counts[currency] = currency_counts.get(currency, 0) + 1
+
 
         return Stats(
             accounts=len(self.accounts),
             transactions=len(self.transactions),
             start_date=min_date,
             end_date=max_date,
+            currencies=currency_counts,
         )
 
     def filter(self, start_date: str = None, end_date: str = None) -> "Book":

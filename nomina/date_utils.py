@@ -13,6 +13,19 @@ class DateUtils:
     date utilities
     """
 
+    @staticmethod
+    def iso_date(date: datetime) -> str:
+        """
+        Format a datetime object to a string in 'YYYY-MM-DD' format.
+
+        Args:
+            date (datetime): The date to format.
+
+        Returns:
+            str: The formatted date as a string.
+        """
+        return date.strftime("%Y-%m-%d")
+
     @classmethod
     def parse_date(
         cls, date_str: str, date_formats: Optional[List[str]] = None
@@ -42,7 +55,7 @@ class DateUtils:
         for date_format in date_formats:
             try:
                 date_obj = datetime.strptime(date_str, date_format)
-                return date_obj.strftime("%Y-%m-%d")
+                return cls.iso_date(date_obj)
             except ValueError:
                 continue
 
@@ -77,7 +90,7 @@ class DateUtils:
             current_end = current_start + timedelta(days=range_length - 1)
 
             ranges.append(
-                (current_start.strftime("%Y-%m-%d"), current_end.strftime("%Y-%m-%d"))
+                (cls.iso_date(current_start),cls.iso_date(current_end))
             )
             current_start = current_end + timedelta(days=1)
 

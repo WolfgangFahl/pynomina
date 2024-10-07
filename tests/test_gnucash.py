@@ -24,9 +24,9 @@ class Test_GnuCash(Basetest):
         for name, example in self.examples.items():
             with self.subTest(f"Testing {name}"):
                 gncv2 = example.get_parsed_gnucash()
-                if self.debug:
-                    gncv2.show_summary()
                 stats = gncv2.get_stats()
+                if self.debug:
+                    stats.show()
                 example.check_stats(stats)
 
     def test_gnucash_xml_write(self):

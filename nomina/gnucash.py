@@ -397,30 +397,36 @@ class GncV2:
 
     def get_stats(self) -> Stats:
         """
-        get statistics
+        Get statistics for the GncV2 object.
         """
-        gncv2 = self
         dates = []
+        currency_usage = {}
 
-        if dates:
-            min_date = min(dates).strftime("%Y-%m-%d")
-            max_date = max(dates).strftime("%Y-%m-%d")
-        else:
-            min_date = max_date = None
+        # Collect dates and currencies from transactions
+        for transaction in self.book.transactions:
+            if transaction.date_posted and transaction.date_posted.date:
+                parsed_date = DateUtils.parse_date(transaction.date_posted.date)
+                if parsed_date:
+                    dates.append(parsed_date)
+
+            if transaction.currency and transaction.currency.id:
+                currency = transaction.currency.id
+                if currency in currency_usage:
+                    currency_usage[currency] += 1
+                else:
+                    currency_usage[currency] = 1
+
+        # Determine the date range
+        min_date = min(dates) if dates else None
+        max_date = max(dates) if dates else None
 
         return Stats(
-            accounts=len(gncv2.book.accounts),
-            transactions=len(gncv2.book.transactions),
+            accounts=len(self.book.accounts),
+            transactions=len(self.book.transactions),
             start_date=min_date,
             end_date=max_date,
+            currencies=currency_usage
         )
-
-    def show_summary(self):
-        stats = self.get_stats()
-        print(f"#accounts: {stats.accounts}")
-        print(f"#transactions: {stats.transactions}")
-        print(f"Date range: {stats.start_date} to {stats.end_date}")
-        return stats
 
 
 class GnuCashXml:

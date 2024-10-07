@@ -4,6 +4,7 @@
 #
 file_type: NOMINA-LEDGER-BOOK-YAML
 version: 0.1
+name: expenses2024
 owner: Wolfgang Fahl
 url: https://github.com/WolfgangFahl/pynomina/blob/main/nomina_examples/expenses2024.yaml
 since: 2024-10-06
