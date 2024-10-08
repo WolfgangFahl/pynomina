@@ -7,7 +7,9 @@ Created on 2024-10-06
 from typing import TextIO
 
 from lodstorage.persistent_log import Log
+
 from nomina.file_formats import AccountingFileFormat
+
 
 class AccountingFileConverter:
     """
@@ -15,15 +17,20 @@ class AccountingFileConverter:
     This class provides a structure for converting accounting data from one format to another.
     """
 
-    def __init__(self, from_format:AccountingFileFormat, to_format:AccountingFileFormat,debug: bool = False):
+    def __init__(
+        self,
+        from_format: AccountingFileFormat,
+        to_format: AccountingFileFormat,
+        debug: bool = False,
+    ):
         """
         Constructor that initializes the log instance.
         """
-        self.from_format=from_format
-        self.to_format=to_format
+        self.from_format = from_format
+        self.to_format = to_format
         self.debug = debug
-        self.source=None
-        self.target=None
+        self.source = None
+        self.target = None
         self.log = Log()
 
     def convert(self, input_stream: TextIO, output_stream: TextIO) -> str:
@@ -51,13 +58,12 @@ class AccountingFileConverter:
         return self.text
 
     def show_stats(self):
-        source_stats=self.source.get_stats()
+        source_stats = self.source.get_stats()
         if self.debug:
             source_stats.show()
-        target_stats=self.target.get_stats()
+        target_stats = self.target.get_stats()
         if self.debug:
             target_stats.show()
-
 
     def load(self, input_stream: TextIO):
         """
@@ -91,4 +97,3 @@ class AccountingFileConverter:
             ValueError: If not implemented by a subclass.
         """
         raise ValueError("to_text must be implemented in the subclass")
-

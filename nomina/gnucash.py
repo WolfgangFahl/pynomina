@@ -504,7 +504,6 @@ class GnuCashXml:
 
         return formatted_xml
 
-
     def to_text(self, gnucash_data: GncV2) -> str:
         """
         Serialize the GnuCash data object to an XML string.

@@ -66,4 +66,4 @@ class Test_FileformatDetector(Basetest):
                 )
 
         # Assert that we detected at least 13 files
-        self.assertGreaterEqual(13,len(detected_formats))
+        self.assertGreaterEqual(13, len(detected_formats))

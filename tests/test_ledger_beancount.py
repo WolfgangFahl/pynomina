@@ -77,7 +77,7 @@ class Test_LedgerBeancount(Basetest):
                 with open(output_path, "w") as bean_file:
                     beancount_output = l2b.convert(example.ledger_file, bean_file)
                 if self.debug:
-                    stats=l2b.target.get_stats()
+                    stats = l2b.target.get_stats()
                     stats.show()
                 # Verify the conversion
                 self.assertIsNotNone(beancount_output)

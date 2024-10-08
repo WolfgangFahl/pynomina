@@ -6,7 +6,7 @@ Created on 2024-10-03
 
 # expense_example.py
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Iterable
 
 import requests
 from lodstorage.persistent_log import Log
@@ -163,8 +163,28 @@ class NominaExample:
 
     def check_stats(self, stats: Stats, expected_stats: Stats = None) -> int:
         """
-        check the statistics
+        Check the statistics using a simplified, recursive approach.
         """
+
+        def compare(expected, actual, path=""):
+            if isinstance(expected, dict) and isinstance(actual, dict):
+                for k in set(expected) | set(actual):
+                    yield from compare(
+                        expected.get(k), actual.get(k), f"{path}.{k}" if path else k
+                    )
+            elif (
+                isinstance(expected, Iterable)
+                and isinstance(actual, Iterable)
+                and not isinstance(expected, (str, bytes))
+            ):
+                if len(expected) != len(actual):
+                    yield False, f"Length mismatch for {path}. Expected: {len(expected)}, Got: {len(actual)}"
+                else:
+                    for i, (e, a) in enumerate(zip(expected, actual)):
+                        yield from compare(e, a, f"{path}[{i}]")
+            elif expected != actual:
+                yield False, f"Mismatch for {path}. Expected: {expected}, Got: {actual}"
+
         wrong = 0
         if expected_stats is None:
             expected_stats = self.expected_stats
@@ -173,18 +193,16 @@ class NominaExample:
             expected_value = getattr(expected_stats, attr)
             actual_value = getattr(stats, attr)
 
-            if actual_value != expected_value:
-                self.log(
-                    "⚠️",
-                    f"{attr}_mismatch",
-                    f"Stat mismatch for {attr}. Expected: {expected_value}, Got: {actual_value}",
-                )
-                wrong += 1
+            mismatches = list(compare(expected_value, actual_value, attr))
+
+            if mismatches:
+                for _, message in mismatches:
+                    self.log("⚠️", f"{attr}_mismatch", message)
+                    wrong += 1
             else:
-                self.log(
-                    "✅", f"{attr}_match", f"Stat match for {attr}: {actual_value}"
-                )
-            return wrong
+                self.log("✅", f"{attr}_match", f"Match for {attr}")
+
+        return wrong
 
     def expenses_qif(self) -> str:
         qif = """!Account

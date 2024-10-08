@@ -9,12 +9,13 @@ from typing import List, TextIO
 from nomina.bzv import Account
 from nomina.bzv import Book as BzvBook
 from nomina.bzv import Transaction as BzvTransaction
+from nomina.file_formats import AccountingFileFormats
 from nomina.ledger import Account as LedgerAccount
 from nomina.ledger import Book as LedgerBook
 from nomina.ledger import Split as LedgerSplit
 from nomina.ledger import Transaction as LedgerTransaction
 from nomina.nomina_converter import AccountingFileConverter
-from nomina.file_formats import AccountingFileFormats
+
 
 class BankingZVToLedgerConverter(AccountingFileConverter):
     """
@@ -36,8 +37,10 @@ class BankingZVToLedgerConverter(AccountingFileConverter):
         # Call the superclass constructor with the looked-up formats
         super().__init__(from_format, to_format, debug)
 
-    def load(self, input_stream:TextIO):
-        self.bzv_book = bzv_book
+    def load(self, input_stream: TextIO):
+        self.bzv_book = BzvBook.load_from_file(input_stream)
+        self.source = self.bzv_book
+        return self.source
 
     def create_ledger_account(self, bzv_account: Account) -> LedgerAccount:
         """
@@ -103,5 +106,9 @@ class BankingZVToLedgerConverter(AccountingFileConverter):
             ledger_transaction = self.create_ledger_transaction(transaction)
             transaction_id = f"{ledger_transaction.isodate}:{transaction.Id}"
             ledger_book.transactions[transaction_id] = ledger_transaction
-        self.target=ledger_book
+        self.target = ledger_book
         return ledger_book
+
+    def to_text(self) -> str:
+        yaml_str = self.target.to_yaml()
+        return yaml_str

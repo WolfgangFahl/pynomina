@@ -1,9 +1,0 @@
-#
-# Banking ZV Subsembly json
-# WF 2024-10-08
-#
-name: expenses2024
-owner: John Doe
-url: null
-account_json_exports:
-  expenses: expenses2024.json

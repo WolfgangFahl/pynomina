@@ -5,8 +5,9 @@ Created on 2024-10-04
 """
 
 import uuid
-from typing import Dict, List
+from typing import Dict, List, TextIO
 
+from nomina.file_formats import AccountingFileFormats
 from nomina.gnucash import (
     Account,
     Book,
@@ -27,8 +28,7 @@ from nomina.ledger import Book as LedgerBook
 from nomina.ledger import Split as LedgerSplit
 from nomina.ledger import Transaction as LedgerTransaction
 from nomina.nomina_converter import AccountingFileConverter
-from nomina.file_formats import AccountingFileFormats
-from typing import TextIO
+
 
 class GnuCashToLedgerConverter(AccountingFileConverter):
     """
@@ -132,8 +132,8 @@ class GnuCashToLedgerConverter(AccountingFileConverter):
 
         return ledger_book
 
-    def to_text(self)->str:
-        yaml_str=self.target.to_yaml()
+    def to_text(self) -> str:
+        yaml_str = self.target.to_yaml()
         return yaml_str
 
 
@@ -160,7 +160,7 @@ class LedgerToGnuCashConverter(AccountingFileConverter):
         # Initialize instance variables
         self.lbook = None
         self.account_map = {}
-        self.gcxml=GnuCashXml()
+        self.gcxml = GnuCashXml()
 
     def load(self, input_file: str) -> LedgerBook:
         """
@@ -278,9 +278,9 @@ class LedgerToGnuCashConverter(AccountingFileConverter):
 
         # Create GncV2
         gnc_v2 = GncV2(count_data=CountData(type_value="book", value=1), book=book)
-        self.target=gnc_v2
+        self.target = gnc_v2
         return gnc_v2
 
-    def to_text(self)->str:
-        xml_string=self.gcxml.to_text(self.target)
+    def to_text(self) -> str:
+        xml_string = self.gcxml.to_text(self.target)
         return xml_string

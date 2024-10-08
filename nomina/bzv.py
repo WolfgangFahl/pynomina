@@ -6,14 +6,16 @@ Created on 2024-10-05
 """
 
 import json
+import os
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict, List, Optional
 
 from dacite import from_dict
+from lodstorage.yamlable import lod_storable
 
 from nomina.stats import Stats
-from lodstorage.yamlable import lod_storable
+
 
 @lod_storable
 class Transaction:
@@ -47,23 +49,34 @@ class Account:
     name: str
     parent_account_id: Optional[str] = None
 
+
 @lod_storable
 class Book:
     """
     a Banking ZV Book
     """
+
     name: str
-    owner: Optional[str] = None,
-    url: Optional[str] = None,
-    since: Optional[str] = None,
-    accounts: Dict[str, Account] =  field(default_factory=dict)
-    transactions: List[Transaction] =  field(default_factory=list)
+    owner: Optional[str] = (None,)
+    url: Optional[str] = (None,)
+    since: Optional[str] = (None,)
+    account_json_exports: Dict[str, str] = field(default_factory=dict)
 
-    def __post_init__(
-        self,
+    def __post_init__(self):
+        self.accounts: Dict[str, Account] = {}
+        self.transactions: List[Transaction] = []
 
-    ):
-        self.load_accounts_from_accounts_dict(account_json_dict)
+    @classmethod
+    def load_from_file(cls, filename: str) -> "Book":
+        book = Book.load_from_yaml_file(filename)
+        yaml_dir = os.path.dirname(filename)
+
+        # Adjust JSON file paths to be relative to the YAML file
+        for account, json_path in book.account_json_exports.items():
+            book.account_json_exports[account] = os.path.join(yaml_dir, json_path)
+
+        book.load_accounts_from_accounts_dict(book.account_json_exports)
+        return book
 
     def get_stats(self) -> Stats:
         """

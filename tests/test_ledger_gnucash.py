@@ -4,10 +4,12 @@ Created on 2024-10-06
 @author: wf
 """
 
+import os
+
 from nomina.gnc_ledger import GnuCashToLedgerConverter, LedgerToGnuCashConverter
 from tests.basetest import Basetest
 from tests.example_testcases import NominaExample
-import os
+
 
 class Test_LedgerGnuCash(Basetest):
     """
@@ -27,7 +29,7 @@ class Test_LedgerGnuCash(Basetest):
                 l2g = LedgerToGnuCashConverter(debug=self.debug)
                 output_path = os.path.join("/tmp", f"{name}_l2g_xml.gnucash")
                 with open(output_path, "w") as gc_file:
-                    l2g.convert(example.ledger_file,gc_file)
+                    l2g.convert(example.ledger_file, gc_file)
                 if self.debug:
                     l2g.show_stats()
 
@@ -41,6 +43,6 @@ class Test_LedgerGnuCash(Basetest):
                 output_path = os.path.join("/tmp", f"{name}_g2l.yaml")
                 # owner=example.owner, url=example.url
                 with open(output_path, "w") as ledger_file:
-                    g2l.convert(example.gnu_cash_xml_file,ledger_file)
+                    g2l.convert(example.gnu_cash_xml_file, ledger_file)
                 if self.debug:
                     g2l.show_stats()

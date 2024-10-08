@@ -24,9 +24,8 @@ class Test_BZV(Basetest):
         """
         test reading Banking ZV files
         """
-        bzv_example = self.examples_path + "/expenses2024.json"
-        account_json_dict = {"expenses": bzv_example}
-        book = Book(account_json_dict, name="expenses2024", owner="John doe")
+        bzv_example = self.examples_path + "/expenses2024_bzv.yaml"
+        book = Book.load_from_file(bzv_example)
         stats = book.get_stats()
         if self.debug:
             stats.show()
@@ -35,6 +34,6 @@ class Test_BZV(Basetest):
             owner="John Doe",
             url=None,
             example_path=Path(self.examples_path),
-            expected_stats=Stats(accounts=2, transactions=2),
+            expected_stats=Stats(accounts=2, transactions=2, currencies={"EUR": 2}),
         )
         example.check_stats(stats)

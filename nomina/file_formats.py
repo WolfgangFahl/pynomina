@@ -79,7 +79,7 @@ class AccountingFileFormats:
             fformat.acronym: fformat for fformat in self.formats
         }
 
-    def get_by_acronym(self,acronym:str)->'AccountingFileFormat':
+    def get_by_acronym(self, acronym: str) -> "AccountingFileFormat":
         """
         get format by acronym
         """
