@@ -7,6 +7,7 @@ Created on 2024-10-04
 from typing import Dict, List, TextIO
 
 from lodstorage.persistent_log import Log
+
 from nomina.file_formats import AccountingFileFormats
 from nomina.ledger import Account, Book, Split, Transaction
 from nomina.nomina_converter import AccountingFileConverter
@@ -18,6 +19,7 @@ class QifToLedgerConverter(AccountingFileConverter):
     """
     Convert Quicken QIF file to a Ledger Book.
     """
+
     def __init__(self, debug: bool = False):
         """
         Constructor for QIF to Ledger Book conversion.
@@ -41,7 +43,7 @@ class QifToLedgerConverter(AccountingFileConverter):
         self.qif_content = input_stream.read()
         self.qif_lines = self.qif_content.splitlines()
         self.qif_parser.parse(self.qif_lines)
-        self.source=self.qif_parser
+        self.source = self.qif_parser
         return self.qif_parser
 
     def to_text(self) -> str:
@@ -249,5 +251,5 @@ class QifToLedgerConverter(AccountingFileConverter):
             )
 
             ledger_book.transactions[transaction_id] = ledger_transaction
-        self.target=ledger_book
+        self.target = ledger_book
         return ledger_book

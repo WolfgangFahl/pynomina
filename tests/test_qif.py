@@ -3,6 +3,7 @@ Created on 2024-09-30
 
 @author: wf
 """
+
 from nomina.qif import SplitTarget
 from tests.basetest import Basetest
 from tests.example_testcases import NominaExample

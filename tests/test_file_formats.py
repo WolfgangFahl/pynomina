@@ -43,9 +43,10 @@ class Test_FileformatDetector(Basetest):
             "empty_sqlite.gnucash": "GC-SQLITE",
             "expenses.yaml": "LB-YAML",
             "example.beancount": "BEAN",
+            "FMQifTest2023-10-18.qif": "FMD",
             # "ledger.puml": None,
             "empty_xml.gnucash": "GC-XML",
-            "expenses2024_bzv.yaml":"BZV-YAML",
+            "expenses2024_bzv.yaml": "BZV-YAML",
         }
         detected_formats = {}
 
@@ -68,4 +69,4 @@ class Test_FileformatDetector(Basetest):
                 )
 
         # Assert that we detected at least 14 files
-        self.assertGreaterEqual(len(detected_formats),14)
+        self.assertGreaterEqual(len(detected_formats), 14)

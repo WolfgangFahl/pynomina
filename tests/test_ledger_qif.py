@@ -3,7 +3,9 @@ Created on 2024-10-06
 
 @author: wf
 """
+
 from copy import deepcopy
+
 from nomina.qif_ledger import QifToLedgerConverter
 from tests.basetest import Basetest
 from tests.example_testcases import NominaExample
@@ -35,8 +37,8 @@ class Test_LedgerQif(Basetest):
         stats = book.get_stats()
         if self.debug:
             stats.show()
-        expected_stats=deepcopy(example.expected_stats)
-        expected_stats.accounts+=2
-        expected_stats.currencies["EUR"]+=5
-        example.check_stats(stats,expected_stats=expected_stats)
+        expected_stats = deepcopy(example.expected_stats)
+        expected_stats.accounts += 2
+        expected_stats.currencies["EUR"] += 5
+        example.check_stats(stats, expected_stats=expected_stats)
         pass

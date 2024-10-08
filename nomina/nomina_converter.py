@@ -33,20 +33,20 @@ class AccountingFileConverter:
         self.target = None
         self.log = Log()
 
-    def convert(self, input_stream: TextIO, output_stream: TextIO) -> str:
+    def convert(self, input_path: str, output_stream: TextIO) -> str:
         """
         Convert the input file to the target format.
 
         Args:
-            input_stream (TextIO): File-like object to read from (can be a file or sys.stdin).
+            input_path (str):  path to input file.
             output_stream (TextIO): File-like object to write to (can be a file or sys.stdout).
 
         Returns:
             str: The converted content in text format.
         """
         if self.debug:
-            print(f"Loading {self.from_format.name} from {self.from_format.ext} file")
-        self.source = self.load(input_stream)
+            print(f"Loading {self.from_format.name} from {input_path}")
+        self.source = self.load(input_path)
         if self.debug:
             print(f"Converting {self.from_format.acronym} to {self.to_format.acronym}")
         self.target = self.convert_to_target()

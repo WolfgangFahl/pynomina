@@ -8,7 +8,7 @@ input_files=(
     "nomina_examples/example.beancount"
     "nomina_examples/expenses.qif"
     "nomina_examples/expenses.yaml"
-    "nomina_examples/expenses2024.json"
+    "nomina_examples/expenses2024_bzv.yaml"
     "nomina_examples/expenses2024.yaml"
     "nomina_examples/expenses2024_xml.gnucash"
     "nomina_examples/expenses_xml.gnucash"

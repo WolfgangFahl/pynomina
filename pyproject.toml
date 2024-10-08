@@ -33,7 +33,7 @@ classifiers = [
 
 dependencies = [
     # https://pypi.org/project/pylodstorage/
-    "pylodstorage>=0.13.1",
+    "pylodstorage>=0.13.2",
     # https://pypi.org/project/py-sidif/
     "py-sidif>=0.2.0",
     # NiceGUI widgets

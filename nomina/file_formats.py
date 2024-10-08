@@ -23,6 +23,7 @@ class AccountingFileFormat:
     ext: str
     wikidata_id: str
     content_pattern: str
+    encoding: str="utf-8"
 
 
 class AccountingFileFormats:
@@ -61,6 +62,14 @@ class AccountingFileFormats:
                 content_pattern=r"file_type:\s*NOMINA-LEDGER-BOOK-YAML|accounts:\s*\w+:",
             ),
             AccountingFileFormat(
+                name="FinanzmanagerDeluxe",
+                acronym="FMD",
+                ext=".qif",
+                wikidata_id="Q750657",
+                content_pattern=r"!Option:MDY",
+                encoding="iso-8859-1"
+            ),
+            AccountingFileFormat(
                 name="Quicken Interchange Format",
                 acronym="QIF",
                 ext=".qif",
@@ -80,7 +89,7 @@ class AccountingFileFormats:
                 ext=".yaml",
                 wikidata_id="Q281876",
                 content_pattern=r"account_json_exports\s*:",
-            )
+            ),
         ]
         self.format_by_acronym: Dict[str, AccountingFileFormat] = {
             fformat.acronym: fformat for fformat in self.formats
