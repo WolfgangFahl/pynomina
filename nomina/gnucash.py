@@ -504,13 +504,16 @@ class GnuCashXml:
 
         return formatted_xml
 
-    def write_gnucash_xml(self, gnucash_data: GncV2, output_file: str) -> None:
+
+    def to_text(self, gnucash_data: GncV2) -> str:
         """
-        Serialize the GnuCash data object to an XML file.
+        Serialize the GnuCash data object to an XML string.
 
         Args:
-            gnucash_data (GnuCashXml): The GnuCash data object to serialize.
-            output_file (str): The file path where the XML will be written.
+            gnucash_data (GncV2): The GnuCash data object to serialize.
+
+        Returns:
+            str: The serialized XML string.
         """
         serializer = XmlSerializer(
             config=SerializerConfig(
@@ -527,6 +530,18 @@ class GnuCashXml:
         # Apply the custom filter to the XML string
         formatted_xml_string = self.xml_format(xml_string)
 
+        return formatted_xml_string
+
+    def write_gnucash_xml(self, gnucash_data: GncV2, output_file: str) -> None:
+        """
+        Serialize the GnuCash data object to an XML file.
+
+        Args:
+            gnucash_data (GnuCashXml): The GnuCash data object to serialize.
+            output_file (str): The file path where the XML will be written.
+        """
+        xml_string = self.to_text(gnucash_data)
+
         # Write the formatted XML string to the file
         with open(output_file, "w", encoding="UTF-8") as f:
-            f.write(formatted_xml_string)
+            f.write(xml_string)

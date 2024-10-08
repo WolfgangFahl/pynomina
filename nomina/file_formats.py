@@ -7,7 +7,7 @@ Created on 2024-10-06
 import os
 import re
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import chardet
 
@@ -25,7 +25,7 @@ class AccountingFileFormat:
     content_pattern: str
 
 
-class AccountingFileFormatDetector:
+class AccountingFileFormats:
     """
     Detector for various accounting file formats
     """
@@ -47,11 +47,18 @@ class AccountingFileFormatDetector:
                 content_pattern=r"<gnc-v2",
             ),
             AccountingFileFormat(
+                name="GnuCash SQLite",
+                acronym="GC-SQLITE",
+                ext=".gnucash",
+                wikidata_id="Q130445392",
+                content_pattern=r"SQLite format 3",
+            ),
+            AccountingFileFormat(
                 name="pyNomina Ledger Book YAML",
                 acronym="LB-YAML",
                 ext=".yaml",
                 wikidata_id="Q281876",
-                content_pattern=r"file_type:\s*NOMINA-LEDGER-BOOK-YAML\s*version:\s*0\.1",
+                content_pattern=r"file_type:\s*NOMINA-LEDGER-BOOK-YAML|accounts:\s*\w+:",
             ),
             AccountingFileFormat(
                 name="Quicken Interchange Format",
@@ -65,9 +72,18 @@ class AccountingFileFormatDetector:
                 acronym="BZV-JSON",
                 ext=".json",
                 wikidata_id="Q130443951",
-                content_pattern=r'"AcctId":\s*"\d+".*"OwnrAcctCcy":\s*"\w+"',
+                content_pattern=r'"AcctId":\s*"[^"]+".*"OwnrAcctCcy":\s*"[^"]+"',
             ),
         ]
+        self.format_by_acronym: Dict[str, AccountingFileFormat] = {
+            fformat.acronym: fformat for fformat in self.formats
+        }
+
+    def get_by_acronym(self,acronym:str)->'AccountingFileFormat':
+        """
+        get format by acronym
+        """
+        return self.format_by_acronym.get(acronym)
 
     def detect_format(self, file_path: str) -> Optional[AccountingFileFormat]:
         """

@@ -40,6 +40,8 @@ class NominaExample:
         self.example_path = example_path
         self.gnu_cash_xml_file = self.example_path / f"{name}_xml.gnucash"
         self.gnu_cash_sqlite_file = self.example_path / f"{name}_sqlite.gnucash"
+        self.ledger_file = self.example_path / f"{self.name}.yaml"
+
         # parsers
         self.gcxml = GnuCashXml()
         self.sqp = SimpleQifParser()
@@ -128,8 +130,7 @@ class NominaExample:
         """
         read the ledger book
         """
-        ledger_file = self.example_path / f"{self.name}.yaml"
-        ledger_book = Book.load_from_yaml_file(ledger_file)
+        ledger_book = Book.load_from_yaml_file(self.ledger_file)
         return ledger_book
 
     def get_parsed_qif(self) -> SimpleQifParser:
@@ -160,10 +161,11 @@ class NominaExample:
         else:
             self.log("✅", "file_check", "File exists and is not empty.")
 
-    def check_stats(self, stats: Stats, expected_stats: Stats = None):
+    def check_stats(self, stats: Stats, expected_stats: Stats = None) -> int:
         """
         check the statistics
         """
+        wrong = 0
         if expected_stats is None:
             expected_stats = self.expected_stats
 
@@ -177,10 +179,12 @@ class NominaExample:
                     f"{attr}_mismatch",
                     f"Stat mismatch for {attr}. Expected: {expected_value}, Got: {actual_value}",
                 )
+                wrong += 1
             else:
                 self.log(
                     "✅", f"{attr}_match", f"Stat match for {attr}: {actual_value}"
                 )
+            return wrong
 
     def expenses_qif(self) -> str:
         qif = """!Account

@@ -18,28 +18,53 @@ from nomina.ledger import Book as LedgerBook
 from nomina.ledger import Split as LedgerSplit
 from nomina.ledger import Transaction as LedgerTransaction
 from nomina.nomina_converter import AccountingFileConverter
-
+from nomina.file_formats import AccountingFileFormats
 
 class BeancountToLedgerConverter(AccountingFileConverter):
     """
     Convert Beancount format to Ledger Book
     """
 
-    def __init__(self, beancount_file: str=None):
+    def __init__(self, debug: bool = False):
         """
-        Constructor
+        Constructor for Beancount to Ledger Book conversion.
+
+        Args:
+            debug (bool): Whether to enable debug logging.
         """
-        self.beancount_file = beancount_file
+        # Look up the formats using AccountingFileFormatDetector
+        formats = AccountingFileFormats()
+        from_format = formats.get_by_acronym("BEAN")
+        to_format = formats.get_by_acronym("LB-YAML")
+
+        # Call the superclass constructor with the looked-up formats
+        super().__init__(from_format, to_format, debug)
+
+        # Initialize instance variables
+        self.beancount = None
+        self.beancount_file = None
+        self.ledger_book = None
+        self.account_map = {}
+
+    def load(self, input_file: str) -> Beancount:
+        """
+
+        load the beancount file
+
+        Args:
+            input_file (str): The path to the input file.
+        """
+        self.beancount_file = input_file
+        self.beancount = Beancount()
+        self.beancount.load_file(self.beancount_file)
+        return self.beancount
+
+    def convert_to_target(self) -> LedgerBook:
+        """Convert the Beancount file to a Ledger Book."""
         self.ledger_book = LedgerBook()
         self.account_map: Dict[str, LedgerAccount] = {}
-        self.log = Log()
 
-    def convert_to_ledger_book(self) -> LedgerBook:
-        """Convert the Beancount file to a Ledger Book."""
-        beancount = Beancount()
-        beancount.load_file(self.beancount_file)
-
-        for entry in beancount.entries:
+        for entry in self.beancount.entries:
             if isinstance(entry, data.Open):
                 self.convert_account(entry)
             elif isinstance(entry, data.Transaction):
@@ -93,57 +118,77 @@ class BeancountToLedgerConverter(AccountingFileConverter):
         self.ledger_book.transactions[transaction_id] = ledger_transaction
 
 
-class LedgerToBeancountConverter:
+class LedgerToBeancountConverter(AccountingFileConverter):
     """
     converter for Ledger Book to Beancount
     """
 
-    def __init__(self, lbook: LedgerBook):
+    def __init__(self, debug: bool = False):
         """
-        Initialize the LedgerToBeancountConverter.
+        Constructor for Ledger Book to Beancount conversion.
 
         Args:
-            lbook (LedgerBook): The ledger book to convert.
+            debug (bool): Whether to enable debug logging.
         """
-        self.lbook = lbook
-        self.lbook_stats = lbook.get_stats()
-        self.start_date = lbook.get_stats().start_date or DateUtils.iso_date(
-            datetime.now()
-        )
-        self.beancount = Beancount()
-        self.log = Log()
+        formats = AccountingFileFormats()
+        from_format = formats.get_by_acronym("LB-YAML")
+        to_format = formats.get_by_acronym("BEAN")
 
-    def convert(self) -> str:
+        # Call the superclass constructor with the looked-up formats
+        super().__init__(from_format, to_format, debug)
+
+        # Initialize instance variables
+        self.lbook = None
+        self.lbook_stats = None
+        self.start_date = None
+        self.beancount = None
+
+    def load(self, input_file: str) -> LedgerBook:
         """
         Convert the ledger book to a Beancount format string with a preamble.
 
         Returns:
-            str: The complete Beancount file content.
+            LedgerBook: the ledger book
         """
-        beancount = self.convert_to_beancount()
-        stats = self.lbook.get_stats()
-        preamble = Preamble(
-            start_date=self.start_date,
-            end_date=stats.end_date or "Unknown",
-            title=self.lbook.name or "Converted Ledger",
-            currency=stats.main_currency(),
-        )
-        return beancount.entries_to_string(preamble)
+        lbook = LedgerBook.load_from_yaml_file(input_file)
+        self.source = lbook
+        return lbook
 
-    def convert_to_beancount(self) -> Beancount:
+    def convert_to_target(self) -> Beancount:
         """
         Convert the ledger book to a Beancount object.
+        Args:
+            lbook (LedgerBook): The ledger book to convert.
 
         Returns:
             Beancount: The converted Beancount object.
         """
+        self.lbook = self.source
+        self.lbook_stats = self.lbook.get_stats()
+        self.start_date = self.lbook.get_stats().start_date or DateUtils.iso_date(
+            datetime.now()
+        )
+        self.beancount = Beancount()
+
         for account in self.lbook.accounts.values():
             self.beancount.add_entry(self.convert_account(account))
 
         for transaction in self.lbook.transactions.values():
             self.beancount.add_entry(self.convert_transaction(transaction))
 
+        self.target = self.beancount
         return self.beancount
+
+    def to_text(self):
+        beancount = self.target
+        preamble = Preamble(
+            start_date=self.start_date,
+            end_date=self.lbook_stats.end_date or "Unknown",
+            title=self.lbook.name or "Converted Ledger",
+            currency=self.lbook_stats.main_currency(),
+        )
+        text = beancount.entries_to_string(preamble)
+        return text
 
     def get_beancount_name_for_account(self, account: LedgerAccount) -> str:
         """ """

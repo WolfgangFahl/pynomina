@@ -4,6 +4,7 @@ Created on 2024-10-06
 @author: wf
 """
 
+import argparse
 import sys
 from argparse import ArgumentParser
 
@@ -53,6 +54,13 @@ class NominaCmd(WebserverCmd):
             default="LB-YAML",
             help="Output format for conversion [default: %(default)s]",
         )
+        parser.add_argument(
+            "-o",
+            "--output",
+            type=argparse.FileType("w"),
+            default=sys.stdout,
+            help="Output file [default: stdout]",
+        )
         return parser
 
     def handle_args(self) -> bool:
@@ -64,9 +72,8 @@ class NominaCmd(WebserverCmd):
         self.debug = self.args.debug
         args = self.args
         if args.convert:
-            converter = Converter()
-            result = converter.convert(args.convert, args.format)
-            print(result)
+            converter = Converter(args)
+            converter.convert()
 
 
 def main(argv: list = None):

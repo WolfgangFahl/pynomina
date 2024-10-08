@@ -183,8 +183,8 @@ class Beancount:
                 transactions += 1
                 dates.append(entry.date)
 
-        start_date = min(dates).isoformat() if dates else None
-        end_date = max(dates).isoformat() if dates else None
+        start_date = min(dates) if dates else None
+        end_date = max(dates) if dates else None
 
         return Stats(
             accounts=len(accounts),

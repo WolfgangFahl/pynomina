@@ -5,12 +5,14 @@ Created on 2024-10-07
 """
 
 import os
+from pathlib import Path
 
 from nomina.beancount import Beancount
 from nomina.beancount_ledger import (
     BeancountToLedgerConverter,
     LedgerToBeancountConverter,
 )
+from nomina.stats import Stats
 from tests.basetest import Basetest
 from tests.example_testcases import NominaExample
 
@@ -29,10 +31,40 @@ class Test_LedgerBeancount(Basetest):
         test converting beancount format to ledger
         """
         bc_example = self.examples_path + "/example.beancount"
-        converter = BeancountToLedgerConverter(bc_example)
-        ledger_book = converter.convert_to_ledger_book()
+        converter = BeancountToLedgerConverter(debug=self.debug)
+        beancount = converter.load(bc_example)
+        self.assertIsInstance(beancount, Beancount)
+        ledger_book = converter.convert_to_target()
         stats = ledger_book.get_stats()
-        print(stats)
+        if self.debug:
+            stats.show()
+        example = NominaExample(
+            name="example",
+            owner="John Doe",
+            url=None,
+            example_path=Path(self.examples_path),
+            do_log=True,
+            expected_stats=Stats(
+                accounts=63,
+                transactions=966,
+                start_date="2022-01-01",
+                end_date="2024-10-04",
+                currencies={
+                    "EUR": 18,
+                    "USD": 31,
+                    "IRAUSD": 5,
+                    "ITOT": 1,
+                    "VEA": 1,
+                    "VHT": 1,
+                    "GLD": 1,
+                    "VBMPX": 1,
+                    "RGAGX": 1,
+                    "VACHR": 3,
+                },
+            ),
+        )
+        wrong = example.check_stats(stats)
+        self.assertEqual(0, wrong)
 
     def test_ledger2beancount(self):
         """
@@ -40,21 +72,13 @@ class Test_LedgerBeancount(Basetest):
         """
         for name, example in self.examples.items():
             with self.subTest(f"Testing {name}"):
-                if self.debug:
-                    print(f"loading ledger book {name} from yaml")
-                ledger_book = example.get_ledger_book()
-
-                if self.debug:
-                    print(f"converting ledger book {name} to Beancount")
-                l2b = LedgerToBeancountConverter(ledger_book)
-                beancount_output = l2b.convert()
-
-                if self.debug:
-                    print(f"writing Beancount file for {name} to /tmp")
+                l2b = LedgerToBeancountConverter()
                 output_path = os.path.join("/tmp", f"{name}_l2b.beancount")
-                with open(output_path, "w") as f:
-                    f.write(beancount_output)
-
+                with open(output_path, "w") as bean_file:
+                    beancount_output = l2b.convert(example.ledger_file, bean_file)
+                if self.debug:
+                    stats=l2b.target.get_stats()
+                    stats.show()
                 # Verify the conversion
                 self.assertIsNotNone(beancount_output)
                 self.assertGreater(len(beancount_output), 0)
@@ -73,7 +97,7 @@ class Test_LedgerBeancount(Basetest):
                 )
 
                 # Compare statistics
-                ledger_stats = ledger_book.get_stats()
+                ledger_stats = l2b.source.get_stats()
                 beancount_stats = beancount.get_stats()
 
                 # Use the check_stats method from NominaExample

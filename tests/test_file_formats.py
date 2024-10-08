@@ -6,7 +6,7 @@ Created on 2024-10-06
 
 import os
 
-from nomina.file_formats import AccountingFileFormatDetector
+from nomina.file_formats import AccountingFileFormats
 from tests.basetest import Basetest
 
 
@@ -17,7 +17,7 @@ class Test_FileformatDetector(Basetest):
 
     def setUp(self, debug=True, profile=True):
         Basetest.setUp(self, debug=debug, profile=profile)
-        self.detector = AccountingFileFormatDetector()
+        self.detector = AccountingFileFormats()
 
     def yield_filenames(self):
         """
@@ -65,5 +65,5 @@ class Test_FileformatDetector(Basetest):
                     detected_format.acronym, expected_format, f"{file_name}"
                 )
 
-        # Assert that we detected at least one file
-        self.assertGreater(len(detected_formats), 0, "No files were detected")
+        # Assert that we detected at least 13 files
+        self.assertGreaterEqual(13,len(detected_formats))

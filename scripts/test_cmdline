@@ -1,0 +1,80 @@
+#!/bin/bash
+# WF 2024-10-08
+
+# Array of input files
+input_files=(
+    "nomina_examples/empty.yaml"
+    "nomina_examples/empty_xml.gnucash"
+    "nomina_examples/example.beancount"
+    "nomina_examples/expenses.qif"
+    "nomina_examples/expenses.yaml"
+    "nomina_examples/expenses2024.json"
+    "nomina_examples/expenses2024.yaml"
+    "nomina_examples/expenses2024_xml.gnucash"
+    "nomina_examples/expenses_xml.gnucash"
+    "nomina_examples/simple_sample.yaml"
+    "nomina_examples/simple_sample_xml.gnucash"
+)
+
+# Array of output formats
+formats=("LB-YAML" "GC-XML" "BEAN")
+
+# Function to determine the correct file extension based on the format
+get_extension() {
+    format=$1
+    case $format in
+        "LB-YAML")
+            echo "yaml"
+            ;;
+        "GC-XML")
+            echo "gnucash"
+            ;;
+        "BEAN")
+            echo "beancount"
+            ;;
+        *)
+            echo "unknown"
+            ;;
+    esac
+}
+
+# Function to run conversion and check result
+run_conversion() {
+    local input_file=$1
+    local format=$2
+    local target_dir=$3
+    # Extract the base name of the input file for output file name
+    base_name=$(basename "$input_file")
+
+    # Get the file extension
+    extension=$(get_extension "$format")
+    if [ "$extension" == "unknown" ]; then
+        echo "Unknown format: $format"
+        return
+    fi
+
+    output_file="$target_dir/${base_name%.*}_converted.$extension"
+    error_file="$target_dir/${base_name%.*}_converted.$extension-err"
+
+    echo "$input_file →  $output_file: $format"
+    nomina --debug --convert "$input_file" --format "$format" > "$output_file" 2>"$error_file"
+
+    if [ $? -eq 0 ]; then
+        echo "✅"
+    else
+        echo "❌"
+        cat $error_file
+    fi
+}
+
+target_dir="/tmp/nomina"
+mkdir -p $target_dir
+
+# Main test loop
+for input_file in "${input_files[@]}"; do
+    for format in "${formats[@]}"; do
+        run_conversion "$input_file" "$format" "$target_dir"
+    done
+done
+
+ls -l $target_dir
