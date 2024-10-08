@@ -4,7 +4,7 @@ Created on 2024-10-05
 @author: wf
 """
 
-from typing import List
+from typing import List, TextIO
 
 from nomina.bzv import Account
 from nomina.bzv import Book as BzvBook
@@ -14,14 +14,29 @@ from nomina.ledger import Book as LedgerBook
 from nomina.ledger import Split as LedgerSplit
 from nomina.ledger import Transaction as LedgerTransaction
 from nomina.nomina_converter import AccountingFileConverter
-
+from nomina.file_formats import AccountingFileFormats
 
 class BankingZVToLedgerConverter(AccountingFileConverter):
     """
     convert BankingZV Entries to Leder format
     """
 
-    def __init__(self, bzv_book: BzvBook):
+    def __init__(self, debug: bool = False):
+        """
+        Constructor for BankingZV to Ledger Book conversion.
+
+        Args:
+            bzv_book (BzvBook): The BankingZV book object to be converted.
+            debug (bool): Whether to enable debug logging.
+        """
+        formats = AccountingFileFormats()
+        from_format = formats.get_by_acronym("BZV-JSON")
+        to_format = formats.get_by_acronym("LB-YAML")
+
+        # Call the superclass constructor with the looked-up formats
+        super().__init__(from_format, to_format, debug)
+
+    def load(self, input_stream:TextIO):
         self.bzv_book = bzv_book
 
     def create_ledger_account(self, bzv_account: Account) -> LedgerAccount:
@@ -75,7 +90,7 @@ class BankingZVToLedgerConverter(AccountingFileConverter):
             memo=transaction.RmtInf or "",
         )
 
-    def convert_to_ledger_book(self) -> LedgerBook:
+    def convert_to_target(self) -> LedgerBook:
         ledger_book = LedgerBook(
             owner=self.bzv_book.owner, url=self.bzv_book.url, name=self.bzv_book.name
         )
@@ -88,5 +103,5 @@ class BankingZVToLedgerConverter(AccountingFileConverter):
             ledger_transaction = self.create_ledger_transaction(transaction)
             transaction_id = f"{ledger_transaction.isodate}:{transaction.Id}"
             ledger_book.transactions[transaction_id] = ledger_transaction
-
+        self.target=ledger_book
         return ledger_book

@@ -12,7 +12,7 @@ from nomina.beancount_ledger import (
     LedgerToBeancountConverter,
 )
 from nomina.bzv_ledger import BankingZVToLedgerConverter
-from nomina.file_formats import AccountingFileFormatDetector
+from nomina.file_formats import AccountingFileFormats
 from nomina.gnc_ledger import GnuCashToLedgerConverter, LedgerToGnuCashConverter
 from nomina.nomina_converter import AccountingFileConverter
 from nomina.qif_ledger import QifToLedgerConverter
@@ -34,7 +34,7 @@ class Converter:
 
     def __init__(self, args):
         self.args = args
-        self.detector = AccountingFileFormatDetector()
+        self.detector = AccountingFileFormats()
         self.to_ledger = {
             "GC-XML": GnuCashToLedgerConverter,
             "QIF": QifToLedgerConverter,

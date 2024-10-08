@@ -13,9 +13,9 @@ from typing import Dict, List, Optional
 from dacite import from_dict
 
 from nomina.stats import Stats
+from lodstorage.yamlable import lod_storable
 
-
-@dataclass
+@lod_storable
 class Transaction:
     Id: str
     AcctId: str
@@ -41,32 +41,28 @@ class Transaction:
     Flag: str
 
 
-@dataclass
+@lod_storable
 class Account:
     account_id: str
     name: str
     parent_account_id: Optional[str] = None
 
-
+@lod_storable
 class Book:
     """
     a Banking ZV Book
     """
+    name: str
+    owner: Optional[str] = None,
+    url: Optional[str] = None,
+    since: Optional[str] = None,
+    accounts: Dict[str, Account] =  field(default_factory=dict)
+    transactions: List[Transaction] =  field(default_factory=list)
 
-    def __init__(
+    def __post_init__(
         self,
-        account_json_dict: dict,
-        name: str,
-        owner: Optional[str] = None,
-        url: Optional[str] = None,
-        since: Optional[str] = None,
+
     ):
-        self.name = name
-        self.owner = owner
-        self.url = url
-        self.since = since
-        self.accounts: Dict[str, Account] = {}
-        self.transactions = []
         self.load_accounts_from_accounts_dict(account_json_dict)
 
     def get_stats(self) -> Stats:
