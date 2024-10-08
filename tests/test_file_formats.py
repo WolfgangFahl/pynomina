@@ -33,17 +33,19 @@ class Test_FileformatDetector(Basetest):
         """
         expected_results = {
             "expenses2024.yaml": "LB-YAML",
-            # "empty.yaml": None,
-            # "expenses_sqlite.gnucash": None,
+            "empty.yaml": "LB-YAML",
+            "expenses_sqlite.gnucash": "GC-SQLITE",
             "simple_sample_xml.gnucash": "GC-XML",
             "expenses.qif": "QIF",
-            # "simple_sample.yaml": None,
+            "simple_sample.yaml": "LB-YAML",
             "expenses_xml.gnucash": "GC-XML",
             "expenses2024_xml.gnucash": "GC-XML",
-            # "empty_sqlite.gnucash": None,
+            "empty_sqlite.gnucash": "GC-SQLITE",
             "expenses.yaml": "LB-YAML",
+            "example.beancount": "BEAN",
             # "ledger.puml": None,
             "empty_xml.gnucash": "GC-XML",
+            "expenses2024_bzv.yaml":"BZV-YAML",
         }
         detected_formats = {}
 
@@ -65,5 +67,5 @@ class Test_FileformatDetector(Basetest):
                     detected_format.acronym, expected_format, f"{file_name}"
                 )
 
-        # Assert that we detected at least 13 files
-        self.assertGreaterEqual(13, len(detected_formats))
+        # Assert that we detected at least 14 files
+        self.assertGreaterEqual(len(detected_formats),14)

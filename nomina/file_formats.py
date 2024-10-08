@@ -74,6 +74,13 @@ class AccountingFileFormats:
                 wikidata_id="Q130443951",
                 content_pattern=r'"AcctId":\s*"[^"]+".*"OwnrAcctCcy":\s*"[^"]+"',
             ),
+            AccountingFileFormat(
+                name="pyNomina Banking ZV YAML export",
+                acronym="BZV-YAML",
+                ext=".yaml",
+                wikidata_id="Q281876",
+                content_pattern=r"account_json_exports\s*:",
+            )
         ]
         self.format_by_acronym: Dict[str, AccountingFileFormat] = {
             fformat.acronym: fformat for fformat in self.formats

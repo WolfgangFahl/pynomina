@@ -4,7 +4,6 @@ Created on 2024-10-06
 @author: wf
 """
 
-import sys
 import tempfile
 from typing import TextIO
 
@@ -43,7 +42,7 @@ class Converter:
             "GC-XML": GnuCashToLedgerConverter,
             "QIF": QifToLedgerConverter,
             "BEAN": BeancountToLedgerConverter,
-            "BZV-JSON": BankingZVToLedgerConverter,
+            "BZV-YAML": BankingZVToLedgerConverter,
             "LB-YAML": IdentityConverter,
         }
         self.from_ledger = {
