@@ -5,6 +5,7 @@ Created on 2024-10-06
 """
 
 import sys
+import tempfile
 from typing import TextIO
 
 from nomina.beancount_ledger import (
@@ -23,8 +24,11 @@ class IdentityConverter(AccountingFileConverter):
     Dummy converter for hub&spoke
     """
 
-    def convert(self, input_stream: TextIO):
-        return input_stream
+    def convert(self, input_stream: TextIO, output_stream: TextIO) -> str:
+        content = input_stream.read()
+        if output_stream:
+            output_stream.write(content)
+        return content
 
 
 class Converter:
@@ -72,16 +76,17 @@ class Converter:
         if not from_ledger:
             raise ValueError(f"Unsupported output format: {output_format}")
 
-        # Lazy initialization: only create converter instances when needed
-        to_ledger = to_ledger()
-        from_ledger = from_ledger()
+        with tempfile.NamedTemporaryFile(mode="w+", suffix=".yaml") as ledger_file:
+            to_ledger = to_ledger(
+                debug=self.args.debug
+            )
+            from_ledger = from_ledger(
+                debug=self.args.debug,
+            )
 
-        ledger_book = to_ledger.convert(input_file)
-        target_text = from_ledger.convert(ledger_book)
-        # Write result to output file
-        self.args.output.write(target_text)
-        if self.args.output != sys.stdout:
-            self.args.output.close()
+            to_ledger.convert(input_file, ledger_file)
+            ledger_file.seek(0)  # Reset file pointer to beginning
+            from_ledger.convert(ledger_file, self.args.output)
 
     def get_supported_formats(self):
         """

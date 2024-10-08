@@ -4,10 +4,10 @@ Created on 2024-10-04
 @author: wf
 """
 
-from typing import Dict, List
+from typing import Dict, List, TextIO
 
 from lodstorage.persistent_log import Log
-
+from nomina.file_formats import AccountingFileFormats
 from nomina.ledger import Account, Book, Split, Transaction
 from nomina.nomina_converter import AccountingFileConverter
 from nomina.qif import SimpleQifParser
@@ -18,27 +18,37 @@ class QifToLedgerConverter(AccountingFileConverter):
     """
     Convert Quicken QIF file to a Ledger Book.
     """
+    def __init__(self, debug: bool = False):
+        """
+        Constructor for QIF to Ledger Book conversion.
 
-    def __init__(self, qif_parser: SimpleQifParser = None):
+        Args:
+            debug (bool): Whether to enable debug logging.
         """
-        Constructor
-        """
-        self.qif_parser = qif_parser
-        self.log = Log()
+        formats = AccountingFileFormats()
+        from_format = formats.get_by_acronym("QIF")
+        to_format = formats.get_by_acronym("LB-YAML")
 
-    def convert(self, input_file: str) -> str:
-        """
-        Convert the QIF file to a Ledger Book YAML string.
-        """
-        # Parse the QIF file
-        with open(input_file, "r") as file:
-            qif_content = file.read()
+        # Call the superclass constructor with the looked-up formats
+        super().__init__(from_format, to_format, debug)
 
         self.qif_parser = SimpleQifParser()
-        self.qif_parser.parse(qif_content)
-        ledger_book = self.convert_to_ledger_book()
-        yaml_str = ledger_book.to_yaml()
-        return yaml_str
+
+    def load(self, input_stream: TextIO):
+        """
+        Load the content from the input stream.
+        """
+        self.qif_content = input_stream.read()
+        self.qif_lines = self.qif_content.splitlines()
+        self.qif_parser.parse(self.qif_lines)
+        self.source=self.qif_parser
+        return self.qif_parser
+
+    def to_text(self) -> str:
+        """
+        Convert the target Ledger Book to YAML text.
+        """
+        return self.target.to_yaml()
 
     def create_account_lookup(self, ledger_book: Book):
         """
@@ -213,7 +223,7 @@ class QifToLedgerConverter(AccountingFileConverter):
 
         return splits
 
-    def convert_to_ledger_book(self) -> Book:
+    def convert_to_target(self) -> Book:
         """
         Convert the QIF content to a Ledger Book.
 
@@ -239,5 +249,5 @@ class QifToLedgerConverter(AccountingFileConverter):
             )
 
             ledger_book.transactions[transaction_id] = ledger_transaction
-
+        self.target=ledger_book
         return ledger_book
