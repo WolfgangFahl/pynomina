@@ -5,9 +5,6 @@ Created on 2024-10-04
 """
 
 from typing import Dict, List, TextIO
-
-from lodstorage.persistent_log import Log
-
 from nomina.file_formats import AccountingFileFormats
 from nomina.ledger import Account, Book, Split, Transaction
 from nomina.nomina_converter import AccountingFileConverter
@@ -36,7 +33,7 @@ class QifToLedgerConverter(AccountingFileConverter):
 
         self.qif_parser = SimpleQifParser()
 
-    def load(self, input_stream: TextIO):
+    def load(self, input_stream: str):
         """
         Load the content from the input stream.
         """

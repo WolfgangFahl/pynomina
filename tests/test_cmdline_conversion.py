@@ -45,7 +45,6 @@ class TestNominaConverter(Basetest):
         """
         test the conversions
         """
-        return
         for input_file in self.input_files:
             for target_format, ext in self.target_formats:
                 with self.subTest(

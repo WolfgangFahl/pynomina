@@ -9,8 +9,6 @@ from datetime import datetime
 from typing import Dict, List, Optional
 
 from beancount.core import data
-from lodstorage.persistent_log import Log
-
 from nomina.beancount import Beancount, Preamble
 from nomina.date_utils import DateUtils
 from nomina.file_formats import AccountingFileFormats
@@ -144,14 +142,14 @@ class LedgerToBeancountConverter(AccountingFileConverter):
         self.start_date = None
         self.beancount = None
 
-    def load(self, input_file: str) -> LedgerBook:
+    def load(self, input_path: str) -> LedgerBook:
         """
         Convert the ledger book to a Beancount format string with a preamble.
 
         Returns:
             LedgerBook: the ledger book
         """
-        lbook = LedgerBook.load_from_yaml_file(input_file)
+        lbook = LedgerBook.load_from_yaml_file(input_path)
         self.source = lbook
         return lbook
 
