@@ -28,8 +28,11 @@ class Test_LedgerGnuCash(Basetest):
             with self.subTest(f"Testing {name}"):
                 l2g = LedgerToGnuCashConverter(debug=self.debug)
                 output_path = os.path.join("/tmp", f"{name}_l2g_xml.gnucash")
+                ledger_book = l2g.load(example.ledger_file)
+                _target_object = l2g.convert_from_ledger(ledger_book)
                 with open(output_path, "w") as gc_file:
-                    l2g.convert(example.ledger_file, gc_file)
+                    output_text = l2g.to_text()
+                    gc_file.write(output_text)
                 if self.debug:
                     l2g.show_stats()
 
@@ -41,8 +44,9 @@ class Test_LedgerGnuCash(Basetest):
             with self.subTest(f"Testing {name}"):
                 g2l = GnuCashToLedgerConverter(debug=self.debug)
                 output_path = os.path.join("/tmp", f"{name}_g2l.yaml")
-                # owner=example.owner, url=example.url
+                ledger_book = g2l.convert_to_ledger(example.gnu_cash_xml_file)
                 with open(output_path, "w") as ledger_file:
-                    g2l.convert(example.gnu_cash_xml_file, ledger_file)
+                    ledger_book.to_yaml(ledger_file)
                 if self.debug:
                     g2l.show_stats()
+

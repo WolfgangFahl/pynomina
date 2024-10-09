@@ -5,9 +5,8 @@ Created on 2024-10-04
 """
 
 import uuid
-from typing import Dict, List, TextIO
+from typing import Dict
 
-from nomina.file_formats import AccountingFileFormats
 from nomina.gnucash import (
     Account,
     Book,
@@ -27,47 +26,34 @@ from nomina.ledger import Account as LedgerAccount
 from nomina.ledger import Book as LedgerBook
 from nomina.ledger import Split as LedgerSplit
 from nomina.ledger import Transaction as LedgerTransaction
-from nomina.nomina_converter import AccountingFileConverter
+from nomina.nomina_converter import BaseFromLedgerConverter, BaseToLedgerConverter
 
 
-class GnuCashToLedgerConverter(AccountingFileConverter):
+class GnuCashToLedgerConverter(BaseToLedgerConverter):
     """
     Convert GnuCash Book to Ledger Book
     """
 
     def __init__(self, debug: bool = False):
         """
-        Constructor for GnuCash to Ledger Book conversion.
-
-        Args:
-            debug (bool): Whether to enable debug logging.
+        constructor
         """
-        # Look up the formats using AccountingFileFormats
-        formats = AccountingFileFormats()
-        from_format = formats.get_by_acronym("GC-XML")
-        to_format = formats.get_by_acronym("LB-YAML")
-
-        # Call the superclass constructor with the looked-up formats
-        super().__init__(from_format, to_format, debug)
-
-        # Initialize instance variables
+        super().__init__(from_format_acronym="GC-XML", debug=debug)
         self.gnc_v2 = None
         self.account_map: Dict[str, LedgerAccount] = {}
         self.gcxml = GnuCashXml()
 
-    def load(self, input_stream: TextIO) -> GncV2:
+    def load(self, input_path: str) -> GncV2:
         """
-        Load the GnuCash XML file from the input stream and parse it into a GncV2 object.
+        Load the GnuCash XML file from the input file and parse it into a GncV2 object.
 
         Args:
-            input_stream (TextIO): The input stream to read the GnuCash XML data from.
+            input_path (str): The input path to read the GnuCash XML data from.
 
         Returns:
             GncV2: The parsed GncV2 object.
         """
-        self.gnc_v2 = self.gcxml.parse_gnucash_xml(input_stream)
-
-        # Return the loaded GncV2 object
+        self.gnc_v2 = self.gcxml.parse_gnucash_xml(input_path)
         return self.gnc_v2
 
     def create_ledger_account(self, gnc_account: Account) -> LedgerAccount:
@@ -133,11 +119,14 @@ class GnuCashToLedgerConverter(AccountingFileConverter):
         return ledger_book
 
     def to_text(self) -> str:
+        """
+        create the output text
+        """
         yaml_str = self.target.to_yaml()
         return yaml_str
 
 
-class LedgerToGnuCashConverter(AccountingFileConverter):
+class LedgerToGnuCashConverter(BaseFromLedgerConverter):
     """
     Convert Ledger Book to GnuCash Book
     """
@@ -149,29 +138,27 @@ class LedgerToGnuCashConverter(AccountingFileConverter):
         Args:
             debug (bool): Whether to enable debug logging.
         """
-        # Look up the formats using AccountingFileFormats
-        formats = AccountingFileFormats()
-        from_format = formats.get_by_acronym("LB-YAML")
-        to_format = formats.get_by_acronym("GC-XML")
-
-        # Call the superclass constructor with the looked-up formats
-        super().__init__(from_format, to_format, debug)
+        super().__init__(to_format_acronym="GC-XML", debug=debug)
 
         # Initialize instance variables
         self.lbook = None
         self.account_map = {}
         self.gcxml = GnuCashXml()
 
-    def load(self, input_file: str) -> LedgerBook:
+    def load(self, input_path: str) -> LedgerBook:
         """
-        Convert the ledger book to a Beancount format string with a preamble.
+        load the Ledger Book
 
         Returns:
             LedgerBook: the ledger book
         """
-        self.lbook = LedgerBook.load_from_yaml_file(input_file)
-        self.source = self.lbook
-        return self.lbook
+        lbook = LedgerBook.load_from_yaml_file(input_path)
+        self.set_source(lbook)
+        return lbook
+
+    def set_source(self,source:LedgerBook):
+        self.source=source
+        self.lbook=source
 
     def generate_guid(self) -> str:
         """Generate a GUID for GnuCash entities."""
@@ -282,5 +269,8 @@ class LedgerToGnuCashConverter(AccountingFileConverter):
         return gnc_v2
 
     def to_text(self) -> str:
+        """
+        convert to text
+        """
         xml_string = self.gcxml.to_text(self.target)
         return xml_string
