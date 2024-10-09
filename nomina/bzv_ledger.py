@@ -5,7 +5,7 @@ Created on 2024-10-05
 """
 
 from typing import List, TextIO
-
+from pathlib import Path
 from nomina.bzv import Account
 from nomina.bzv import Book as BzvBook
 from nomina.bzv import Transaction as BzvTransaction
@@ -14,12 +14,12 @@ from nomina.ledger import Account as LedgerAccount
 from nomina.ledger import Book as LedgerBook
 from nomina.ledger import Split as LedgerSplit
 from nomina.ledger import Transaction as LedgerTransaction
-from nomina.nomina_converter import AccountingFileConverter
+from nomina.nomina_converter import BaseFromLedgerConverter, BaseToLedgerConverter
 
 
-class BankingZVToLedgerConverter(AccountingFileConverter):
+class BankingZVToLedgerConverter(BaseToLedgerConverter):
     """
-    convert BankingZV Entries to Leder format
+    convert BankingZV Entries to Ledger format
     """
 
     def __init__(self, debug: bool = False):
@@ -27,18 +27,12 @@ class BankingZVToLedgerConverter(AccountingFileConverter):
         Constructor for BankingZV to Ledger Book conversion.
 
         Args:
-            bzv_book (BzvBook): The BankingZV book object to be converted.
             debug (bool): Whether to enable debug logging.
         """
-        formats = AccountingFileFormats()
-        from_format = formats.get_by_acronym("BZV-JSON")
-        to_format = formats.get_by_acronym("LB-YAML")
+        super().__init__(from_format_acronym="BZV-YAML", debug=debug)
 
-        # Call the superclass constructor with the looked-up formats
-        super().__init__(from_format, to_format, debug)
-
-    def load(self, input_stream: TextIO):
-        self.bzv_book = BzvBook.load_from_file(input_stream)
+    def load(self, input_path: Path):
+        self.bzv_book = BzvBook.load_from_file(input_path)
         self.source = self.bzv_book
         return self.source
 

@@ -5,7 +5,6 @@ Created on 2024-10-08
 """
 
 import os
-import tempfile
 import traceback
 
 from nomina.file_formats import AccountingFileFormats
@@ -25,7 +24,7 @@ class TestNominaConverter(Basetest):
             "example.beancount",
             #"expenses.qif",
             "expenses.yaml",
-            #"expenses2024_bzv.yaml",
+            "expenses2024_bzv.yaml",
             "expenses2024.yaml",
             "expenses2024_xml.gnucash",
             "expenses_xml.gnucash",
