@@ -22,7 +22,7 @@ class TestNominaConverter(Basetest):
         self.input_files = [
             "empty.yaml",
             "empty_xml.gnucash",
-            #"example.beancount",
+            "example.beancount",
             #"expenses.qif",
             "expenses.yaml",
             #"expenses2024_bzv.yaml",
@@ -35,7 +35,7 @@ class TestNominaConverter(Basetest):
         self.target_formats = [
             ("LB-YAML", ".yaml"),
             ("GC-XML", ".gnucash"),
-            #("BEAN", ".beancount"),
+            ("BEAN", ".beancount"),
         ]
         self.formats = AccountingFileFormats()
         self.target_dir = "/tmp/nomina"

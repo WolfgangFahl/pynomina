@@ -73,19 +73,21 @@ class Test_LedgerBeancount(Basetest):
         for name, example in self.examples.items():
             with self.subTest(f"Testing {name}"):
                 l2b = LedgerToBeancountConverter()
+                ledger_book = l2b.load(example.ledger_file)
                 output_path = os.path.join("/tmp", f"{name}_l2b.beancount")
+                beancount=l2b.convert_from_ledger(ledger_book)
                 with open(output_path, "w") as bean_file:
-                    beancount_output = l2b.convert(example.ledger_file, bean_file)
+                    output_text=l2b.to_text()
+                    bean_file.write(output_text)
                 if self.debug:
-                    stats = l2b.target.get_stats()
-                    stats.show()
+                    l2b.show_stats()
                 # Verify the conversion
-                self.assertIsNotNone(beancount_output)
-                self.assertGreater(len(beancount_output), 0)
+                self.assertIsNotNone(output_text)
+                self.assertGreater(len(output_text), 0)
 
                 # Parse the Beancount output to ensure it's valid
                 beancount = Beancount()
-                beancount.load_string(beancount_output)
+                beancount.load_string(output_text)
                 error_count = len(beancount.errors)
                 if error_count > 0 and self.debug:
                     for i, error in enumerate(beancount.errors):

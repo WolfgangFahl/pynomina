@@ -6,7 +6,7 @@ Created on 2024-10-07
 
 import re
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 from beancount.core import data
 from nomina.beancount import Beancount, Preamble
@@ -16,10 +16,10 @@ from nomina.ledger import Account as LedgerAccount
 from nomina.ledger import Book as LedgerBook
 from nomina.ledger import Split as LedgerSplit
 from nomina.ledger import Transaction as LedgerTransaction
-from nomina.nomina_converter import AccountingFileConverter
+from nomina.nomina_converter import BaseFromLedgerConverter, BaseToLedgerConverter
 
 
-class BeancountToLedgerConverter(AccountingFileConverter):
+class BeancountToLedgerConverter(BaseToLedgerConverter):
     """
     Convert Beancount format to Ledger Book
     """
@@ -31,13 +31,7 @@ class BeancountToLedgerConverter(AccountingFileConverter):
         Args:
             debug (bool): Whether to enable debug logging.
         """
-        # Look up the formats using AccountingFileFormatDetector
-        formats = AccountingFileFormats()
-        from_format = formats.get_by_acronym("BEAN")
-        to_format = formats.get_by_acronym("LB-YAML")
-
-        # Call the superclass constructor with the looked-up formats
-        super().__init__(from_format, to_format, debug)
+        super().__init__(from_format_acronym="BEAN", debug=debug)    # Look up the formats using AccountingFileFormatDetector
 
         # Initialize instance variables
         self.beancount = None
@@ -45,18 +39,23 @@ class BeancountToLedgerConverter(AccountingFileConverter):
         self.ledger_book = None
         self.account_map = {}
 
-    def load(self, input_file: str) -> Beancount:
+    def load(self, input_path: str) -> Beancount:
         """
 
         load the beancount file
 
         Args:
-            input_file (str): The path to the input file.
+            input_path (str): The path to the input file.
         """
-        self.beancount_file = input_file
-        self.beancount = Beancount()
-        self.beancount.load_file(self.beancount_file)
+        self.beancount_file = input_path
+        beancount = Beancount()
+        beancount.load_file(self.beancount_file)
+        self.set_source(beancount)
         return self.beancount
+
+    def set_source(self,source:LedgerBook):
+        self.source=source
+        self.beancount=source
 
     def convert_to_target(self) -> LedgerBook:
         """Convert the Beancount file to a Ledger Book."""
@@ -117,7 +116,7 @@ class BeancountToLedgerConverter(AccountingFileConverter):
         self.ledger_book.transactions[transaction_id] = ledger_transaction
 
 
-class LedgerToBeancountConverter(AccountingFileConverter):
+class LedgerToBeancountConverter(BaseFromLedgerConverter):
     """
     converter for Ledger Book to Beancount
     """
@@ -129,12 +128,7 @@ class LedgerToBeancountConverter(AccountingFileConverter):
         Args:
             debug (bool): Whether to enable debug logging.
         """
-        formats = AccountingFileFormats()
-        from_format = formats.get_by_acronym("LB-YAML")
-        to_format = formats.get_by_acronym("BEAN")
-
-        # Call the superclass constructor with the looked-up formats
-        super().__init__(from_format, to_format, debug)
+        super().__init__(to_format_acronym="BEAN", debug=debug)
 
         # Initialize instance variables
         self.lbook = None
@@ -144,14 +138,18 @@ class LedgerToBeancountConverter(AccountingFileConverter):
 
     def load(self, input_path: str) -> LedgerBook:
         """
-        Convert the ledger book to a Beancount format string with a preamble.
+        load the Ledger Book
 
         Returns:
             LedgerBook: the ledger book
         """
         lbook = LedgerBook.load_from_yaml_file(input_path)
-        self.source = lbook
+        self.set_source(lbook)
         return lbook
+
+    def set_source(self,source:LedgerBook):
+        self.source=source
+        self.lbook=source
 
     def convert_to_target(self) -> Beancount:
         """

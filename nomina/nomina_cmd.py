@@ -4,7 +4,7 @@ Created on 2024-10-06
 @author: wf
 """
 
-import argparse
+from pathlib import Path
 import sys
 from argparse import ArgumentParser
 
@@ -46,6 +46,7 @@ class NominaCmd(WebserverCmd):
         )
         parser.add_argument(
             "--convert",
+            type=Path,
             help="Convert the specified file to the desired format",
         )
         parser.add_argument(
@@ -57,9 +58,8 @@ class NominaCmd(WebserverCmd):
         parser.add_argument(
             "-o",
             "--output",
-            type=argparse.FileType("w"),
-            default=sys.stdout,
-            help="Output file [default: stdout]",
+            type=Path,
+            help="Output file",
         )
         return parser
 

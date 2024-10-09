@@ -3,7 +3,7 @@ Created on 2024-10-06
 
 @author: wf
 """
-
+from pathlib import Path
 from typing import Type, Dict
 from nomina.file_formats import AccountingFileFormats
 from nomina.ledger import Book
@@ -34,7 +34,7 @@ class Converter:
             "LB-YAML":  None,
         }
 
-    def convert(self, input_path: str = None, output_format: str = None) -> None:
+    def convert(self, input_path: Path = None, output_format: str = None) -> None:
         """
         Convert the input file to the specified output format.
 
@@ -77,7 +77,7 @@ class Converter:
         else:
             # target is a LedgerBook get the XML markup
             output_text = ledger_book.to_yaml()
-        output_stream=self.args.output
+        output_stream = self.args.output.open('w')
         output_stream.write(output_text)
         output_stream.close()
 
