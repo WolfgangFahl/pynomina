@@ -28,8 +28,7 @@ class Test_LedgerQif(Basetest):
         example = self.examples[name]
         qif_example = str(example.example_path) + "/expenses.qif"
         converter = QifToLedgerConverter()
-        with open(qif_example, "r") as qif_file:
-            converter.load(qif_file)
+        converter.load(qif_example)
         book = converter.convert_to_target()
         book.url = example.url
         book.owner = example.owner

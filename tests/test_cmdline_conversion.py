@@ -22,7 +22,7 @@ class TestNominaConverter(Basetest):
             "empty.yaml",
             "empty_xml.gnucash",
             "example.beancount",
-            #"expenses.qif",
+            "expenses.qif",
             "expenses.yaml",
             "expenses2024_bzv.yaml",
             "expenses2024.yaml",

@@ -72,8 +72,15 @@ class NominaCmd(WebserverCmd):
         self.debug = self.args.debug
         args = self.args
         if args.convert:
-            converter = Converter(args)
-            converter.convert()
+            if not args.output:
+                print("Error: --output must be specified when using --convert.")
+                self.parser.print_help()  # Print usage
+                self.exit_code=1
+            else:
+                converter = Converter(args)
+                converter.convert()
+            handled=True
+        return handled
 
 
 def main(argv: list = None):

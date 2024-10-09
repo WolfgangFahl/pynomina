@@ -54,16 +54,16 @@ run_conversion() {
     fi
 
     output_file="$target_dir/${base_name%.*}_converted.$extension"
-    error_file="$target_dir/${base_name%.*}_converted.$extension-err"
+    log_file="$target_dir/${base_name%.*}.log"
 
     echo "$input_file →  $output_file: $format"
-    nomina --debug --convert "$input_file" --format "$format" > "$output_file" 2>"$error_file"
+    nomina --debug --convert "$input_file" --format "$format" --output "$output_file" &> "$log_file"
 
     if [ $? -eq 0 ]; then
         echo "✅"
     else
         echo "❌"
-        cat $error_file
+        cat $log_file
     fi
 }
 

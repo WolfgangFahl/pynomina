@@ -4,15 +4,15 @@ Created on 2024-10-04
 @author: wf
 """
 
-from typing import Dict, List, TextIO
+from typing import List
 from nomina.file_formats import AccountingFileFormats
 from nomina.ledger import Account, Book, Split, Transaction
-from nomina.nomina_converter import AccountingFileConverter
+from nomina.nomina_converter import BaseFromLedgerConverter, BaseToLedgerConverter
 from nomina.qif import SimpleQifParser
 from nomina.qif import Transaction as QifTransaction
 
 
-class QifToLedgerConverter(AccountingFileConverter):
+class QifToLedgerConverter(BaseToLedgerConverter):
     """
     Convert Quicken QIF file to a Ledger Book.
     """
@@ -24,20 +24,15 @@ class QifToLedgerConverter(AccountingFileConverter):
         Args:
             debug (bool): Whether to enable debug logging.
         """
-        formats = AccountingFileFormats()
-        from_format = formats.get_by_acronym("QIF")
-        to_format = formats.get_by_acronym("LB-YAML")
-
-        # Call the superclass constructor with the looked-up formats
-        super().__init__(from_format, to_format, debug)
-
+        super().__init__(from_format_acronym="QIF", debug=debug)
         self.qif_parser = SimpleQifParser()
 
-    def load(self, input_stream: str):
+    def load(self, input_path: str):
         """
         Load the content from the input stream.
         """
-        self.qif_content = input_stream.read()
+        with open(input_path, 'r') as input_stream:
+            self.qif_content = input_stream.read()
         self.qif_lines = self.qif_content.splitlines()
         self.qif_parser.parse(self.qif_lines)
         self.source = self.qif_parser
