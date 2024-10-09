@@ -7,7 +7,7 @@ Created on 2024-10-07
 import os
 from pathlib import Path
 
-from nomina.beancount import Beancount
+from nomina.nomina_beancount import Beancount
 from nomina.beancount_ledger import (
     BeancountToLedgerConverter,
     LedgerToBeancountConverter,

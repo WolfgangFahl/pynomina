@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import Dict, Optional
 
 from beancount.core import data
-from nomina.beancount import Beancount, Preamble
+from nomina.nomina_beancount import Beancount, Preamble
 from nomina.date_utils import DateUtils
 from nomina.file_formats import AccountingFileFormats
 from nomina.ledger import Account as LedgerAccount
