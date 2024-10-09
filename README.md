@@ -34,9 +34,31 @@ the [pain](https://wiki.bitplan.com/index.php/IT_Pain_Scale) the conversion betw
 ## Docs and Tutorials
 [Wiki](https://wiki.bitplan.com/index.php/pynomina)
 
-### Models
+## Hub & Spoke Conversion
 
-#### Ledger
+The pyNomina tool follows a **Hub and Spoke** model for
+conversion between different personal accounting file formats. The **Ledger Book (YAML/JSON)** format acts as the hub, with each supported format serving as a spoke.
+This setup simplifies conversions by allowing data to be transformed from
+any spoke to the hub and then to any other spoke format.
+
+![Hub and Spoke Diagram](https://diagrams.bitplan.com/render/png/0x5de76b90.png)
+
+### Supported Formats
+
+| Format                        | Type         | Description                                                | Wikidata Entry                                                     |
+|-------------------------------|--------------|------------------------------------------------------------|---------------------------------------------------------------------|
+| **Ledger Book YAML/JSON**      | **Hub**      | The central format of pyNomina, used for converting between formats. | [Ledger Book](https://www.wikidata.org/wiki/Q281876)                |
+| **Beancount**                  | Spoke        | A plaintext accounting format.                              | [Beancount](https://www.wikidata.org/wiki/Q130456404)               |
+| **GnuCash XML**                | Spoke        | An XML-based format used by GnuCash.                        | [GnuCash](https://www.wikidata.org/wiki/Q130445392)                 |
+| **GnuCash SQLite**             | Spoke        | A SQLite-based format used by GnuCash.                      | [GnuCash](https://www.wikidata.org/wiki/Q130445392)                 |
+| **Finanzmanager Deluxe (QIF)** | Spoke        | A variant of Quicken Interchange Format (QIF) used by Finanzmanager Deluxe. | [Finanzmanager Deluxe](https://www.wikidata.org/wiki/Q1822341)      |
+| **Quicken Interchange Format** | Spoke        | A widely used format for exchanging financial data.         | [Quicken](https://www.wikidata.org/wiki/Q750657)                    |
+| **pyNomina Banking ZV YAML**   | Spoke        | A format for exporting banking data in YAML or JSON.        | [Banking ZV](https://www.wikidata.org/wiki/Q130438296)              |
+
+
+### Structure
+
+#### Ledger-Book Hub Structure
 ![ledger module Class Diagram](https://diagrams.bitplan.com/render/png/0xfec2cab6.png)
 
 
