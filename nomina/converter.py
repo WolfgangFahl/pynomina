@@ -17,7 +17,7 @@ from nomina.gnc_ledger import GnuCashToLedgerConverter, LedgerToGnuCashConverter
 from nomina.ledger import Book
 from nomina.nomina_converter import BaseFromLedgerConverter, BaseToLedgerConverter
 from nomina.qif_ledger import QifToLedgerConverter
-
+from nomina.msmoney_ledger import MicrosoftMoneyToLedgerConverter
 
 class Converter:
     """
@@ -32,6 +32,7 @@ class Converter:
             "QIF": QifToLedgerConverter,
             "BEAN": BeancountToLedgerConverter,
             "BZV-YAML": BankingZVToLedgerConverter,
+            "MONEY": MicrosoftMoneyToLedgerConverter,
             "LB-YAML": None,
         }
         self.from_ledger: Dict[str, Type[BaseFromLedgerConverter]] = {

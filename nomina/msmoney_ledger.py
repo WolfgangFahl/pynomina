@@ -5,7 +5,7 @@ Created on 09.10.2024
 """
 
 from pathlib import Path
-
+from nomina.date_utils import DateUtils
 from nomina.ledger import Account, Book, Split, Transaction
 from nomina.msmoney import MsMoney
 from nomina.nomina_converter import BaseToLedgerConverter
@@ -54,8 +54,8 @@ class MicrosoftMoneyToLedgerConverter(BaseToLedgerConverter):
         for node, data in graph.nodes(data=True):
             if data.get("type") == "ACCT":
                 account = Account(
-                    account_id=node,
-                    name=data.get("name", ""),
+                    account_id=str(data.get('hacct')),
+                    name=data.get("szFull", ""),
                     account_type=data.get("acct_type", "EXPENSE"),
                     description=data.get("desc", ""),
                     currency=data.get("currency", "EUR"),
@@ -67,29 +67,26 @@ class MicrosoftMoneyToLedgerConverter(BaseToLedgerConverter):
         # Create transactions
         for node, data in graph.nodes(data=True):
             if data.get("type") == "TRN":
-                splits = []
-                for split_node in graph.neighbors(node):
-                    split_data = graph.nodes[split_node]
-                    if split_data.get("type") == "TRN_SPLIT":
-                        split = Split(
-                            amount=float(split_data.get("amount", 0)),
-                            account_id=split_data.get("account_id", ""),
-                            memo=split_data.get("memo", ""),
-                        )
-                        splits.append(split)
-
-                if not splits:
-                    self.log.log(
-                        "⚠️", "transaction", f"No splits found for transaction {node}"
-                    )
-
+                transaction_id = str(data.get('htrn'))
+                t_date=data.get('dt')
+                isodate=DateUtils.parse_date(t_date)
                 transaction = Transaction(
-                    isodate=data.get("date", ""),
-                    description=data.get("desc", ""),
-                    splits=splits,
-                    payee=data.get("payee", ""),
+                    isodate=isodate,
+                    description=f"Transaction {transaction_id}",  # No clear description field, using a placeholder
+                    splits=[],  # We'll handle splits later
+                    payee="",  # No clear payee field in the example
+                    memo=f"Amount: {data.get('amt', 0.0)}"
                 )
-                book.transactions[node] = transaction
+
+                # Add a single split for now, we'll refine this later
+                split = Split(
+                    amount=float(data.get('amt', 0.0)),
+                    account_id=str(data.get('hacct', '')),
+                    memo=f"Transaction {transaction_id}"
+                )
+                transaction.splits.append(split)
+
+                book.transactions[transaction_id] = transaction
 
         self.log.log(
             "✅", "transactions", f"Transactions created: {len(book.transactions)}"

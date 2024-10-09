@@ -14,6 +14,7 @@ input_files=(
     "nomina_examples/expenses_xml.gnucash"
     "nomina_examples/simple_sample.yaml"
     "nomina_examples/simple_sample_xml.gnucash"
+    "nomina_examples/sample_microsoft_money.zip"
 )
 
 # Array of output formats

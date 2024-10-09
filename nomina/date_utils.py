@@ -50,6 +50,7 @@ class DateUtils:
                 "%Y-%m-%d",
                 "%Y/%m/%d",
                 "%Y-%m-%d %H:%M:%S %z",  # Added to handle the GnuCash XML format
+                "%m/%d/%y %H:%M:%S", # Microsoft Money
             ]
 
         for date_format in date_formats:
