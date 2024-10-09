@@ -5,6 +5,7 @@ Created on 2024-10-04
 """
 
 from typing import List
+
 from nomina.file_formats import AccountingFileFormats
 from nomina.ledger import Account, Book, Split, Transaction
 from nomina.nomina_converter import BaseFromLedgerConverter, BaseToLedgerConverter
@@ -31,7 +32,7 @@ class QifToLedgerConverter(BaseToLedgerConverter):
         """
         Load the content from the input stream.
         """
-        with open(input_path, 'r') as input_stream:
+        with open(input_path, "r") as input_stream:
             self.qif_content = input_stream.read()
         self.qif_lines = self.qif_content.splitlines()
         self.qif_parser.parse(self.qif_lines)

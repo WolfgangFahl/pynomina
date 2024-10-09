@@ -4,10 +4,13 @@ Created on 2024-10-06
 @author: wf
 """
 
-from typing import TextIO, Optional
+from typing import Optional, TextIO
+
 from lodstorage.persistent_log import Log
+
 from nomina.file_formats import AccountingFileFormat, AccountingFileFormats
 from nomina.ledger import Book
+
 
 class AccountingFileConverter:
     """
@@ -30,7 +33,9 @@ class AccountingFileConverter:
             debug (bool): If True, enable debug output
         """
         formats = AccountingFileFormats()
-        self.from_format: AccountingFileFormat = formats.get_by_acronym(from_format_acronym)
+        self.from_format: AccountingFileFormat = formats.get_by_acronym(
+            from_format_acronym
+        )
         self.to_format: AccountingFileFormat = formats.get_by_acronym(to_format_acronym)
         self.debug: bool = debug
         self.source: Optional[object] = None
@@ -87,6 +92,7 @@ class AccountingFileConverter:
         if self.debug:
             target_stats.show()
 
+
 class BaseToLedgerConverter(AccountingFileConverter):
     """
     Base class for converters that convert from various formats to LedgerBook format.
@@ -121,6 +127,7 @@ class BaseToLedgerConverter(AccountingFileConverter):
         self.show_stats()
         return self.target
 
+
 class BaseFromLedgerConverter(AccountingFileConverter):
     """
     Base class for converters that convert from LedgerBook format to various formats.
@@ -148,7 +155,9 @@ class BaseFromLedgerConverter(AccountingFileConverter):
         """
         self.set_source(ledger_book)
         if self.debug:
-            print(f"Converting Ledger Book {ledger_book.name} to {self.to_format.acronym}")
+            print(
+                f"Converting Ledger Book {ledger_book.name} to {self.to_format.acronym}"
+            )
         self.target = self.convert_to_target()
         self.show_stats()
         return self.target

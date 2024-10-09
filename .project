@@ -3,6 +3,7 @@
 	<name>pynomina</name>
 	<comment></comment>
 	<projects>
+		<project>pyLoDStorage</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

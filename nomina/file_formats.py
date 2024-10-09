@@ -6,6 +6,7 @@ Created on 2024-10-06
 
 import os
 import re
+import zipfile
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
@@ -23,7 +24,8 @@ class AccountingFileFormat:
     ext: str
     wikidata_id: str
     content_pattern: str
-    encoding: str="utf-8"
+    pattern_file: Optional[str] = None
+    encoding: str = "utf-8"
 
 
 class AccountingFileFormats:
@@ -31,7 +33,8 @@ class AccountingFileFormats:
     Detector for various accounting file formats
     """
 
-    def __init__(self):
+    def __init__(self, debug: bool = False):
+        self.debug = debug
         self.formats: List[AccountingFileFormat] = [
             AccountingFileFormat(
                 name="Beancount",
@@ -55,6 +58,15 @@ class AccountingFileFormats:
                 content_pattern=r"SQLite format 3",
             ),
             AccountingFileFormat(
+                name="Microsoft Money",
+                acronym="MONEY",
+                ext=".zip",
+                wikidata_id="Q117428",
+                pattern_file="nomina.yaml",
+                content_pattern=r"NOMINA-MICROSOFT-MONEY-YAML",
+                encoding="utf-8",
+            ),
+            AccountingFileFormat(
                 name="pyNomina Ledger Book YAML",
                 acronym="LB-YAML",
                 ext=".yaml",
@@ -67,7 +79,7 @@ class AccountingFileFormats:
                 ext=".qif",
                 wikidata_id="Q750657",
                 content_pattern=r"!Option:MDY",
-                encoding="iso-8859-1"
+                encoding="iso-8859-1",
             ),
             AccountingFileFormat(
                 name="Quicken Interchange Format",
@@ -106,37 +118,75 @@ class AccountingFileFormats:
         Detect the accounting file format based on content and extension
         """
         _, file_extension = os.path.splitext(file_path)
-        # Read the first chunk of the file
+
+        if file_extension.lower() == ".zip":
+            return self._detect_from_zip(file_path)
+        else:
+            return self._detect_from_regular_file(file_path)
+
+    def _detect_from_zip(self, zip_path: str) -> Optional[AccountingFileFormat]:
+        """
+        Detect accounting file format by looking inside the zip file.
+        """
+        with zipfile.ZipFile(zip_path, "r") as zip_file:
+            for fformat in self.formats:
+                # Check if the format has a pattern_file defined
+                if (
+                    fformat.ext == ".zip"
+                    and fformat.pattern_file in zip_file.namelist()
+                ):
+                    content = self._extract_file_content_from_zip(
+                        zip_file, fformat.pattern_file
+                    )
+                    if content and self._match_pattern(
+                        content, fformat.content_pattern
+                    ):
+                        return fformat
+        return None
+
+    def _extract_file_content_from_zip(
+        self, zip_file: zipfile.ZipFile, pattern_file: str
+    ) -> Optional[str]:
+        """
+        Extract the content of a specific file within a zip and decode it.
+        """
+        with zip_file.open(pattern_file) as file:
+            raw_data = file.read()
+            return self._decode_content(raw_data)
+
+    def _detect_from_regular_file(
+        self, file_path: str
+    ) -> Optional[AccountingFileFormat]:
+        """
+        Detect accounting file format from a regular non-zip file.
+        """
         with open(file_path, "rb") as file:
-            raw_data = file.read(10000)  # Read first 10000 bytes
+            raw_data = file.read(10000)  # Read the first 10000 bytes
+            content = self._decode_content(raw_data)
 
-        # Detect encoding
+        if content:
+            for fformat in self.formats:
+                if os.path.splitext(file_path)[
+                    1
+                ].lower() == fformat.ext.lower() and self._match_pattern(
+                    content, fformat.content_pattern
+                ):
+                    return fformat
+        return None
+
+    def _decode_content(self, raw_data: bytes) -> Optional[str]:
+        """
+        Detect the encoding of the raw data and decode it into a string.
+        """
         result = chardet.detect(raw_data)
-        encoding = result["encoding"]
-
-        # Decode the raw data
+        encoding = result.get("encoding", "utf-8")
         try:
-            content = raw_data.decode(encoding)
+            return raw_data.decode(encoding)
         except UnicodeDecodeError:
-            # If the detected encoding fails, fall back to latin-1
-            content = raw_data.decode("latin-1")
+            return raw_data.decode("latin-1", errors="ignore")
 
-        for fformat in self.formats:
-            if file_extension.lower() == fformat.ext.lower() and re.search(
-                fformat.content_pattern, content, re.DOTALL | re.IGNORECASE
-            ):
-                return fformat
-
-        return None
-
-    def get_format_by_extension(self, file_path: str) -> Optional[AccountingFileFormat]:
+    def _match_pattern(self, content: str, pattern: str) -> bool:
         """
-        Get the accounting file format based on file extension only
+        Check if the content matches the given pattern.
         """
-        _, file_extension = os.path.splitext(file_path)
-
-        for format in self.formats:
-            if file_extension.lower() == format.ext.lower():
-                return format
-
-        return None
+        return bool(re.search(pattern, content, re.DOTALL | re.IGNORECASE))

@@ -49,4 +49,3 @@ class Test_LedgerGnuCash(Basetest):
                     ledger_book.to_yaml(ledger_file)
                 if self.debug:
                     g2l.show_stats()
-

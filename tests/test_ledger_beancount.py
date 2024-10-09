@@ -7,11 +7,11 @@ Created on 2024-10-07
 import os
 from pathlib import Path
 
-from nomina.nomina_beancount import Beancount
 from nomina.beancount_ledger import (
     BeancountToLedgerConverter,
     LedgerToBeancountConverter,
 )
+from nomina.nomina_beancount import Beancount
 from nomina.stats import Stats
 from tests.basetest import Basetest
 from tests.example_testcases import NominaExample
@@ -75,9 +75,9 @@ class Test_LedgerBeancount(Basetest):
                 l2b = LedgerToBeancountConverter()
                 ledger_book = l2b.load(example.ledger_file)
                 output_path = os.path.join("/tmp", f"{name}_l2b.beancount")
-                beancount=l2b.convert_from_ledger(ledger_book)
+                beancount = l2b.convert_from_ledger(ledger_book)
                 with open(output_path, "w") as bean_file:
-                    output_text=l2b.to_text()
+                    output_text = l2b.to_text()
                     bean_file.write(output_text)
                 if self.debug:
                     l2b.show_stats()

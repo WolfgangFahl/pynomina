@@ -3,15 +3,21 @@ Created on 2024-10-06
 
 @author: wf
 """
+
 from pathlib import Path
-from typing import Type, Dict
-from nomina.file_formats import AccountingFileFormats
-from nomina.ledger import Book
-from nomina.beancount_ledger import BeancountToLedgerConverter, LedgerToBeancountConverter
+from typing import Dict, Type
+
+from nomina.beancount_ledger import (
+    BeancountToLedgerConverter,
+    LedgerToBeancountConverter,
+)
 from nomina.bzv_ledger import BankingZVToLedgerConverter
+from nomina.file_formats import AccountingFileFormats
 from nomina.gnc_ledger import GnuCashToLedgerConverter, LedgerToGnuCashConverter
+from nomina.ledger import Book
+from nomina.nomina_converter import BaseFromLedgerConverter, BaseToLedgerConverter
 from nomina.qif_ledger import QifToLedgerConverter
-from nomina.nomina_converter import BaseToLedgerConverter, BaseFromLedgerConverter
+
 
 class Converter:
     """
@@ -31,7 +37,7 @@ class Converter:
         self.from_ledger: Dict[str, Type[BaseFromLedgerConverter]] = {
             "GC-XML": LedgerToGnuCashConverter,
             "BEAN": LedgerToBeancountConverter,
-            "LB-YAML":  None,
+            "LB-YAML": None,
         }
 
     def convert(self, input_path: Path = None, output_format: str = None) -> None:
@@ -50,7 +56,9 @@ class Converter:
         input_format = self.detector.detect_format(input_path)
 
         if not input_format:
-            raise ValueError(f"Unsupported or unrecognized input format for file: {input_path}")
+            raise ValueError(
+                f"Unsupported or unrecognized input format for file: {input_path}"
+            )
 
         if input_format.acronym not in self.to_ledger:
             raise ValueError(f"Unsupported input format: {input_format.acronym}")
@@ -77,10 +85,9 @@ class Converter:
         else:
             # target is a LedgerBook get the XML markup
             output_text = ledger_book.to_yaml()
-        output_stream = self.args.output.open('w')
+        output_stream = self.args.output.open("w")
         output_stream.write(output_text)
         output_stream.close()
-
 
     def get_supported_formats(self) -> Dict[str, list]:
         """

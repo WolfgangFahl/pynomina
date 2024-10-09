@@ -4,9 +4,9 @@ Created on 2024-10-06
 @author: wf
 """
 
-from pathlib import Path
 import sys
 from argparse import ArgumentParser
+from pathlib import Path
 
 from ngwidgets.cmd import WebserverCmd
 
@@ -75,11 +75,11 @@ class NominaCmd(WebserverCmd):
             if not args.output:
                 print("Error: --output must be specified when using --convert.")
                 self.parser.print_help()  # Print usage
-                self.exit_code=1
+                self.exit_code = 1
             else:
                 converter = Converter(args)
                 converter.convert()
-            handled=True
+            handled = True
         return handled
 
 

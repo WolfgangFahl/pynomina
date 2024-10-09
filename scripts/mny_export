@@ -1,0 +1,185 @@
+#!/bin/bash
+# WF 2024-10-09
+
+# Default values
+DEBUG=false
+VERBOSE=false
+VERSION="0.0.2"
+KEEP_TEMP=false
+
+# Color definitions
+blue='\033[0;34m'
+red='\033[0;31m'
+green='\033[0;32m'
+endColor='\033[0m'
+
+# Function to display colored messages with UTF-8 symbols
+color_msg() {
+  local l_color="$1"
+  local l_msg="$2"
+  echo -e "${l_color}$l_msg${endColor}"
+}
+
+# Function to display errors
+error() {
+  local l_msg="$1"
+  color_msg $red "✖ $l_msg" 1>&2
+  exit 1
+}
+
+# Function to display positive messages
+positive() {
+  local l_msg="$1"
+  color_msg $green "✔ $l_msg"
+}
+
+# Function to display negative messages
+negative() {
+  local l_msg="$1"
+  color_msg $red "✖ $l_msg"
+}
+
+# Function to display usage information
+usage() {
+  echo "Usage: $0 [OPTIONS] <file.mny>"
+  echo ""
+  echo "Options:"
+  echo "  -h, --help         Show this help message"
+  echo "  -ct, --checktools  Check if required tools are installed"
+  echo "  -d, --debug        Enable debug output"
+  echo "  --version          Show version information"
+  echo "  --keep             Keep the temporary files after conversion"
+  exit 0
+}
+
+#
+# Check if required unix tools  are available
+#
+check_tools() {
+  local tools=("mdb-ver" "stat" "shasum")
+  local tool
+
+  for tool in "${tools[@]}"; do
+    if command -v "$tool" > /dev/null 2>&1; then
+      positive "$tool is available"
+    else
+      negative "$tool is not installed or not found in PATH"
+    fi
+  done
+}
+
+# Function to create YAML declaration
+create_yaml_declaration() {
+  local MNY_FILE="$1"
+  local YAML_FILE="$2"
+
+  # Get the MDB version
+  MDB_VER=$(mdb-ver "$MNY_FILE")
+
+  # Get the file's date in ISO format (modification date)
+  FILE_DATE=$(date -r "$MNY_FILE" +"%Y-%m-%dT%H:%M:%S%z")
+
+  # Get the file size in bytes (cross-platform)
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    FILE_SIZE=$(stat -f%z "$MNY_FILE")  # macOS
+  else
+    FILE_SIZE=$(stat -c%s "$MNY_FILE")  # Linux
+  fi
+
+  # Calculate the SHA-256 hash of the file using shasum
+  FILE_HASH=$(shasum -a 256 "$MNY_FILE" | awk '{print $1}')
+  color_msg $blue "$YAML_FILE ..."
+  # Create the YAML file
+  cat <<EOF > "$YAML_FILE"
+# pynomina
+# Microsoft Money file export
+file_type: NOMINA-MICROSOFT-MONEY-YAML
+version: 0.1
+name: $MNY_FILE
+date: $FILE_DATE
+size: $FILE_SIZE
+sha256: $FILE_HASH
+jetversion: $MDB_VER
+EOF
+
+  # Check if the YAML creation was successful
+  [[ $? -ne 0 ]] && error "YAML creation failed"
+}
+
+
+#
+# export the tables of the given Microsoft Money file to json files
+#
+export_tables_to_json() {
+  local MNY_FILE="$1"
+  local OUTPUT_DIR="$2"
+
+  # Extract tables and convert them to JSON
+  TABLES=$(mdb-tables -1 "$MNY_FILE")
+  for TABLE in $TABLES; do
+      JSON_FILE="${OUTPUT_DIR}/${TABLE}.json"
+      color_msg $blue "$TABLE ..."
+      local msg="$TABLE → $JSON_FILE"
+      # export to json
+      mdb-json "$MNY_FILE" "$TABLE" > "$JSON_FILE"
+
+      # Check if the export was successful and the file is not zero size
+      if [[ $? -ne 0 || ! -s "$JSON_FILE" ]]; then
+          negative "$msg"
+          # Remove the 0-byte file if it was created
+          if [[ -f "$JSON_FILE" ]]; then
+              rm "$JSON_FILE"
+          fi
+      else
+          positive "$msg"
+      fi
+  done
+}
+
+#
+# export the given money file to a zip file that pynomina might be able to read
+#
+export_mny_to_zip() {
+  local MNY_FILE="$1"
+  local BASENAME=$(basename "$MNY_FILE" .mny)
+  local OUTPUT_DIR="/tmp/${BASENAME}_extract"
+  local ZIP_FILE="${BASENAME}.zip"
+  local YAML_FILE="${OUTPUT_DIR}/nomina.yaml"
+
+  # Create temporary directory for extraction
+  mkdir -p "$OUTPUT_DIR" || error "Failed to create output directory"
+
+  # Generate YAML declaration file
+  create_yaml_declaration "$MNY_FILE" "$YAML_FILE"
+
+  # Call the function to export tables to JSON
+  export_tables_to_json "$MNY_FILE" "$OUTPUT_DIR"
+
+  # Zip the output directory into the current directory
+  color_msg $blue "→ Creating zip archive..."
+  (cd "$OUTPUT_DIR" && zip -r "$PWD/$ZIP_FILE" . > /dev/null) || error "Failed to create zip archive"
+
+  # Clean up temporary directory unless --keep is specified
+  if [ "$KEEP_TEMP" = false ]; then
+      rm -rf "$OUTPUT_DIR" || error "Failed to remove temporary directory"
+  else
+      positive "Temporary files kept in $OUTPUT_DIR"
+  fi
+
+  positive "Conversion complete. Output file: $ZIP_FILE"
+}
+
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -ct|--checktools) check_tools; ;;
+    -d|--debug) set -x; DEBUG=true ;;
+    -h|--help) usage ;;
+    --keep) KEEP_TEMP=true ;;
+    --version) echo "Version: $VERSION"; exit 0 ;;
+    *.mny) export_mny_to_zip "$1" ;;  # Call the function directly with .mny file
+    *) error "Unknown option: $1" ;;
+  esac
+  shift
+done

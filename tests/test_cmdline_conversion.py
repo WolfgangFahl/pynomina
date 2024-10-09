@@ -8,8 +8,9 @@ import os
 import traceback
 
 from nomina.file_formats import AccountingFileFormats
-from tests.basetest import Basetest
 from nomina.nomina_cmd import NominaCmd
+from tests.basetest import Basetest
+
 
 class TestNominaConverter(Basetest):
     """
@@ -52,8 +53,8 @@ class TestNominaConverter(Basetest):
                     input_file=input_file, target_format=target_format, ext=ext
                 ):
                     input_path = self.examples_path + f"/{input_file}"
-                    from_format=self.formats.detect_format(input_path)
-                    if from_format.acronym!=target_format:
+                    from_format = self.formats.detect_format(input_path)
+                    if from_format.acronym != target_format:
                         self.run_conversion(
                             input_path, target_format=target_format, ext=ext
                         )
@@ -69,18 +70,27 @@ class TestNominaConverter(Basetest):
 
         argv = [
             "--debug",
-            "--convert", input_path,
-            "--format", target_format,
-            "--output", output_file
+            "--convert",
+            input_path,
+            "--format",
+            target_format,
+            "--output",
+            output_file,
         ]
 
         try:
             exit_code = self.cmd.cmd_main(argv)
             self.assertEqual(exit_code, 0, f"Command failed with exit code {exit_code}")
-            self.assertTrue(os.path.exists(output_file), f"Output file not created: {output_file}")
-            file_size=os.path.getsize(output_file)
-            self.assertGreater(file_size, 0, f"Output file has size {file_size}: {output_file}")
+            self.assertTrue(
+                os.path.exists(output_file), f"Output file not created: {output_file}"
+            )
+            file_size = os.path.getsize(output_file)
+            self.assertGreater(
+                file_size, 0, f"Output file has size {file_size}: {output_file}"
+            )
         except Exception as e:
             if self.debug:
                 print(traceback.format_exc())
-            self.fail(f"Conversion failed for {input_path} to {target_format}:\n{str(e)}")
+            self.fail(
+                f"Conversion failed for {input_path} to {target_format}:\n{str(e)}"
+            )

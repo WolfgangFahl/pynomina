@@ -9,13 +9,14 @@ from datetime import datetime
 from typing import Dict, Optional
 
 from beancount.core import data
-from nomina.nomina_beancount import Beancount, Preamble
+
 from nomina.date_utils import DateUtils
 from nomina.file_formats import AccountingFileFormats
 from nomina.ledger import Account as LedgerAccount
 from nomina.ledger import Book as LedgerBook
 from nomina.ledger import Split as LedgerSplit
 from nomina.ledger import Transaction as LedgerTransaction
+from nomina.nomina_beancount import Beancount, Preamble
 from nomina.nomina_converter import BaseFromLedgerConverter, BaseToLedgerConverter
 
 
@@ -31,7 +32,9 @@ class BeancountToLedgerConverter(BaseToLedgerConverter):
         Args:
             debug (bool): Whether to enable debug logging.
         """
-        super().__init__(from_format_acronym="BEAN", debug=debug)    # Look up the formats using AccountingFileFormatDetector
+        super().__init__(
+            from_format_acronym="BEAN", debug=debug
+        )  # Look up the formats using AccountingFileFormatDetector
 
         # Initialize instance variables
         self.beancount = None
@@ -53,9 +56,9 @@ class BeancountToLedgerConverter(BaseToLedgerConverter):
         self.set_source(beancount)
         return self.beancount
 
-    def set_source(self,source:LedgerBook):
-        self.source=source
-        self.beancount=source
+    def set_source(self, source: LedgerBook):
+        self.source = source
+        self.beancount = source
 
     def convert_to_target(self) -> LedgerBook:
         """Convert the Beancount file to a Ledger Book."""
@@ -147,9 +150,9 @@ class LedgerToBeancountConverter(BaseFromLedgerConverter):
         self.set_source(lbook)
         return lbook
 
-    def set_source(self,source:LedgerBook):
-        self.source=source
-        self.lbook=source
+    def set_source(self, source: LedgerBook):
+        self.source = source
+        self.lbook = source
 
     def convert_to_target(self) -> Beancount:
         """

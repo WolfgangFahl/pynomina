@@ -156,9 +156,9 @@ class LedgerToGnuCashConverter(BaseFromLedgerConverter):
         self.set_source(lbook)
         return lbook
 
-    def set_source(self,source:LedgerBook):
-        self.source=source
-        self.lbook=source
+    def set_source(self, source: LedgerBook):
+        self.source = source
+        self.lbook = source
 
     def generate_guid(self) -> str:
         """Generate a GUID for GnuCash entities."""

@@ -4,8 +4,9 @@ Created on 2024-10-05
 @author: wf
 """
 
-from typing import List, TextIO
 from pathlib import Path
+from typing import List, TextIO
+
 from nomina.bzv import Account
 from nomina.bzv import Book as BzvBook
 from nomina.bzv import Transaction as BzvTransaction
