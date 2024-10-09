@@ -8,7 +8,6 @@ from pathlib import Path
 
 from nomina.msmoney_ledger import MicrosoftMoneyToLedgerConverter
 from tests.basetest import Basetest
-from tests.example_testcases import NominaExample
 
 
 class Test_LedgerMicrosoftMoney(Basetest):

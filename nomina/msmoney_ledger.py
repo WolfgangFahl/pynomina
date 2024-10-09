@@ -42,16 +42,16 @@ class MicrosoftMoneyToLedgerConverter(BaseToLedgerConverter):
         book = Book()
         book.name = self.ms_money.header.name if self.ms_money.header else "Unknown"
         book.since = self.ms_money.header.date if self.ms_money.header else None
-
-        self.log.log("✅", "graph", f"Total nodes: {len(self.ms_money.graph.nodes)}")
+        graph=self.ms_money.graph.graph
+        self.log.log("✅", "graph", f"Total nodes: {len(graph.nodes)}")
         node_types = set(
             data.get("type", "Unknown")
-            for _, data in self.ms_money.graph.nodes(data=True)
+            for _, data in graph.nodes(data=True)
         )
         self.log.log("✅", "graph", f"Node types: {node_types}")
 
         # Create accounts
-        for node, data in self.ms_money.graph.nodes(data=True):
+        for node, data in graph.nodes(data=True):
             if data.get("type") == "ACCT":
                 account = Account(
                     account_id=node,
@@ -65,11 +65,11 @@ class MicrosoftMoneyToLedgerConverter(BaseToLedgerConverter):
         self.log.log("✅", "accounts", f"Accounts created: {len(book.accounts)}")
 
         # Create transactions
-        for node, data in self.ms_money.graph.nodes(data=True):
+        for node, data in graph.nodes(data=True):
             if data.get("type") == "TRN":
                 splits = []
-                for split_node in self.ms_money.graph.neighbors(node):
-                    split_data = self.ms_money.graph.nodes[split_node]
+                for split_node in graph.neighbors(node):
+                    split_data = graph.nodes[split_node]
                     if split_data.get("type") == "TRN_SPLIT":
                         split = Split(
                             amount=float(split_data.get("amount", 0)),
