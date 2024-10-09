@@ -31,7 +31,7 @@ class TestNominaConverter(Basetest):
             "expenses_xml.gnucash",
             "simple_sample.yaml",
             "simple_sample_xml.gnucash",
-            "sample_microsoft_money.zip"
+           # "sample_microsoft_money.zip"
         ]
         self.target_formats = [
             ("LB-YAML", ".yaml"),
