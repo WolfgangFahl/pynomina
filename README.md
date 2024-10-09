@@ -50,7 +50,7 @@ any spoke to the hub and then to any other spoke format.
 | **Ledger Book YAML/JSON**      | **Hub**      | Main format of pyNomina for converting between formats.    | [Ledger Book](https://www.wikidata.org/wiki/Q281876)                |
 | **Beancount**                  | Spoke        | A plaintext accounting format.                             | [Beancount](https://www.wikidata.org/wiki/Q130456404)               |
 | **GnuCash XML**                | Spoke        | An XML-based format used by GnuCash.                       | [GnuCash](https://www.wikidata.org/wiki/Q130445392)                 |
-| **Microsoft Money**            | Spoke        | Zip File exported with mny_export script using mdb-tools   | [GnuCash](https://www.wikidata.org/wiki/Q117428)                    |
+| **Microsoft Money**            | Spoke        | Zip File exported with mny_export script using mdb-tools   | [Microsoft Money](https://www.wikidata.org/wiki/Q117428)            |
 | **Finanzmanager Deluxe (QIF)** | Spoke        | A variant of QIF used by Finanzmanager Deluxe.             | [Finanzmanager Deluxe](https://www.wikidata.org/wiki/Q1822341)      |
 | **Quicken Interchange Format** | Spoke        | Quicken Interchange Format (QIF)                           | [Quicken](https://www.wikidata.org/wiki/Q750657)                    |
 | **pyNomina Banking ZV YAML**   | Spoke        | A format for exporting banking data in YAML or JSON.       | [Banking ZV](https://www.wikidata.org/wiki/Q130438296)              |
