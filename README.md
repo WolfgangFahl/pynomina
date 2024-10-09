@@ -41,19 +41,19 @@ conversion between different personal accounting file formats. The **Ledger Book
 This setup simplifies conversions by allowing data to be transformed from
 any spoke to the hub and then to any other spoke format.
 
-![Hub and Spoke Diagram](https://diagrams.bitplan.com/render/png/0x5de76b90.png)
+![Hub and Spoke Diagram](https://diagrams.bitplan.com/render/png/0xa0be5aae.png)
 
 ### Supported Formats
 
-| Format                        | Type         | Description                                                | Wikidata Entry                                                     |
-|-------------------------------|--------------|------------------------------------------------------------|---------------------------------------------------------------------|
-| **Ledger Book YAML/JSON**      | **Hub**      | The central format of pyNomina, used for converting between formats. | [Ledger Book](https://www.wikidata.org/wiki/Q281876)                |
-| **Beancount**                  | Spoke        | A plaintext accounting format.                              | [Beancount](https://www.wikidata.org/wiki/Q130456404)               |
-| **GnuCash XML**                | Spoke        | An XML-based format used by GnuCash.                        | [GnuCash](https://www.wikidata.org/wiki/Q130445392)                 |
-| **GnuCash SQLite**             | Spoke        | A SQLite-based format used by GnuCash.                      | [GnuCash](https://www.wikidata.org/wiki/Q130445392)                 |
-| **Finanzmanager Deluxe (QIF)** | Spoke        | A variant of Quicken Interchange Format (QIF) used by Finanzmanager Deluxe. | [Finanzmanager Deluxe](https://www.wikidata.org/wiki/Q1822341)      |
-| **Quicken Interchange Format** | Spoke        | A widely used format for exchanging financial data.         | [Quicken](https://www.wikidata.org/wiki/Q750657)                    |
-| **pyNomina Banking ZV YAML**   | Spoke        | A format for exporting banking data in YAML or JSON.        | [Banking ZV](https://www.wikidata.org/wiki/Q130438296)              |
+| Format                         | Type         | Description                                                | Wikidata Entry                                                      |
+|--------------------------------|--------------|------------------------------------------------------------|---------------------------------------------------------------------|
+| **Ledger Book YAML/JSON**      | **Hub**      | Main format of pyNomina for converting between formats.    | [Ledger Book](https://www.wikidata.org/wiki/Q281876)                |
+| **Beancount**                  | Spoke        | A plaintext accounting format.                             | [Beancount](https://www.wikidata.org/wiki/Q130456404)               |
+| **GnuCash XML**                | Spoke        | An XML-based format used by GnuCash.                       | [GnuCash](https://www.wikidata.org/wiki/Q130445392)                 |
+| **Microsoft Money**            | Spoke        | Zip File exported with mny_export script using mdb-tools   | [GnuCash](https://www.wikidata.org/wiki/Q117428)                    |
+| **Finanzmanager Deluxe (QIF)** | Spoke        | A variant of QIF used by Finanzmanager Deluxe.             | [Finanzmanager Deluxe](https://www.wikidata.org/wiki/Q1822341)      |
+| **Quicken Interchange Format** | Spoke        | Quicken Interchange Format (QIF)                           | [Quicken](https://www.wikidata.org/wiki/Q750657)                    |
+| **pyNomina Banking ZV YAML**   | Spoke        | A format for exporting banking data in YAML or JSON.       | [Banking ZV](https://www.wikidata.org/wiki/Q130438296)              |
 
 
 ### Structure
