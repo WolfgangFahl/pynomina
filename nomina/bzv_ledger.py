@@ -5,17 +5,16 @@ Created on 2024-10-05
 """
 
 from pathlib import Path
-from typing import List, TextIO
+from typing import List
 
 from nomina.bzv import Account
 from nomina.bzv import Book as BzvBook
 from nomina.bzv import Transaction as BzvTransaction
-from nomina.file_formats import AccountingFileFormats
 from nomina.ledger import Account as LedgerAccount
 from nomina.ledger import Book as LedgerBook
 from nomina.ledger import Split as LedgerSplit
 from nomina.ledger import Transaction as LedgerTransaction
-from nomina.nomina_converter import BaseFromLedgerConverter, BaseToLedgerConverter
+from nomina.nomina_converter import BaseToLedgerConverter
 
 
 class BankingZVToLedgerConverter(BaseToLedgerConverter):
@@ -86,14 +85,26 @@ class BankingZVToLedgerConverter(BaseToLedgerConverter):
     def create_ledger_transaction(
         self, transaction: BzvTransaction
     ) -> LedgerTransaction:
-        return LedgerTransaction(
+        """
+        create a ledger transaction for the given
+        Banking ZV transaction
+        """
+        memo=transaction.BookgTxt or ""
+        description=transaction.RmtInf or ""
+        payee=transaction.CdtrId
+        tx=LedgerTransaction(
             isodate=transaction.BookgDt,
-            description=transaction.BookgTxt or "No description",
+            payee=payee,
+            description=description,
             splits=self.create_ledger_splits(transaction),
-            memo=transaction.RmtInf or "",
+            memo=memo
         )
+        return tx
 
     def convert_to_target(self) -> LedgerBook:
+        """
+        convert my Banking ZV book to a ledger book
+        """
         ledger_book = LedgerBook(
             owner=self.bzv_book.owner, url=self.bzv_book.url, name=self.bzv_book.name
         )

@@ -31,6 +31,7 @@ class Transaction:
     Amt: str
     AmtCcy: str
     CdtDbtInd: str
+    CdtrId: Optional[str]
     RmtInf: Optional[str]
     BookgTxt: Optional[str]
     PrimaNotaNo: Optional[str]
