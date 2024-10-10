@@ -271,10 +271,11 @@ class LedgerToBeancountConverter(BaseFromLedgerConverter):
             )
             return None
 
-        return self.beancount.create_transaction(
+        tx= self.beancount.create_transaction(
             date=date,
             description=transaction.description,
             postings=postings,
             payee=getattr(transaction, "payee", None),
             metadata={"memo": transaction.memo} if transaction.memo else None,
         )
+        return tx
