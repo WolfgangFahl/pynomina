@@ -32,8 +32,13 @@ class BankingZVToLedgerConverter(BaseToLedgerConverter):
         """
         super().__init__(from_format_acronym="BZV-YAML", debug=debug)
 
-    def load(self, input_path: Path):
-        self.bzv_book = BzvBook.load_from_file(input_path)
+    def load(self, input_path: Path)->BzvBook:
+        bzv_book=BzvBook.load_from_file(input_path)
+        self.set_source(bzv_book)
+        return bzv_book
+
+    def set_source(self,bzv_book:BzvBook):
+        self.bzv_book = bzv_book
         self.source = self.bzv_book
         return self.source
 
