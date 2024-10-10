@@ -43,9 +43,9 @@ dependencies = [
     # xsdata for XML data binding
     "xsdata>=24.9",
     # https://pypi.org/project/piecash/
-    "piecash>=1.2.1",
-    "SQLAlchemy==1.4.48",
-    "SQLAlchemy-Utils==0.37.2",
+    #"piecash>=1.2.1",
+    #"SQLAlchemy==1.4.48",
+    #"SQLAlchemy-Utils==0.37.2",
     # https://github.com/chardet/chardet
     "chardet>=5.2.0",
     # beancount
