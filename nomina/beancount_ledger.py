@@ -191,7 +191,9 @@ class LedgerToBeancountConverter(BaseFromLedgerConverter):
         return text
 
     def get_beancount_name_for_account(self, account: LedgerAccount) -> str:
-        """ """
+        """
+        get the beancount name for the ledger account name
+        """
         self.account_type_map = {
             "ROOT": "Equity",
             "BANK": "Assets",
@@ -203,9 +205,9 @@ class LedgerToBeancountConverter(BaseFromLedgerConverter):
         }
         prefix = self.account_type_map.get(account.account_type, "Assets")
         fq_name = self.lbook.fq_account_name(account)
+        fq_name = self.beancount.sanitize_account_name(fq_name)
         if fq_name in self.account_type_map.keys():
             return None
-        fq_name = re.sub(r"[ /]", "-", fq_name)
         beancount_account_name = f"{prefix}:{fq_name}"
         return beancount_account_name
 
@@ -219,7 +221,6 @@ class LedgerToBeancountConverter(BaseFromLedgerConverter):
         Returns:
             Optional[data.Open]: The Beancount Open directive, or None if conversion fails.
         """
-
         currencies = [account.currency] if account.currency else []
         beancount_account_name = self.get_beancount_name_for_account(account)
         if not beancount_account_name:
@@ -253,6 +254,9 @@ class LedgerToBeancountConverter(BaseFromLedgerConverter):
 
         postings = []
         for split in transaction.splits:
+            if split.account_id not in self.lbook.accounts:
+                self.log.log("❌","split",f"invalid split account: {split.account_id}")
+                continue
             split_account = self.lbook.accounts[split.account_id]
             beancount_account_name = self.get_beancount_name_for_account(split_account)
             postings.append(

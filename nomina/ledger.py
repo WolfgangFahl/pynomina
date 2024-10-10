@@ -133,7 +133,7 @@ class Book:
             currencies=currency_counts,
         )
 
-    def filter(self, start_date: str = None, end_date: str = None) -> "Book":
+    def filter(self, start_date: str = None, end_date: str = None, remove_unused_accounts:bool=True) -> "Book":
         """
         Filter the transactions based on the given date range.
 
@@ -160,6 +160,8 @@ class Book:
 
         filtered_book = deepcopy(self)
         filtered_book.transactions = filtered_transactions
+        if remove_unused_accounts:
+            filtered_book.remove_unused_accounts()
         return filtered_book
 
     def create_account(
@@ -216,3 +218,44 @@ class Book:
             Optional[Account]: The found account or None if not found.
         """
         return self.accounts.get(account_id)
+
+    def calc_balances(self) -> Dict[str, Optional[float]]:
+        """
+        Calculate the balances for all accounts, including propagation up the account hierarchy.
+        Unused accounts will have a balance of None.
+
+        Returns:
+            Dict[str, Optional[float]]: A dictionary mapping account IDs to their balances or None if unused.
+        """
+        balances = {account_id: None for account_id in self.accounts}
+
+        # First pass: Calculate balances from transactions
+        for transaction in self.transactions.values():
+            for split in transaction.splits:
+                if balances[split.account_id] is None:
+                    balances[split.account_id] = split.amount
+                else:
+                    balances[split.account_id] += split.amount
+
+        # Second pass: Propagate balances up the hierarchy
+        for account in self.accounts.values():
+            if account.parent_account_id:
+                child_balance = balances[account.account_id]
+                if child_balance is not None:
+                    if balances[account.parent_account_id] is None:
+                        balances[account.parent_account_id] = child_balance
+                    else:
+                        balances[account.parent_account_id] += child_balance
+
+        return balances
+
+    def remove_unused_accounts(self) -> None:
+        """
+        Remove accounts that have not been used in any transactions.
+        """
+        balances = self.calc_balances()
+
+        # Remove accounts that have not been used (balance is None)
+        accounts_to_remove = [account_id for account_id, balance in balances.items() if balance is None]
+        for account_id in accounts_to_remove:
+            del self.accounts[account_id]

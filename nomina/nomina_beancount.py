@@ -3,7 +3,7 @@ Created on 2024-10-07
 
 @author: wf
 """
-
+import re
 import io
 from dataclasses import dataclass
 from datetime import date
@@ -77,6 +77,21 @@ class Beancount:
         """
         if entry:
             self.entries.append(entry)
+
+    def sanitize_account_name(self, fq_name) -> str:
+        """
+        Sanitize the account name by replacing spaces, slashes, dots, commas,
+        and removing paired square brackets but keeping the content inside.
+
+        https://beancount.github.io/docs/beancount_language_syntax.html#syntax-overview
+        """
+        # Remove square brackets but keep the content inside using a named group
+        fq_name = re.sub(r"\[(?P<content>.*?)\]", r"\g<content>", fq_name)
+        # Replace spaces, slashes, dots, and commas with hyphens
+        fixed_name = re.sub(r"[ /\.,%]", "-", fq_name)
+        return fixed_name
+
+
 
     def create_open_directive(
         self,
