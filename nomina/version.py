@@ -2,9 +2,8 @@
 Created on 2024-10-06
 @author: wf
 """
-
 from dataclasses import dataclass
-
+import nomina
 
 @dataclass
 class Version(object):
@@ -13,7 +12,7 @@ class Version(object):
     """
 
     name = "pynomina"
-    version = "0.0.4"
+    version = nomina.__version__
     date = "2024-10-06"
     updated = "2024-10-10"
     description = "Personal finance tool"
