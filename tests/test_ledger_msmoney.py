@@ -15,7 +15,7 @@ class Test_LedgerMicrosoftMoney(Basetest):
     test Microsoft Money handling
     """
 
-    def setUp(self, debug=True, profile=True):
+    def setUp(self, debug=False, profile=True):
         Basetest.setUp(self, debug=debug, profile=profile)
 
     def test_msmoney2ledger(self):

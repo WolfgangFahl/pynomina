@@ -65,23 +65,25 @@ class MicrosoftMoneyToLedgerConverter(BaseToLedgerConverter):
         self.log.log("✅", "accounts", f"Accounts created: {len(book.accounts)}")
 
         # Create transactions
-        for node, data in graph.nodes(data=True):
-            if data.get("type") == "TRN":
-                transaction_id = str(data.get('htrn'))
-                t_date=data.get('dt')
-                isodate=DateUtils.parse_date(t_date)
+        for _node, data in graph.nodes(data=True):
+            tx_dict=self.ms_money.to_transaction_dict(data)
+            if tx_dict is not None:
+                isodate=tx_dict["isodate"]
+                amount=tx_dict["amount"]
+                transaction_id=tx_dict["transaction_id"]
+                account_id=tx_dict["account_id"]
                 transaction = Transaction(
                     isodate=isodate,
                     description=f"Transaction {transaction_id}",  # No clear description field, using a placeholder
                     splits=[],  # We'll handle splits later
                     payee="",  # No clear payee field in the example
-                    memo=f"Amount: {data.get('amt', 0.0)}"
+                    memo=f"Amount: {amount}"
                 )
 
                 # Add a single split for now, we'll refine this later
                 split = Split(
-                    amount=float(data.get('amt', 0.0)),
-                    account_id=str(data.get('hacct', '')),
+                    amount=float(amount),
+                    account_id=account_id,
                     memo=f"Transaction {transaction_id}"
                 )
                 transaction.splits.append(split)

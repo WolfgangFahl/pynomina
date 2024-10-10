@@ -4,7 +4,6 @@ Created on 2024-10-09
 @author: wf
 """
 
-import datetime
 import os
 from json import JSONDecodeError
 from zipfile import ZipFile
@@ -14,7 +13,7 @@ from lodstorage.yamlable import lod_storable
 from nomina.date_utils import DateUtils
 from nomina.graph import Graph
 from nomina.stats import Stats
-
+from typing import Any,Dict
 
 @lod_storable
 class ZipHeader:
@@ -81,6 +80,23 @@ class MsMoney:
                     print(f"Error decoding JSON in file {file_name}: {e}")
                     continue
 
+    def to_transaction_dict(self,data)->Dict[str,Any]:
+        """
+        convert a data node to a transcaction dict with transaction_id and isodate
+        """
+        tx_dict=None
+        if data.get("type") == "TRN":
+            transaction_id = str(data.get('htrn'))
+            t_date=data.get('dt')
+            isodate=DateUtils.parse_date(t_date)
+            tx_dict={
+                "transaction_id": transaction_id,
+                "isodate":isodate,
+                "amount": data.get('amt', 0.0),
+                "account_id": data.get('hacct')
+            }
+        return tx_dict
+
     def get_stats(self) -> Stats:
         """
         Get statistics about the Microsoft Money data.
@@ -92,35 +108,27 @@ class MsMoney:
 
         # Calculate date range
         dates = []
-        for node, data in graph.nodes(data=True):
-            if data.get("type") == "TRN" and "date" in data:
-                try:
-                    date = datetime.datetime.strptime(
-                        data["date"].split()[0], "%Y-%m-%d"
-                    )
-                    dates.append(date)
-                except ValueError:
-                    print(f"Invalid date format in transaction: {data['date']}")
+        transactions=0
+        for _node, data in graph.nodes(data=True):
+            tx_dict=self.to_transaction_dict(data)
+            if tx_dict is not None:
+                transactions+=1
+                dates.append(tx_dict["isodate"])
 
         if dates:
-            min_date = DateUtils.iso_date(min(dates))
-            max_date = DateUtils.iso_date(max(dates))
+            min_date = min(dates)
+            max_date = max(dates)
         else:
             min_date = max_date = None
 
         # Count accounts and calculate currency counts
         accounts = 0
         currency_counts = {}
-        for node, data in graph.nodes(data=True):
+        for _node, data in graph.nodes(data=True):
             if data.get("type") == "ACCT":
                 accounts += 1
                 currency = data.get("currency", "UNKNOWN")
                 currency_counts[currency] = currency_counts.get(currency, 0) + 1
-
-        # Count transactions
-        transactions = sum(
-            1 for node, data in graph.nodes(data=True) if data.get("type") == "TRN"
-        )
 
         return Stats(
             accounts=accounts,

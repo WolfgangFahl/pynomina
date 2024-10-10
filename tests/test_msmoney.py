@@ -13,7 +13,7 @@ class Test_Microsoft_Money(Basetest):
     test Microsoft money handling
     """
 
-    def setUp(self, debug=True, profile=True):
+    def setUp(self, debug=False, profile=True):
         Basetest.setUp(self, debug=debug, profile=profile)
 
     def test_load_microsoft_money(self):
@@ -45,5 +45,5 @@ class Test_Microsoft_Money(Basetest):
                 print(f"File name: {ms_money.header.name}")
                 print(f"File date: {ms_money.header.date}")
 
-            print()
-            ms_money.graph.dump(["ACCT", "TRN", "TRN_SPLIT"])
+                print()
+                ms_money.graph.dump(["ACCT", "TRN", "TRN_SPLIT"])
