@@ -78,6 +78,11 @@ class Beancount:
         if entry:
             self.entries.append(entry)
 
+    def firstToUpperCaseForSplits(self,s: str) -> str:
+        parts = s.split(':')
+        capitalized_parts = [part[0].upper() + part[1:] if part else '' for part in parts]
+        return ':'.join(capitalized_parts)
+
     def sanitize_account_name(self, fq_name) -> str:
         """
         Sanitize the account name by replacing spaces, slashes, dots, commas,
@@ -89,6 +94,8 @@ class Beancount:
         fq_name = re.sub(r"\[(?P<content>.*?)\]", r"\g<content>", fq_name)
         # Replace spaces, slashes, dots, and commas with hyphens
         fixed_name = re.sub(r"[ /\.,%]", "-", fq_name)
+        # uppercase first char
+        fixed_name = self.firstToUpperCaseForSplits(fixed_name)
         return fixed_name
 
 

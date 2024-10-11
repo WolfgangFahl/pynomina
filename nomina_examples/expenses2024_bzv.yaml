@@ -7,3 +7,4 @@ owner: John Doe
 url: https://raw.githubusercontent.com/WolfgangFahl/pynomina/refs/heads/main/nomina_examples/expenses2024_bzv.yaml
 account_json_exports:
   expenses: expenses2024_bzv.json
+  taxes: taxes2022_bzv.json

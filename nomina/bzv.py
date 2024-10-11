@@ -4,7 +4,8 @@ Created on 2024-10-05
 
 @author: wf
 """
-
+from tabulate import tabulate
+from collections import Counter
 import json
 import os
 from dataclasses import dataclass, field
@@ -96,10 +97,13 @@ class Book:
         """
         self.batches = {}
         for transaction in self.transactions:
-            if transaction.BtchBookg and transaction.BtchId:
+            if not transaction.BtchId:
+                self.batches[transaction.Id] = [transaction]
+            else:
                 if transaction.BtchId not in self.batches:
                     self.batches[transaction.BtchId] = []
                 self.batches[transaction.BtchId].append(transaction)
+        pass
 
     @classmethod
     def load_from_file(cls, filename: str) -> "Book":
@@ -111,7 +115,6 @@ class Book:
             book.account_json_exports[account] = os.path.join(yaml_dir, json_path)
 
         book.load_accounts_from_accounts_dict(book.account_json_exports)
-        book.organize_batches()
         return book
 
     def get_stats(self) -> Stats:
@@ -166,6 +169,7 @@ class Book:
 
         # Create category accounts as needed
         self.create_category_accounts()
+        self.organize_batches()
 
     def add_category_account(self, category: str):
         """
@@ -194,8 +198,22 @@ class Book:
             if category:
                 self.add_category_account(category)
 
+
     @staticmethod
     def load_transactions_from_json_file(json_file_path: str) -> List[Transaction]:
         with open(json_file_path, "r", encoding="utf-8") as json_file:
             trecs = json.load(json_file)
             return [from_dict(Transaction, trec) for trec in trecs]
+
+    def show_batch_histogram(self):
+        # Count the occurrence of each batch size
+        batch_sizes = [len(batch) for batch in self.batches.values()]
+        size_count = Counter(batch_sizes)
+
+        # Prepare data for tabulate
+        table_data = [(size, count) for size, count in sorted(size_count.items())]
+        headers = ["Batch Size", "Count"]
+
+        # Print the histogram table using tabulate
+        print("\nBatch Size Histogram Table:")
+        print(tabulate(table_data, headers=headers, tablefmt="grid"))

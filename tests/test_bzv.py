@@ -29,6 +29,7 @@ class Test_BZV(Basetest):
         stats = book.get_stats()
         if self.debug:
             stats.show()
+            book.show_batch_histogram()
         example = NominaExample(
             name="expenses2024",
             owner="John Doe",

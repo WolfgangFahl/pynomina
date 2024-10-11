@@ -15,7 +15,7 @@ class Test_Beancount(Basetest):
     def setUp(self, debug=True, profile=True):
         Basetest.setUp(self, debug=debug, profile=profile)
 
-    def test_sanitze_account_names(self):
+    def test_sanitize_account_names(self):
         """
         test sanitizing account names
         """
@@ -24,7 +24,8 @@ class Test_Beancount(Basetest):
             ("Assets:[Cash]","Assets:Cash"),
             ("Assets:4240-Gas,-Strom,-Wasser","Assets:4240-Gas--Strom--Wasser"),
             ("4660-Reisekosten-Arbeitnehmer:Auto-0.52","4660-Reisekosten-Arbeitnehmer:Auto-0-52"),
-            ("3300-Wareneinkauf-7%","3300-Wareneinkauf-7-")
+            ("3300-Wareneinkauf-7%","3300-Wareneinkauf-7-"),
+            ("4610-Werbung:newsletter","4610-Werbung:Newsletter")
         ]:
             sanitized=beancount.sanitize_account_name(fq_name)
             self.assertEqual(expected_sanitized,sanitized)

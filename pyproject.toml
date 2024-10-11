@@ -50,7 +50,11 @@ dependencies = [
     "chardet>=5.2.0",
     # beancount
     # https://github.com/beancount/beancount
-    "beancount>=3.0.0"
+    # https://pypi.org/project/beancount/2.3.6/
+    # was previous version
+    "beancount>=3.0.0",
+    # https://pypi.org/project/tabulate/
+    "tabulate>=0.9.0"
 ]
 
 dynamic = ["version"]

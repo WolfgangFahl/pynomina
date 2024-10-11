@@ -85,24 +85,32 @@ class BankingZVToLedgerConverter(BaseToLedgerConverter):
 
         return splits
 
-    def create_ledger_transaction(
-        self, transaction: BzvTransaction
-    ) -> LedgerTransaction:
+    def create_batch_transaction(self, batch_id: str, batch_transactions: List[BzvTransaction]) -> LedgerTransaction:
         """
-        create a ledger transaction for the given
-        Banking ZV transaction
+        Create a single ledger transaction for a batch of BZV transactions
         """
-        memo=transaction.BookgTxt or ""
-        description=transaction.RmtInf or ""
-        payee=transaction.CdtrId
-        tx=LedgerTransaction(
-            isodate=transaction.BookgDt,
+        is_split=len(batch_transactions)>1 and batch_id is not None
+        first_tx = batch_transactions[0]
+        if is_split:
+            description = first_tx.Notes
+            payee=first_tx.RmtdNm
+            memo=""
+        else:
+            description=first_tx.RmtInf
+            payee=first_tx.RmtdNm
+            memo=f"{first_tx.BookgTxt}:{first_tx.CdtrId}"
+        splits = []
+        for tx in batch_transactions:
+            splits.extend(self.create_ledger_splits(tx))
+
+        lt= LedgerTransaction(
+            isodate=first_tx.BookgDt,
             payee=payee,
             description=description,
-            splits=self.create_ledger_splits(transaction),
+            splits=splits,
             memo=memo
         )
-        return tx
+        return lt
 
     def convert_to_target(self) -> LedgerBook:
         """
@@ -116,10 +124,12 @@ class BankingZVToLedgerConverter(BaseToLedgerConverter):
             ledger_account = self.create_ledger_account(bzv_account)
             ledger_book.accounts[ledger_account.account_id] = ledger_account
 
-        for transaction in self.bzv_book.transactions:
-            ledger_transaction = self.create_ledger_transaction(transaction)
-            transaction_id = f"{ledger_transaction.isodate}:{transaction.Id}"
+        # Process all batches (including single-transaction "batches")
+        for batch_id, batch_transactions in self.bzv_book.batches.items():
+            ledger_transaction = self.create_batch_transaction(batch_id, batch_transactions)
+            transaction_id = f"{ledger_transaction.isodate}:{batch_id}"
             ledger_book.transactions[transaction_id] = ledger_transaction
+
         self.target = ledger_book
         return ledger_book
 
