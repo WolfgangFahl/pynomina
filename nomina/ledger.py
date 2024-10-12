@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Dict, List, Optional
 
 from lodstorage.yamlable import lod_storable
-
+from lodstorage.persistent_log import Log
 from nomina.date_utils import DateUtils
 from nomina.stats import Stats
 
@@ -81,6 +81,7 @@ class Book:
         """
         post construct actions
         """
+        self.log=Log()
 
     def fq_account_name(self, account: Account, separator: str = ":") -> str:
         """
@@ -224,7 +225,7 @@ class Book:
         """
         return self.accounts.get(account_id)
 
-    def calc_balances(self) -> Dict[str, Optional[float]]:
+    def calc_balances(self,lenient:bool=False) -> Dict[str, Optional[float]]:
         """
         Calculate the balances for all accounts, including propagation up the account hierarchy.
         Unused accounts will have a balance of None.
@@ -235,12 +236,20 @@ class Book:
         balances = {account_id: None for account_id in self.accounts}
 
         # First pass: Calculate balances from transactions
-        for transaction in self.transactions.values():
-            for split in transaction.splits:
-                if balances[split.account_id] is None:
-                    balances[split.account_id] = split.amount
+        for ti,transaction in enumerate(self.transactions.values(),start=1):
+            for si,split in enumerate(transaction.splits,start=1):
+                if not split:
+                    msg=f"split {si} of transaction {ti} is None"
+                    if lenient:
+                        self.log.log("⚠️","split",msg)
+                    else:
+                        raise ValueError(msg)
+                    continue
                 else:
-                    balances[split.account_id] += split.amount
+                    if balances[split.account_id] is None:
+                        balances[split.account_id] = split.amount
+                    else:
+                        balances[split.account_id] += split.amount
 
         # Second pass: Propagate balances up the hierarchy
         for account in self.accounts.values():
