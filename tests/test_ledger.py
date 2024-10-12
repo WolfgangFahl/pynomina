@@ -37,14 +37,14 @@ class Test_Ledger(Basetest):
         """
         test removing unused accounts
         """
-        empty_example=self.examples["empty"]
-        ledger_book=empty_example.get_ledger_book()
-        stats=ledger_book.get_stats()
+        empty_example = self.examples["empty"]
+        ledger_book = empty_example.get_ledger_book()
+        stats = ledger_book.get_stats()
         if self.debug:
             stats.show()
-        self.assertEqual(64,stats.accounts)
+        self.assertEqual(64, stats.accounts)
         ledger_book.remove_unused_accounts()
-        stats=ledger_book.get_stats()
+        stats = ledger_book.get_stats()
         if self.debug:
             stats.show()
-        self.assertEqual(0,stats.accounts)
+        self.assertEqual(0, stats.accounts)

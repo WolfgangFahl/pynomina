@@ -6,6 +6,7 @@ Created on 2024-10-09
 
 import os
 from json import JSONDecodeError
+from typing import Any, Dict
 from zipfile import ZipFile
 
 from lodstorage.yamlable import lod_storable
@@ -13,7 +14,7 @@ from lodstorage.yamlable import lod_storable
 from nomina.date_utils import DateUtils
 from nomina.graph import Graph
 from nomina.stats import Stats
-from typing import Any,Dict
+
 
 @lod_storable
 class ZipHeader:
@@ -80,20 +81,20 @@ class MsMoney:
                     print(f"Error decoding JSON in file {file_name}: {e}")
                     continue
 
-    def to_transaction_dict(self,data)->Dict[str,Any]:
+    def to_transaction_dict(self, data) -> Dict[str, Any]:
         """
         convert a data node to a transcaction dict with transaction_id and isodate
         """
-        tx_dict=None
+        tx_dict = None
         if data.get("type") == "TRN":
-            transaction_id = str(data.get('htrn'))
-            t_date=data.get('dt')
-            isodate=DateUtils.parse_date(t_date)
-            tx_dict={
+            transaction_id = str(data.get("htrn"))
+            t_date = data.get("dt")
+            isodate = DateUtils.parse_date(t_date)
+            tx_dict = {
                 "transaction_id": transaction_id,
-                "isodate":isodate,
-                "amount": data.get('amt', 0.0),
-                "account_id": data.get('hacct')
+                "isodate": isodate,
+                "amount": data.get("amt", 0.0),
+                "account_id": data.get("hacct"),
             }
         return tx_dict
 
@@ -108,11 +109,11 @@ class MsMoney:
 
         # Calculate date range
         dates = []
-        transactions=0
+        transactions = 0
         for _node, data in graph.nodes(data=True):
-            tx_dict=self.to_transaction_dict(data)
+            tx_dict = self.to_transaction_dict(data)
             if tx_dict is not None:
-                transactions+=1
+                transactions += 1
                 dates.append(tx_dict["isodate"])
 
         if dates:

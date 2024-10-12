@@ -15,9 +15,10 @@ from nomina.bzv_ledger import BankingZVToLedgerConverter
 from nomina.file_formats import AccountingFileFormats
 from nomina.gnc_ledger import GnuCashToLedgerConverter, LedgerToGnuCashConverter
 from nomina.ledger import Book
+from nomina.msmoney_ledger import MicrosoftMoneyToLedgerConverter
 from nomina.nomina_converter import BaseFromLedgerConverter, BaseToLedgerConverter
 from nomina.qif_ledger import QifToLedgerConverter
-from nomina.msmoney_ledger import MicrosoftMoneyToLedgerConverter
+
 
 class Converter:
     """

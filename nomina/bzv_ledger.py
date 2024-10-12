@@ -31,15 +31,15 @@ class BankingZVToLedgerConverter(BaseToLedgerConverter):
         """
         super().__init__(from_format_acronym="BZV-YAML", debug=debug)
 
-    def load(self, input_path: Path)->BzvBook:
+    def load(self, input_path: Path) -> BzvBook:
         """
         load the book
         """
-        bzv_book=BzvBook.load_from_file(input_path)
+        bzv_book = BzvBook.load_from_file(input_path)
         self.set_source(bzv_book)
         return bzv_book
 
-    def set_source(self,bzv_book:BzvBook):
+    def set_source(self, bzv_book: BzvBook):
         self.bzv_book = bzv_book
         self.source = self.bzv_book
         return self.source
@@ -85,34 +85,36 @@ class BankingZVToLedgerConverter(BaseToLedgerConverter):
 
         return splits
 
-    def create_batch_transaction(self, batch_id: str, batch_transactions: List[BzvTransaction]) -> LedgerTransaction:
+    def create_batch_transaction(
+        self, batch_id: str, batch_transactions: List[BzvTransaction]
+    ) -> LedgerTransaction:
         """
         Create a single ledger transaction for a batch of BZV transactions
         """
-        is_split=len(batch_transactions)>1 and batch_id is not None
+        is_split = len(batch_transactions) > 1 and batch_id is not None
         first_tx = batch_transactions[0]
-        memo=f"{batch_id}"
+        memo = f"{batch_id}"
         if is_split:
             description = first_tx.Notes
-            payee=first_tx.RmtdNm
+            payee = first_tx.RmtdNm
         else:
-            description=first_tx.RmtInf
-            payee=first_tx.RmtdNm
-            delim="->"
+            description = first_tx.RmtInf
+            payee = first_tx.RmtdNm
+            delim = "->"
             if first_tx.BookgTxt:
-                memo+=f"{delim}{first_tx.BookgTxt}"
+                memo += f"{delim}{first_tx.BookgTxt}"
             if first_tx.CdtrId:
-                memo+=f"{delim}{first_tx.CdtrId}"
+                memo += f"{delim}{first_tx.CdtrId}"
         splits = []
         for tx in batch_transactions:
             splits.extend(self.create_ledger_splits(tx))
 
-        lt= LedgerTransaction(
+        lt = LedgerTransaction(
             isodate=first_tx.BookgDt,
             payee=payee,
             description=description,
             splits=splits,
-            memo=memo
+            memo=memo,
         )
         return lt
 
@@ -130,7 +132,9 @@ class BankingZVToLedgerConverter(BaseToLedgerConverter):
 
         # Process all batches (including single-transaction "batches")
         for batch_id, batch_transactions in self.bzv_book.batches.items():
-            ledger_transaction = self.create_batch_transaction(batch_id, batch_transactions)
+            ledger_transaction = self.create_batch_transaction(
+                batch_id, batch_transactions
+            )
             transaction_id = f"{ledger_transaction.isodate}:{batch_id}"
             ledger_book.transactions[transaction_id] = ledger_transaction
 

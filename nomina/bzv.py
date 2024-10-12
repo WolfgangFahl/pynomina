@@ -4,16 +4,17 @@ Created on 2024-10-05
 
 @author: wf
 """
-from tabulate import tabulate
-from collections import Counter
+
 import json
 import os
+from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict, List, Optional
 
 from dacite import from_dict
 from lodstorage.yamlable import lod_storable
+from tabulate import tabulate
 
 from nomina.stats import Stats
 
@@ -26,7 +27,9 @@ class Transaction:
     """
 
     # Transaction identifiers
-    BtchId: Optional[str]  # Batch identifier, e.g., "987654321" will be the same for all splits of a transaction
+    BtchId: Optional[
+        str
+    ]  # Batch identifier, e.g., "987654321" will be the same for all splits of a transaction
     Id: str  # Transaction identifier, e.g., "111222333"
     AcctId: str  # Account identifier, e.g., "123456789"
 
@@ -50,7 +53,9 @@ class Transaction:
     RmtdAcctCtry: Optional[str]  # Country, e.g., "US"
     RmtdAcctIBAN: Optional[str]  # IBAN, e.g., "US00987654321098765432"
     RmtdNm: Optional[str]  # Name, e.g., "Tech Solutions Inc."
-    RmtdUltmtNm: Optional[str]  # Ultimate name, e.g., "Global Tech Solutions Corporation"
+    RmtdUltmtNm: Optional[
+        str
+    ]  # Ultimate name, e.g., "Global Tech Solutions Corporation"
 
     # Additional transaction information
     BankRef: Optional[str]  # Bank reference number
@@ -61,7 +66,9 @@ class Transaction:
     CdtrId: Optional[str]  # Creditor identifier
     Flag: str  # Transaction flag, e.g., "None"
     GVC: Optional[str]  # German 'Geschäftsvorfallcode' (business transaction code)
-    Notes: Optional[str]  # Additional notes, e.g., "Ref: INV-2024-001 / Training Service EREF: 1234567890 ABWA: Technology Services Ltd"
+    Notes: Optional[
+        str
+    ]  # Additional notes, e.g., "Ref: INV-2024-001 / Training Service EREF: 1234567890 ABWA: Technology Services Ltd"
     PrimaNotaNo: Optional[str]  # Prima nota number
     ReadStatus: bool  # Whether the transaction has been read, e.g., True
     RmtInf: Optional[str]  # Remittance information
@@ -197,7 +204,6 @@ class Book:
             category = transaction.Category
             if category:
                 self.add_category_account(category)
-
 
     @staticmethod
     def load_transactions_from_json_file(json_file_path: str) -> List[Transaction]:

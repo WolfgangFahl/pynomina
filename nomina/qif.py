@@ -9,6 +9,7 @@ see https://en.wikipedia.org/wiki/Quicken_Interchange_Format
 """
 
 import logging
+import os
 import re
 from collections import Counter
 from dataclasses import dataclass, field
@@ -180,7 +181,8 @@ class SimpleQifParser:
     """
     a QIF parser
     """
-    name: Optional[str]=None
+
+    name: Optional[str] = None
     currency: str = "EUR"
     default_account_type = "EXPENSE"
     options: Dict[str, str] = field(default_factory=dict)
@@ -226,6 +228,7 @@ class SimpleQifParser:
         self,
         qif_file: str,
         encoding="iso-8859-1",
+        name: str = None,
         verbose: bool = False,
         debug: bool = False,
     ):
@@ -235,9 +238,13 @@ class SimpleQifParser:
         Args:
             qif_file (str): Path to the input QIF file.
             encoding (str): File encoding. Defaults to 'iso-8859-1'.
+            name (str): name to set if None use the basename of the qif_file
             verbose (bool): if True give verbose output
             debug (bool): if True show debug output
         """
+        if name is None:
+            name = os.path.basename(qif_file)
+        self.name = name
         with open(qif_file, "r", encoding=encoding) as file:
             content = file.readlines()
         self.parse(content, verbose=verbose, debug=debug)

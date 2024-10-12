@@ -255,7 +255,9 @@ class LedgerToBeancountConverter(BaseFromLedgerConverter):
         postings = []
         for split in transaction.splits:
             if split.account_id not in self.lbook.accounts:
-                self.log.log("❌","split",f"invalid split account: {split.account_id}")
+                self.log.log(
+                    "❌", "split", f"invalid split account: {split.account_id}"
+                )
                 continue
             split_account = self.lbook.accounts[split.account_id]
             beancount_account_name = self.get_beancount_name_for_account(split_account)
@@ -271,7 +273,7 @@ class LedgerToBeancountConverter(BaseFromLedgerConverter):
             )
             return None
 
-        tx= self.beancount.create_transaction(
+        tx = self.beancount.create_transaction(
             date=date,
             description=transaction.description,
             postings=postings,

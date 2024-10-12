@@ -2,8 +2,11 @@
 Created on 2024-10-06
 @author: wf
 """
+
 from dataclasses import dataclass
+
 import nomina
+
 
 @dataclass
 class Version(object):

@@ -3,8 +3,9 @@ Created on 2024-10-07
 
 @author: wf
 """
-import re
+
 import io
+import re
 from dataclasses import dataclass
 from datetime import date
 from typing import Dict, List, Optional, Tuple
@@ -78,10 +79,12 @@ class Beancount:
         if entry:
             self.entries.append(entry)
 
-    def firstToUpperCaseForSplits(self,s: str) -> str:
-        parts = s.split(':')
-        capitalized_parts = [part[0].upper() + part[1:] if part else '' for part in parts]
-        return ':'.join(capitalized_parts)
+    def firstToUpperCaseForSplits(self, s: str) -> str:
+        parts = s.split(":")
+        capitalized_parts = [
+            part[0].upper() + part[1:] if part else "" for part in parts
+        ]
+        return ":".join(capitalized_parts)
 
     def sanitize_account_name(self, fq_name) -> str:
         """
@@ -97,8 +100,6 @@ class Beancount:
         # uppercase first char
         fixed_name = self.firstToUpperCaseForSplits(fixed_name)
         return fixed_name
-
-
 
     def create_open_directive(
         self,

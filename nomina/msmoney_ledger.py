@@ -5,6 +5,7 @@ Created on 09.10.2024
 """
 
 from pathlib import Path
+
 from nomina.date_utils import DateUtils
 from nomina.ledger import Account, Book, Split, Transaction
 from nomina.msmoney import MsMoney
@@ -42,11 +43,10 @@ class MicrosoftMoneyToLedgerConverter(BaseToLedgerConverter):
         book = Book()
         book.name = self.ms_money.header.name if self.ms_money.header else "Unknown"
         book.since = self.ms_money.header.date if self.ms_money.header else None
-        graph=self.ms_money.graph.graph
+        graph = self.ms_money.graph.graph
         self.log.log("✅", "graph", f"Total nodes: {len(graph.nodes)}")
         node_types = set(
-            data.get("type", "Unknown")
-            for _, data in graph.nodes(data=True)
+            data.get("type", "Unknown") for _, data in graph.nodes(data=True)
         )
         self.log.log("✅", "graph", f"Node types: {node_types}")
 
@@ -54,7 +54,7 @@ class MicrosoftMoneyToLedgerConverter(BaseToLedgerConverter):
         for node, data in graph.nodes(data=True):
             if data.get("type") == "ACCT":
                 account = Account(
-                    account_id=str(data.get('hacct')),
+                    account_id=str(data.get("hacct")),
                     name=data.get("szFull", ""),
                     account_type=data.get("acct_type", "EXPENSE"),
                     description=data.get("desc", ""),
@@ -66,25 +66,25 @@ class MicrosoftMoneyToLedgerConverter(BaseToLedgerConverter):
 
         # Create transactions
         for _node, data in graph.nodes(data=True):
-            tx_dict=self.ms_money.to_transaction_dict(data)
+            tx_dict = self.ms_money.to_transaction_dict(data)
             if tx_dict is not None:
-                isodate=tx_dict["isodate"]
-                amount=tx_dict["amount"]
-                transaction_id=tx_dict["transaction_id"]
-                account_id=tx_dict["account_id"]
+                isodate = tx_dict["isodate"]
+                amount = tx_dict["amount"]
+                transaction_id = tx_dict["transaction_id"]
+                account_id = tx_dict["account_id"]
                 transaction = Transaction(
                     isodate=isodate,
                     description=f"Transaction {transaction_id}",  # No clear description field, using a placeholder
                     splits=[],  # We'll handle splits later
                     payee="",  # No clear payee field in the example
-                    memo=f"Amount: {amount}"
+                    memo=f"Amount: {amount}",
                 )
 
                 # Add a single split for now, we'll refine this later
                 split = Split(
                     amount=float(amount),
                     account_id=account_id,
-                    memo=f"Transaction {transaction_id}"
+                    memo=f"Transaction {transaction_id}",
                 )
                 transaction.splits.append(split)
 

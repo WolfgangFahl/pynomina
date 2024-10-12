@@ -3,6 +3,7 @@ Created on 2024-10-04
 
 @author: wf
 """
+
 import os
 from typing import List
 
@@ -31,17 +32,13 @@ class QifToLedgerConverter(BaseToLedgerConverter):
         """
         Load the content from the input stream.
         """
-        self.qif_parser.name = os.path.basename(input_path)
-        with open(input_path, "r") as input_stream:
-            self.qif_content = input_stream.read()
-        qif_lines = self.qif_content.splitlines()
-        self.qif_parser.parse(qif_lines)
+        self.qif_parser.parse_file(input_path)
         self.set_source(self.qif_parser)
         return self.qif_parser
 
-    def set_source(self,source:SimpleQifParser):
-        self.qif_parser=source
-        self.source=source
+    def set_source(self, source: SimpleQifParser):
+        self.qif_parser = source
+        self.source = source
 
     def to_text(self) -> str:
         """

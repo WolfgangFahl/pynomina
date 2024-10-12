@@ -133,7 +133,12 @@ class Book:
             currencies=currency_counts,
         )
 
-    def filter(self, start_date: str = None, end_date: str = None, remove_unused_accounts:bool=True) -> "Book":
+    def filter(
+        self,
+        start_date: str = None,
+        end_date: str = None,
+        remove_unused_accounts: bool = True,
+    ) -> "Book":
         """
         Filter the transactions based on the given date range.
 
@@ -256,6 +261,8 @@ class Book:
         balances = self.calc_balances()
 
         # Remove accounts that have not been used (balance is None)
-        accounts_to_remove = [account_id for account_id, balance in balances.items() if balance is None]
+        accounts_to_remove = [
+            account_id for account_id, balance in balances.items() if balance is None
+        ]
         for account_id in accounts_to_remove:
             del self.accounts[account_id]
