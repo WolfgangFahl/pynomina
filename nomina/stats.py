@@ -9,7 +9,6 @@ from typing import Any, Dict, Optional
 
 from lodstorage.yamlable import lod_storable
 
-
 @lod_storable
 class Stats:
     """

@@ -91,14 +91,18 @@ class BankingZVToLedgerConverter(BaseToLedgerConverter):
         """
         is_split=len(batch_transactions)>1 and batch_id is not None
         first_tx = batch_transactions[0]
+        memo=f"{batch_id}"
         if is_split:
             description = first_tx.Notes
             payee=first_tx.RmtdNm
-            memo=""
         else:
             description=first_tx.RmtInf
             payee=first_tx.RmtdNm
-            memo=f"{first_tx.BookgTxt}:{first_tx.CdtrId}"
+            delim="->"
+            if first_tx.BookgTxt:
+                memo+=f"{delim}{first_tx.BookgTxt}"
+            if first_tx.CdtrId:
+                memo+=f"{delim}{first_tx.CdtrId}"
         splits = []
         for tx in batch_transactions:
             splits.extend(self.create_ledger_splits(tx))

@@ -180,7 +180,7 @@ class SimpleQifParser:
     """
     a QIF parser
     """
-
+    name: Optional[str]=None
     currency: str = "EUR"
     default_account_type = "EXPENSE"
     options: Dict[str, str] = field(default_factory=dict)

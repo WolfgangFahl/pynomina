@@ -14,7 +14,7 @@ class Version(object):
     name = "pynomina"
     version = nomina.__version__
     date = "2024-10-06"
-    updated = "2024-10-11"
+    updated = "2024-10-12"
     description = "Personal finance tool"
     authors = "Wolfgang Fahl"
 

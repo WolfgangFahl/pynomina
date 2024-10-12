@@ -3,12 +3,11 @@ Created on 2024-10-04
 
 @author: wf
 """
-
+import os
 from typing import List
 
-from nomina.file_formats import AccountingFileFormats
 from nomina.ledger import Account, Book, Split, Transaction
-from nomina.nomina_converter import BaseFromLedgerConverter, BaseToLedgerConverter
+from nomina.nomina_converter import BaseToLedgerConverter
 from nomina.qif import SimpleQifParser
 from nomina.qif import Transaction as QifTransaction
 
@@ -32,12 +31,17 @@ class QifToLedgerConverter(BaseToLedgerConverter):
         """
         Load the content from the input stream.
         """
+        self.qif_parser.name = os.path.basename(input_path)
         with open(input_path, "r") as input_stream:
             self.qif_content = input_stream.read()
-        self.qif_lines = self.qif_content.splitlines()
-        self.qif_parser.parse(self.qif_lines)
-        self.source = self.qif_parser
+        qif_lines = self.qif_content.splitlines()
+        self.qif_parser.parse(qif_lines)
+        self.set_source(self.qif_parser)
         return self.qif_parser
+
+    def set_source(self,source:SimpleQifParser):
+        self.qif_parser=source
+        self.source=source
 
     def to_text(self) -> str:
         """
