@@ -118,6 +118,7 @@ class Transaction(ParseRecord):
     """
     isodate: Optional[str] = None
     amount: Optional[str] = None
+    name: Optional[str] = None # Vorgang
     payee: Optional[str] = None
     memo: Optional[str] = None
     category: Optional[str] = None
@@ -152,6 +153,12 @@ class Transaction(ParseRecord):
                 self.amount_float = self.parse_amount(self.amount)
         except Exception as ex:
             self.errors["amount"] = ex
+
+        if self.name:
+            if self.memo:
+                self.memo=f"{self.name}:{self.memo}"
+            else:
+                self.memo=self.name
 
         self.split_amounts_float = []
         for i, amount in enumerate(self.split_amounts):
@@ -302,6 +309,8 @@ class SimpleQifParser:
                 first = line[0]
                 key = self.field_names.get(first)
                 value = line[1:].strip()
+                if key == "name":
+                    pass
                 if key in ["split_category", "split_memo", "split_amount"]:
                     if key=="split_category":
                         value=SplitCategory(value)
