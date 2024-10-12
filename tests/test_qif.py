@@ -4,7 +4,7 @@ Created on 2024-09-30
 @author: wf
 """
 
-from nomina.qif import SplitTarget
+from nomina.qif import SplitCategory
 from tests.basetest import Basetest
 from tests.example_testcases import NominaExample
 
@@ -18,23 +18,57 @@ class Test_QifParser(Basetest):
         Basetest.setUp(self, debug=debug, profile=profile)
         self.examples = NominaExample.get_examples()
 
-    def test_split_targets(self):
+    def test_split_categories(self):
         """
-        test split targets
+        test Quicken Interchange Format (QIF) split_categories
         """
-
-        test_targets = [
-            "[Savings]",
-            "Checking",
-            "Expenses:Groceries",
-            "Checking/Groceries",
-            "Kursgewinne:Realisierte Gewinne|[PrivatGiro]",
+        test_cases = [
+            (
+                "[Savings]",
+                None,
+                "Savings",
+                None
+            ),
+            (
+                "Checking",  # split_category
+                "Checking",
+                None,
+                None
+            ),
+            (
+                "Expenses:Groceries",
+                "Expenses:Groceries",
+                None,
+                None
+            ),
+            (
+                "Kursgewinne:Realisierte Gewinne|[PrivatGiro]",
+                "Kursgewinne:Realisierte Gewinne",
+                "PrivatGiro",
+                None
+            ),
+            (
+                "[Mehrwertsteuer]/_VATCode_N1_I",
+                None,
+                "Mehrwertsteuer",
+                "_VATCode_N1_I",
+            ),
+            (
+                "/_VATCode_B_I",
+                None,
+                None,
+                "_VATCode_B_I",
+            ),
         ]
+        debug=self.debug
+        debug=True
+        for qif_markup, ex_category,ex_account,ex_class in test_cases:
+            split_category=SplitCategory(qif_markup)
+            if debug:
+                print(f"{qif_markup}:{split_category}")
+            self.assertEqual(ex_category,split_category.category,qif_markup)
+            self.assertEqual(ex_account,split_category.account,qif_markup)
 
-        for test_target in test_targets:
-            split_target = SplitTarget(test_target)
-            if self.debug:
-                print(f"{test_target}:{split_target}")
 
     def test_qif_examples(self):
         """

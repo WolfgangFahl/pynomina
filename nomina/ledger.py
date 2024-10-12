@@ -153,16 +153,17 @@ class Book:
         filtered_transactions = {}
 
         for transaction_id, transaction in self.transactions.items():
-            transaction_date = transaction.isodate.split()[
-                0
-            ]  # Extract 'YYYY-MM-DD' part
+            if transaction.isodate is not None:
+                transaction_date = transaction.isodate.split()[
+                    0
+                ]  # Extract 'YYYY-MM-DD' part
 
-            in_range = (not start_date or transaction_date >= start_date) and (
-                not end_date or transaction_date <= end_date
-            )
+                in_range = (not start_date or transaction_date >= start_date) and (
+                    not end_date or transaction_date <= end_date
+                )
 
-            if in_range:
-                filtered_transactions[transaction_id] = transaction
+                if in_range:
+                    filtered_transactions[transaction_id] = transaction
 
         filtered_book = deepcopy(self)
         filtered_book.transactions = filtered_transactions

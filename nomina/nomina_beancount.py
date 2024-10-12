@@ -147,8 +147,13 @@ class Beancount:
         meta = data.new_metadata("", 0, metadata)
         txn_postings = []
         for account, amount_value, currency in postings:
-            amt = amount.Amount(amount.D(str(amount_value)), currency)
-            txn_postings.append(data.Posting(account, amt, None, None, None, None))
+            if amount_value is None:
+                pass
+            else:
+                amount_str=str(amount_value)
+                amount_d=amount.D(amount_str)
+                amt = amount.Amount(amount_d, currency)
+                txn_postings.append(data.Posting(account, amt, None, None, None, None))
 
         tx = data.Transaction(
             meta,

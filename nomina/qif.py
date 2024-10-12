@@ -21,57 +21,67 @@ from lodstorage.yamlable import lod_storable
 from nomina.date_utils import DateUtils
 from nomina.stats import Stats
 
-
-@dataclass
-class SplitTarget:
-    target: str
-    transfer_account: Optional[str] = field(init=False, default=None)
-    account: Optional[str] = field(init=False, default=None)
-    subaccount: Optional[str] = field(init=False, default=None)
-    account_category: Optional[str] = field(init=False, default=None)
-    category: Optional[str] = field(init=False, default=None)
-    account_action: Optional[str] = field(init=False, default=None)
-
-    def __post_init__(self):
-        if "[" in self.target and "]" in self.target:
-            match = re.match(r"\[([^\]]+)\]", self.target)
-            if match:
-                self.transfer_account = match.group(1)
-        elif "|" in self.target:
-            match = re.match(r"([^|]+)\|x", self.target)
-            if match:
-                self.account_action = match.group(1)
-        elif "/" in self.target:
-            match = re.match(r"([^/]+)/([^/]+)", self.target)
-            if match:
-                self.account_category = match.group(1)
-                self.category = match.group(2)
-        elif ":" in self.target:
-            match = re.match(r"([^:]+):([^:]+)", self.target)
-            if match:
-                self.account = match.group(1)
-                self.subaccount = match.group(2)
-        else:
-            self.account = self.target
-
-    def __repr__(self):
-        attrs = ", ".join(
-            f"{k}={v!r}" for k, v in self.__dict__.items() if v is not None
-        )
-        return f"SplitTarget({attrs})"
-
-
 @dataclass
 class ParseRecord:
+    """
+    generic parse record to keep track of lines and errors
+    """
     start_line: int = 0
     end_line: int = 0
     errors: Dict[str, Exception] = field(default_factory=dict)
+
+@dataclass
+class SplitCategory:
+    """
+    a Quicken Interchange Format (QIF) Split target
+    """
+    markup: str # the original QIF markup for the split category
+    # parts of split
+    category:Optional[str]=None
+    account: Optional[str]=None
+    split_class: Optional[str]=None
+    # flags
+    has_pipe: bool=False
+    has_slash: bool=False
+
+    def __post_init__(self):
+        """
+        parse my target string
+        """
+        self.has_pipe="|" in self.markup
+        self.has_slash="/" in self.markup
+        # qif holds the markup which still needs processing
+        qif=self.markup
+
+        pattern = r'\[(?P<account_name>[^\]]+)\]'
+
+        # Search for the pattern in the split_category string
+        match = re.search(pattern, self.markup)
+
+        if match:
+            # Extract the account name from the named group
+            self.account = match.group('account_name')
+            qif=qif.replace(f"[{self.account}]","")
+        else:
+            self.account = None
+
+        if self.has_pipe:
+            qif=qif.replace("|","")
+
+        if self.has_slash:
+            # Split by the first slash to separate category and class
+            parts = qif.split("/", 1)
+            if len(parts) > 1:
+                # If there's a class after the slash, set it
+                self.split_class = parts[1]
+                qif=parts[0]
+        if qif:
+            self.category=qif
 
 
 @lod_storable
 class ErrorRecord(ParseRecord):
     line: Optional[str] = None
-
 
 @lod_storable
 class Category(ParseRecord):
@@ -81,7 +91,6 @@ class Category(ParseRecord):
 
     name: Optional[str] = None
     description: str = ""
-
 
 @lod_storable
 class QifClass(ParseRecord):
@@ -102,13 +111,11 @@ class Account(ParseRecord):
     currency: str = "EUR"  # Default to EUR
     parent_account_id: Optional[str] = None
 
-
 @lod_storable
 class Transaction(ParseRecord):
     """
     a single transaction
     """
-
     isodate: Optional[str] = None
     amount: Optional[str] = None
     payee: Optional[str] = None
@@ -117,9 +124,9 @@ class Transaction(ParseRecord):
     number: Optional[str] = None
     cleared: Optional[str] = None
     address: Optional[str] = None
-    split_category: List[str] = field(default_factory=list)
-    split_memo: List[str] = field(default_factory=list)
-    split_amount: List[str] = field(default_factory=list)
+    split_categories: List[SplitCategory] = field(default_factory=list)
+    split_memos: List[str] = field(default_factory=list)
+    split_amounts: List[str] = field(default_factory=list)
     account: Optional[Account] = None
     qif_class: Optional[QifClass] = None
     category: Optional[Category] = None
@@ -147,7 +154,7 @@ class Transaction(ParseRecord):
             self.errors["amount"] = ex
 
         self.split_amounts_float = []
-        for i, amount in enumerate(self.split_amount):
+        for i, amount in enumerate(self.split_amounts):
             try:
                 self.split_amounts_float.append(self.parse_amount(amount))
             except Exception as ex:
@@ -296,6 +303,8 @@ class SimpleQifParser:
                 key = self.field_names.get(first)
                 value = line[1:].strip()
                 if key in ["split_category", "split_memo", "split_amount"]:
+                    if key=="split_category":
+                        value=SplitCategory(value)
                     if key not in current_record:
                         current_record[key] = []
                     current_record[key].append(value)

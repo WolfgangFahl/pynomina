@@ -4,14 +4,12 @@ Created on 2024-10-04
 @author: wf
 """
 
-import os
 from typing import List
 
 from nomina.ledger import Account, Book, Split, Transaction
 from nomina.nomina_converter import BaseToLedgerConverter
-from nomina.qif import SimpleQifParser
+from nomina.qif import SimpleQifParser, SplitCategory
 from nomina.qif import Transaction as QifTransaction
-
 
 class QifToLedgerConverter(BaseToLedgerConverter):
     """
@@ -87,18 +85,18 @@ class QifToLedgerConverter(BaseToLedgerConverter):
         qt: QifTransaction,
         ledger_book: Book,
         amount: float,
-        target: str,
+        split_category: SplitCategory,
         memo: str,
         negative: bool = False,
     ) -> Split:
         """
-        Helper method to add a split for a given target (category or account).
+        Helper method to add a split for a given split category
 
         Args:
             qt(QifTransaction): the QIF transaction the split is for
             ledger_book (Book): The ledger book containing accounts.
             amount (float): The amount for the split.
-            target (str): The target name (category or account).
+            split_category (str): The split category.
             memo (str): The memo for the split.
             negative(bool): if True the amount should be negated
 
@@ -109,25 +107,22 @@ class QifToLedgerConverter(BaseToLedgerConverter):
             ValueError: If the target is not found in the ledger book.
         """
         qt_msg = str(qt)
-        if target is None:
-            msg = f"empty split target for {qt_msg}"
-            self.log.log("⚠️", "split", msg)
+        # determine the account
+        if split_category is None:
             return
-        target_name = target.strip(
-            "[]"
-        )  # Remove brackets if present -> target is account
-        if target.startswith("["):
-            account = ledger_book.lookup_account(target_name)
         else:
-            # try regular account first
-            account = ledger_book.lookup_account(target_name)
-            # if that does not work fallback to trying lookup the category
-            if not account:
-                target_name = f"Category:{target_name}"
-                account = ledger_book.lookup_account(target_name)
+            if split_category.account:
+                account = ledger_book.lookup_account(split_category.account)
+            elif split_category.category:
+                # try regular account first
+                account = ledger_book.lookup_account(split_category.category)
+                # if that does not work fallback to trying lookup the category
+                if not account:
+                    account_name = f"Category:{split_category.category}"
+                    account = ledger_book.lookup_account(account_name)
 
         if account is None:
-            msg = f"invalid split target {target} for {qt_msg}"
+            msg = f"invalid split category {split_category} for {qt_msg}"
             self.log.log("⚠️", "split", msg)
             account = ledger_book.lookup_account("Dangling")
 
@@ -142,81 +137,73 @@ class QifToLedgerConverter(BaseToLedgerConverter):
         return split
 
     def calc_splits(
-        self, transaction_data: Transaction, ledger_book: Book
+        self, qt: Transaction, ledger_book: Book
     ) -> List[Split]:
         """
         Create the debit and credit splits for a QIF transaction.
 
         Args:
-            transaction_data (Transaction): The QIF transaction object containing transaction details.
+            qt (Transaction): The QIF transaction object containing transaction details.
             ledger_book (Book): The ledger book containing accounts.
 
         Returns:
             List[Split]: A list of splits for the transaction.
         """
         splits = []
-        transaction_account = ledger_book.lookup_account(transaction_data.account.name)
+        transaction_account = ledger_book.lookup_account(qt.account.name)
 
         if transaction_account is None:
-            qt_msg = str(transaction_data)
-            msg = f"unknown account in {qt_msg}"
+            qt_msg = str(qt)
+            msg = f"unknown account {qt.account.name} in {qt_msg}"
             self.log.log("⚠️", "account", msg)
             return []
 
         # Handle split transactions
-        if transaction_data.split_category and transaction_data.split_amounts_float:
-            total_amount = transaction_data.total_split_amount()
+        if qt.split_categories and qt.split_amounts_float:
+            total_amount = qt.total_split_amount()
 
             # Create debit split for the main transaction account
             splits.append(
                 Split(
                     amount=total_amount,
                     account_id=transaction_account.account_id,
-                    memo=transaction_data.memo,
+                    memo=qt.memo,
                 )
             )
 
             # Create credit splits for each split category
-            for i in range(len(transaction_data.split_category)):
-                split_target = transaction_data.split_category[i]
-                split_amount = transaction_data.split_amounts_float[i]
+            for i in range(len(qt.split_category)):
+                split_category = qt.split_category[i]
+                split_amount = qt.split_amounts_float[i]
                 split_memo = (
-                    transaction_data.split_memo[i]
-                    if i < len(transaction_data.split_memo)
+                    qt.split_memo[i]
+                    if i < len(qt.split_memo)
                     else ""
                 )
 
                 splits.append(
                     self.add_split(
-                        transaction_data,
+                        qt,
                         ledger_book=ledger_book,
                         amount=-split_amount,
-                        target=split_target,
+                        split_category=split_category,
                         memo=split_memo,
                     )
                 )
         else:
             # Handle non-split transactions
-            splits.append(
-                Split(
-                    amount=transaction_data.amount_float,
+            debit_split=Split(
+                    amount=qt.amount_float,
                     account_id=transaction_account.account_id,
-                    memo=transaction_data.memo,
+                    memo=qt.memo,
                 )
-            )
-
+            splits.append(debit_split)
+            #credit_split=Split(
+            #    amount=-qt.amount_float,
+            #    account_id=None,
+            #    memo=qt.memo)
             # Create credit split for the category account (source of funds)
-            splits.append(
-                self.add_split(
-                    transaction_data,
-                    ledger_book=ledger_book,
-                    amount=transaction_data.amount_float,
-                    target=transaction_data.category,
-                    memo=transaction_data.memo,
-                    negative=True,
-                )
-            )
-
+            #splits.append(credit_split)
         return splits
 
     def convert_to_target(self) -> Book:
@@ -228,20 +215,21 @@ class QifToLedgerConverter(BaseToLedgerConverter):
         """
         # Create a new Book instance
         ledger_book = Book()
+        ledger_book.name=self.source.name
 
         # Create accounts map from QIF data
         self.create_account_lookup(ledger_book)
 
         # Add transactions to the ledger book
-        for transaction_id, transaction_data in self.qif_parser.transactions.items():
-            splits = self.calc_splits(transaction_data, ledger_book)
+        for transaction_id, qt in self.qif_parser.transactions.items():
+            splits = self.calc_splits(qt, ledger_book)
 
             ledger_transaction = Transaction(
-                isodate=transaction_data.isodate,
-                description=transaction_data.memo,
+                isodate=qt.isodate,
+                description=qt.memo,
                 splits=splits,
-                payee=transaction_data.payee,
-                memo=transaction_data.memo,
+                payee=qt.payee,
+                memo=qt.memo,
             )
 
             ledger_book.transactions[transaction_id] = ledger_transaction
