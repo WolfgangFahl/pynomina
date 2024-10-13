@@ -48,8 +48,8 @@ class BookView:
                     self.book = LedgerBook.load_from_yaml_file(self.file_path)
                 elif self.file_format.acronym == "BEAN":
                     bc2lg = BeancountToLedgerConverter()
-                    beancount = converter.load(self.file_path)
-                    self.book = converter.convert_to_target()
+                    _beancount = bc2lg.load(self.file_path)
+                    self.book = bc2lg.convert_to_target()
                 else:
                     ui.notify(
                         f"can not handle file format {self.file_format.acronym} (yet)"
