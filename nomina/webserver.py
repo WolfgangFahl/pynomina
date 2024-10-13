@@ -37,6 +37,9 @@ class NominaWebServer(InputWebserver):
         InputWebserver.__init__(self, config=NominaWebServer.get_config())
 
     def configure_run(self):
+        """
+        configure things before the server rung
+        """
         root_path = (
             self.args.root_path
             if self.args.root_path
@@ -71,9 +74,16 @@ class NominaSolution(InputWebSolution):
             client (Client): The client instance this context is associated with.
         """
         super().__init__(webserver, client)  # Call to the superclass constructor
+        self.book_view=None
+        self.root_path=self.webserver.root_path
+        self.input = "example.beancount"
 
     def prepare_ui(self):
+        """
+        prepare the user interface
+        """
         InputWebSolution.prepare_ui(self)
+        # try styling for account view
         ui.add_head_html(
             """<style>
 .amount-negative {
@@ -95,7 +105,24 @@ class NominaSolution(InputWebSolution):
             input_str (str): The input string representing a URL or local file.
             with_render(bool): if True also render
         """
-        await self.book_view.read_and_optionally_render(input_str, with_render)
+        if self.book_view is not None:
+            await self.book_view.read_and_optionally_render(input_str, with_render)
+
+    def configure_menu(self):
+        """
+        configure additional non-standard menu entries
+        """
+        self.tool_button(
+                tooltip="reload",
+                icon="refresh",
+                handler=self.reload_file,
+        )
+        if self.is_local:
+            self.tool_button(
+                tooltip="open",
+                icon="file_open",
+                handler=self.open_file,
+            )
 
     def show_ui(self):
         """
@@ -111,4 +138,4 @@ class NominaSolution(InputWebSolution):
         """
         await self.setup_content_div(self.show_ui)
         if self.args.input:
-            await self.book_view.read_and_optionally_render(self.args.input)
+            await self.read_and_optionally_render(self.args.input)

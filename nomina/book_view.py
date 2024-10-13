@@ -8,9 +8,8 @@ import os
 
 from ngwidgets.combobox import ComboBox
 from ngwidgets.input_webserver import InputWebSolution
-from ngwidgets.local_filepicker import LocalFilePicker
 from nicegui import background_tasks, run, ui
-
+from ngwidgets.file_selector import FileSelector
 from nomina.account_view import AccountView
 from nomina.file_formats import AccountingFileFormats
 from nomina.ledger import Book as LedgerBook
@@ -22,6 +21,9 @@ class BookView:
     """
 
     def __init__(self, solution: InputWebSolution):
+        """
+        constructor
+        """
         self.solution = solution
         self.is_local = self.solution.is_local
         self.file_formats = AccountingFileFormats()
@@ -30,7 +32,7 @@ class BookView:
 
     async def load_book(self):
         """
-        load book
+        load Ledger Book
         """
         try:
             self.summary_row.clear()
@@ -103,18 +105,14 @@ class BookView:
         """
         setup my user interface
         """
-        with ui.row() as self.button_row:
-            self.solution.tool_button(
-                tooltip="reload",
-                icon="refresh",
-                handler=self.solution.reload_file,
-            )
-            if self.is_local:
-                self.solution.tool_button(
-                    tooltip="open",
-                    icon="file_open",
-                    handler=self.solution.open_file,
-                )
         with ui.row() as self.summary_row:
             self.book_html = ui.html("Welcome to Nomina!")
-        self.account_view = AccountView(self)
+            if not self.is_local:
+                extensions = {"Ledgerbook": ".yaml", "beancount": ".beancount"}
+                self.example_selector = FileSelector(
+                    path=self.solution.root_path,
+                    handler=self.read_and_optionally_render,
+                    extensions=extensions,
+                )
+        with ui.row() as self.account_row:
+            self.account_view = AccountView(self, self.account_row)
