@@ -39,7 +39,7 @@ dependencies = [
     # https://pypi.org/project/py-sidif/
     "py-sidif>=0.2.0",
     # NiceGUI widgets
-    "ngwidgets>=0.17.2",
+    "ngwidgets>=0.19.2",
     # xsdata for XML data binding
     "xsdata>=24.9",
     # https://pypi.org/project/piecash/

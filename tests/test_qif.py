@@ -23,29 +23,14 @@ class Test_QifParser(Basetest):
         test Quicken Interchange Format (QIF) split_categories
         """
         test_cases = [
-            (
-                "[Savings]",
-                None,
-                "Savings",
-                None
-            ),
-            (
-                "Checking",  # split_category
-                "Checking",
-                None,
-                None
-            ),
-            (
-                "Expenses:Groceries",
-                "Expenses:Groceries",
-                None,
-                None
-            ),
+            ("[Savings]", None, "Savings", None),
+            ("Checking", "Checking", None, None),  # split_category
+            ("Expenses:Groceries", "Expenses:Groceries", None, None),
             (
                 "Kursgewinne:Realisierte Gewinne|[PrivatGiro]",
                 "Kursgewinne:Realisierte Gewinne",
                 "PrivatGiro",
-                None
+                None,
             ),
             (
                 "[Mehrwertsteuer]/_VATCode_N1_I",
@@ -60,15 +45,14 @@ class Test_QifParser(Basetest):
                 "_VATCode_B_I",
             ),
         ]
-        debug=self.debug
-        debug=True
-        for qif_markup, ex_category,ex_account,ex_class in test_cases:
-            split_category=SplitCategory(qif_markup)
+        debug = self.debug
+        debug = True
+        for qif_markup, ex_category, ex_account, ex_class in test_cases:
+            split_category = SplitCategory(qif_markup)
             if debug:
                 print(f"{qif_markup}:{split_category}")
-            self.assertEqual(ex_category,split_category.category,qif_markup)
-            self.assertEqual(ex_account,split_category.account,qif_markup)
-
+            self.assertEqual(ex_category, split_category.category, qif_markup)
+            self.assertEqual(ex_account, split_category.account, qif_markup)
 
     def test_qif_examples(self):
         """

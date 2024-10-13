@@ -11,6 +11,7 @@ from nomina.nomina_converter import BaseToLedgerConverter
 from nomina.qif import SimpleQifParser, SplitCategory
 from nomina.qif import Transaction as QifTransaction
 
+
 class QifToLedgerConverter(BaseToLedgerConverter):
     """
     Convert Quicken QIF file to a Ledger Book.
@@ -136,9 +137,7 @@ class QifToLedgerConverter(BaseToLedgerConverter):
         split = Split(amount=amount, account_id=account.account_id, memo=memo)
         return split
 
-    def calc_splits(
-        self, qt: Transaction, ledger_book: Book
-    ) -> List[Split]:
+    def calc_splits(self, qt: Transaction, ledger_book: Book) -> List[Split]:
         """
         Create the debit and credit splits for a QIF transaction.
 
@@ -175,11 +174,7 @@ class QifToLedgerConverter(BaseToLedgerConverter):
             for i in range(len(qt.split_category)):
                 split_category = qt.split_category[i]
                 split_amount = qt.split_amounts_float[i]
-                split_memo = (
-                    qt.split_memo[i]
-                    if i < len(qt.split_memo)
-                    else ""
-                )
+                split_memo = qt.split_memo[i] if i < len(qt.split_memo) else ""
 
                 splits.append(
                     self.add_split(
@@ -192,18 +187,18 @@ class QifToLedgerConverter(BaseToLedgerConverter):
                 )
         else:
             # Handle non-split transactions
-            debit_split=Split(
-                    amount=qt.amount_float,
-                    account_id=transaction_account.account_id,
-                    memo=qt.memo,
-                )
+            debit_split = Split(
+                amount=qt.amount_float,
+                account_id=transaction_account.account_id,
+                memo=qt.memo,
+            )
             splits.append(debit_split)
-            #credit_split=Split(
+            # credit_split=Split(
             #    amount=-qt.amount_float,
             #    account_id=None,
             #    memo=qt.memo)
             # Create credit split for the category account (source of funds)
-            #splits.append(credit_split)
+            # splits.append(credit_split)
         return splits
 
     def convert_to_target(self) -> Book:
@@ -215,7 +210,7 @@ class QifToLedgerConverter(BaseToLedgerConverter):
         """
         # Create a new Book instance
         ledger_book = Book()
-        ledger_book.name=self.source.name
+        ledger_book.name = self.source.name
 
         # Create accounts map from QIF data
         self.create_account_lookup(ledger_book)

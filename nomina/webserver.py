@@ -9,8 +9,10 @@ import os
 from ngwidgets.input_webserver import InputWebserver, InputWebSolution
 from ngwidgets.webserver import WebserverConfig
 from nicegui import Client, ui
-from nomina.version import Version
+
 from nomina.book_view import BookView
+from nomina.version import Version
+
 
 class NominaWebServer(InputWebserver):
     """
@@ -70,6 +72,21 @@ class NominaSolution(InputWebSolution):
         """
         super().__init__(webserver, client)  # Call to the superclass constructor
 
+    def prepare_ui(self):
+        InputWebSolution.prepare_ui(self)
+        ui.add_head_html(
+            """<style>
+.amount-negative {
+    color: red;
+}
+.amount-positive {
+    color: blue;
+}
+</style>
+""",
+            shared=True,
+        )
+
     async def read_and_optionally_render(self, input_str, with_render: bool = False):
         """
         Reads the given input and optionally renders the given input
@@ -78,14 +95,14 @@ class NominaSolution(InputWebSolution):
             input_str (str): The input string representing a URL or local file.
             with_render(bool): if True also render
         """
-        self.book_view.read_and_optionally_render(input_str,with_render)
+        await self.book_view.read_and_optionally_render(input_str, with_render)
 
     def show_ui(self):
         """
         show the ui
         """
         with self.content_div:
-            self.book_view=BookView(self)
+            self.book_view = BookView(self)
             self.book_view.setup_ui()
 
     async def home(self):

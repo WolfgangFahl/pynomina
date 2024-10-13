@@ -150,8 +150,8 @@ class Beancount:
             if amount_value is None:
                 pass
             else:
-                amount_str=str(amount_value)
-                amount_d=amount.D(amount_str)
+                amount_str = str(amount_value)
+                amount_d = amount.D(amount_str)
                 amt = amount.Amount(amount_d, currency)
                 txn_postings.append(data.Posting(account, amt, None, None, None, None))
 

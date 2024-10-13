@@ -71,7 +71,7 @@ class AccountingFileFormats:
                 acronym="LB-YAML",
                 ext=".yaml",
                 wikidata_id="Q281876",
-                content_pattern=r"file_type:\s*NOMINA-LEDGER-BOOK-YAML|accounts:\s*\w+:",
+                content_pattern=r"file_type:\s*NOMINA-LEDGER-BOOK-YAML",
             ),
             AccountingFileFormat(
                 name="FinanzmanagerDeluxe",
@@ -166,12 +166,11 @@ class AccountingFileFormats:
 
         if content:
             for fformat in self.formats:
-                if os.path.splitext(file_path)[
-                    1
-                ].lower() == fformat.ext.lower() and self._match_pattern(
-                    content, fformat.content_pattern
-                ):
-                    return fformat
+                _name, ext = os.path.splitext(file_path)
+                if ext.lower() == fformat.ext.lower():
+                    match = self._match_pattern(content, fformat.content_pattern)
+                    if match:
+                        return fformat
         return None
 
     def _decode_content(self, raw_data: bytes) -> Optional[str]:

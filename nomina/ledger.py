@@ -9,8 +9,9 @@ from dataclasses import field
 from datetime import datetime
 from typing import Dict, List, Optional
 
-from lodstorage.yamlable import lod_storable
 from lodstorage.persistent_log import Log
+from lodstorage.yamlable import lod_storable
+
 from nomina.date_utils import DateUtils
 from nomina.stats import Stats
 
@@ -48,7 +49,7 @@ class Transaction:
     """
 
     isodate: str
-    description: str
+    description: Optional[str] = None
     splits: List[Split] = field(default_factory=list)
     payee: Optional[str] = None
     memo: Optional[str] = ""
@@ -68,7 +69,7 @@ class Book:
     Represents a ledger book containing accounts and transactions.
     """
 
-    file_type: str = "NOMINA-LB-YAML"
+    file_type: str = "NOMINA-LEDGER-BOOK-YAML"
     version: str = "0.1"
     name: Optional[str] = None
     owner: Optional[str] = None
@@ -81,7 +82,7 @@ class Book:
         """
         post construct actions
         """
-        self.log=Log()
+        self.log = Log()
 
     def fq_account_name(self, account: Account, separator: str = ":") -> str:
         """
@@ -226,7 +227,7 @@ class Book:
         """
         return self.accounts.get(account_id)
 
-    def calc_balances(self,lenient:bool=False) -> Dict[str, Optional[float]]:
+    def calc_balances(self, lenient: bool = False) -> Dict[str, Optional[float]]:
         """
         Calculate the balances for all accounts, including propagation up the account hierarchy.
         Unused accounts will have a balance of None.
@@ -237,12 +238,12 @@ class Book:
         balances = {account_id: None for account_id in self.accounts}
 
         # First pass: Calculate balances from transactions
-        for ti,transaction in enumerate(self.transactions.values(),start=1):
-            for si,split in enumerate(transaction.splits,start=1):
+        for ti, transaction in enumerate(self.transactions.values(), start=1):
+            for si, split in enumerate(transaction.splits, start=1):
                 if not split:
-                    msg=f"split {si} of transaction {ti} is None"
+                    msg = f"split {si} of transaction {ti} is None"
                     if lenient:
-                        self.log.log("⚠️","split",msg)
+                        self.log.log("⚠️", "split", msg)
                     else:
                         raise ValueError(msg)
                     continue

@@ -21,52 +21,56 @@ from lodstorage.yamlable import lod_storable
 from nomina.date_utils import DateUtils
 from nomina.stats import Stats
 
+
 @dataclass
 class ParseRecord:
     """
     generic parse record to keep track of lines and errors
     """
+
     start_line: int = 0
     end_line: int = 0
     errors: Dict[str, Exception] = field(default_factory=dict)
+
 
 @dataclass
 class SplitCategory:
     """
     a Quicken Interchange Format (QIF) Split target
     """
-    markup: str # the original QIF markup for the split category
+
+    markup: str  # the original QIF markup for the split category
     # parts of split
-    category:Optional[str]=None
-    account: Optional[str]=None
-    split_class: Optional[str]=None
+    category: Optional[str] = None
+    account: Optional[str] = None
+    split_class: Optional[str] = None
     # flags
-    has_pipe: bool=False
-    has_slash: bool=False
+    has_pipe: bool = False
+    has_slash: bool = False
 
     def __post_init__(self):
         """
         parse my target string
         """
-        self.has_pipe="|" in self.markup
-        self.has_slash="/" in self.markup
+        self.has_pipe = "|" in self.markup
+        self.has_slash = "/" in self.markup
         # qif holds the markup which still needs processing
-        qif=self.markup
+        qif = self.markup
 
-        pattern = r'\[(?P<account_name>[^\]]+)\]'
+        pattern = r"\[(?P<account_name>[^\]]+)\]"
 
         # Search for the pattern in the split_category string
         match = re.search(pattern, self.markup)
 
         if match:
             # Extract the account name from the named group
-            self.account = match.group('account_name')
-            qif=qif.replace(f"[{self.account}]","")
+            self.account = match.group("account_name")
+            qif = qif.replace(f"[{self.account}]", "")
         else:
             self.account = None
 
         if self.has_pipe:
-            qif=qif.replace("|","")
+            qif = qif.replace("|", "")
 
         if self.has_slash:
             # Split by the first slash to separate category and class
@@ -74,14 +78,15 @@ class SplitCategory:
             if len(parts) > 1:
                 # If there's a class after the slash, set it
                 self.split_class = parts[1]
-                qif=parts[0]
+                qif = parts[0]
         if qif:
-            self.category=qif
+            self.category = qif
 
 
 @lod_storable
 class ErrorRecord(ParseRecord):
     line: Optional[str] = None
+
 
 @lod_storable
 class Category(ParseRecord):
@@ -91,6 +96,7 @@ class Category(ParseRecord):
 
     name: Optional[str] = None
     description: str = ""
+
 
 @lod_storable
 class QifClass(ParseRecord):
@@ -111,14 +117,16 @@ class Account(ParseRecord):
     currency: str = "EUR"  # Default to EUR
     parent_account_id: Optional[str] = None
 
+
 @lod_storable
 class Transaction(ParseRecord):
     """
     a single transaction
     """
+
     isodate: Optional[str] = None
     amount: Optional[str] = None
-    name: Optional[str] = None # Vorgang
+    name: Optional[str] = None  # Vorgang
     payee: Optional[str] = None
     memo: Optional[str] = None
     category: Optional[str] = None
@@ -156,9 +164,9 @@ class Transaction(ParseRecord):
 
         if self.name:
             if self.memo:
-                self.memo=f"{self.name}:{self.memo}"
+                self.memo = f"{self.name}:{self.memo}"
             else:
-                self.memo=self.name
+                self.memo = self.name
 
         self.split_amounts_float = []
         for i, amount in enumerate(self.split_amounts):
@@ -312,8 +320,8 @@ class SimpleQifParser:
                 if key == "name":
                     pass
                 if key in ["split_category", "split_memo", "split_amount"]:
-                    if key=="split_category":
-                        value=SplitCategory(value)
+                    if key == "split_category":
+                        value = SplitCategory(value)
                     if key not in current_record:
                         current_record[key] = []
                     current_record[key].append(value)

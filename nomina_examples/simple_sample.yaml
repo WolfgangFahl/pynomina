@@ -1,3 +1,5 @@
+file_type: NOMINA-LEDGER-BOOK-YAML
+version: 0.1
 owner: Sebastien de Menten
 url: https://github.com/sdementen/piecash/blob/master/gnucash_books/simple_sample.gnucash
 accounts:
