@@ -93,7 +93,7 @@ class BookView:
         if with_render:
             # just to use the flag
             pass
-        if self.is_local and os.path.isfile(input_str):
+        if os.path.isfile(input_str):
             self.file_path = input_str
             # https://github.com/zauberzeug/nicegui/discussions/2729
             self.summary_row.clear()
