@@ -13,7 +13,7 @@ from ngwidgets.file_selector import FileSelector
 from nomina.account_view import AccountView
 from nomina.file_formats import AccountingFileFormats
 from nomina.ledger import Book as LedgerBook
-
+from nomina.beancount_ledger import BeancountToLedgerConverter
 
 class BookView:
     """
@@ -50,7 +50,7 @@ class BookView:
                     bc2lg = BeancountToLedgerConverter()
                     beancount = converter.load(self.file_path)
                     self.book = converter.convert_to_target()
-                else
+                else:
                     ui.notify(
                         f"can not handle file format {self.file_format.acronym} (yet)"
                     )
