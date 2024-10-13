@@ -44,31 +44,36 @@ class BookView:
                     ui.notify("could not detect file format")
                     return
 
-                if not self.file_format.acronym == "LB-YAML":
+                if self.file_format.acronym == "LB-YAML":
+                    self.book = LedgerBook.load_from_yaml_file(self.file_path)
+                elif self.file_format.acronym == "BEAN":
+                    bc2lg = BeancountToLedgerConverter()
+                    beancount = converter.load(self.file_path)
+                    self.book = converter.convert_to_target()
+                else
                     ui.notify(
                         f"can not handle file format {self.file_format.acronym} (yet)"
                     )
                     return
-                else:
-                    self.book = LedgerBook.load_from_yaml_file(self.file_path)
-                    self.stats = self.book.get_stats()
-                    with ui.card() as self.summary_card:
-                        ui.label(f"{self.file_path} ({self.file_format.acronym})")
-                        ui.label(f"{self.stats.start_date}-{self.stats.end_date}")
-                        ui.label(
-                            f"{self.stats.accounts} accounts, {self.stats.transactions} transactions"
-                        )
-
-                    account_names = []
-                    for _account_id, account in self.book.accounts.items():
-                        account_names.append(account.name)
-                    ComboBox(
-                        label="account",
-                        options=account_names,
-                        width_chars=30,
-                        clearable=True,
-                        on_change=self.select_account,
+                self.stats = self.book.get_stats()
+                with ui.card() as self.summary_card:
+                    filename=os.path.basename(self.file_path)
+                    ui.label(f"{filename} ({self.file_format.acronym})")
+                    ui.label(f"{self.stats.start_date}-{self.stats.end_date}")
+                    ui.label(
+                        f"{self.stats.accounts} accounts, {self.stats.transactions} transactions"
                     )
+
+                account_names = []
+                for _account_id, account in self.book.accounts.items():
+                    account_names.append(account.name)
+                ComboBox(
+                    label="account",
+                    options=account_names,
+                    width_chars=30,
+                    clearable=True,
+                    on_change=self.select_account,
+                )
         except Exception as ex:
             self.solution.handle_exception(ex)
 
