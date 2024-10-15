@@ -128,7 +128,13 @@ class BookView:
         with ui.row() as self.summary_row:
             self.book_html = ui.html("Welcome to Nomina!")
             if not self.is_local:
-                extensions = {"Ledgerbook": ".yaml", "beancount": ".beancount", "Money-Zip":".zip"}
+                extensions = {
+                    "Ledgerbook": ".yaml",
+                    "beancount": ".beancount",
+                    "MSMoney-Zip":".zip",
+                    "MSMoney": ".mny",
+                    "Quicken": ".qif"
+                }
                 self.example_selector = FileSelector(
                     path=self.solution.root_path,
                     handler=self.read_and_optionally_render,
