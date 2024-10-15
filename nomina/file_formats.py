@@ -58,12 +58,20 @@ class AccountingFileFormats:
                 content_pattern=r"SQLite format 3",
             ),
             AccountingFileFormat(
-                name="Microsoft Money",
-                acronym="MONEY",
+                name="Microsoft Money - Zipped JSON dumps",
+                acronym="MS-MONEY-ZIP",
                 ext=".zip",
                 wikidata_id="Q117428",
                 pattern_file="nomina.yaml",
                 content_pattern=r"NOMINA-MICROSOFT-MONEY-YAML",
+                encoding="utf-8",
+            ),
+            AccountingFileFormat(
+                name="Microsoft Money",
+                acronym="MS-MONEY",
+                ext=".mny",
+                wikidata_id="Q117428",
+                content_pattern=r"",
                 encoding="utf-8",
             ),
             AccountingFileFormat(
@@ -86,7 +94,7 @@ class AccountingFileFormats:
                 acronym="QIF",
                 ext=".qif",
                 wikidata_id="Q750657",
-                content_pattern=r"!Account.*!Type:Cash",
+                content_pattern=r"(?:\^.*?){5}", # at least five ^ entries
             ),
             AccountingFileFormat(
                 name="Subsembly JSON",

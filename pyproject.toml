@@ -82,3 +82,4 @@ only-include = ["nomina","nomina_examples"]
 
 [project.scripts]
 nomina = "nomina.nomina_cmd:main"
+money-zip = "nomina.money_zip:main"

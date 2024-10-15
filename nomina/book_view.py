@@ -14,7 +14,9 @@ from nomina.account_view import AccountView
 from nomina.file_formats import AccountingFileFormats
 from nomina.ledger import Book as LedgerBook
 from nomina.beancount_ledger import BeancountToLedgerConverter
-
+from nomina.msmoney_ledger import MicrosoftMoneyToLedgerConverter
+from nomina.money_zip import MnyToZipConverter
+from nomina.qif_ledger import QifToLedgerConverter
 class BookView:
     """
     view a Ledger Book (of any accounting file format)
@@ -50,6 +52,19 @@ class BookView:
                     bc2lg = BeancountToLedgerConverter()
                     _beancount = bc2lg.load(self.file_path)
                     self.book = bc2lg.convert_to_target()
+                elif self.file_format.acronym == "MS-MONEY-ZIP":
+                    m2lg = MicrosoftMoneyToLedgerConverter()
+                    _mszip = m2lg.load(self.file_path)
+                    self.book = m2lg.convert_to_target()
+                elif self.file_format.acronym == "MS-MONEY":
+                    mny2zip = MnyToZipConverter()
+                    mny_zip=mny2zip.export_mny_to_zip(self.file_path)
+                    m2lg = MicrosoftMoneyToLedgerConverter()
+                    _mszip = m2lg.load(mny_zip)
+                    self.book = m2lg.convert_to_target()
+                elif self.file_format.acronym == "QIF":
+                    qif2lg = QifToLedgerConverter()
+                    self.book=qif2lg.convert_to_ledger(self.file_path)
                 else:
                     ui.notify(
                         f"can not handle file format {self.file_format.acronym} (yet)"
@@ -113,7 +128,7 @@ class BookView:
         with ui.row() as self.summary_row:
             self.book_html = ui.html("Welcome to Nomina!")
             if not self.is_local:
-                extensions = {"Ledgerbook": ".yaml", "beancount": ".beancount"}
+                extensions = {"Ledgerbook": ".yaml", "beancount": ".beancount", "Money-Zip":".zip"}
                 self.example_selector = FileSelector(
                     path=self.solution.root_path,
                     handler=self.read_and_optionally_render,
