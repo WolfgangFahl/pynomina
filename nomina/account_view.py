@@ -6,7 +6,6 @@ Created on 2024-10-12
 
 from ngwidgets.input_webserver import InputWebSolution
 from ngwidgets.lod_grid import GridConfig, ListOfDictsGrid
-from nicegui import ui
 
 from nomina.ledger import Account as LedgerAccount
 from nomina.ledger import Book as LedgerBook
@@ -47,17 +46,18 @@ class AccountView:
             for _tx_id, tx in book.transactions.items():
                 for split in tx.splits:
                     if split.account_id == account.account_id:
-                        row_num += 1
-                        balance += split.amount
-                        record = {
-                            "#": row_num,
-                            "Date": tx.isodate,
-                            "Memo": split.memo,
-                            "Amount": f"{split.amount:10.2f}",
-                            "Ok": "⚫" if split.reconciled else "⚪",
-                            "Balance": f"{balance:10.2f}",
-                        }
-                        lod.append(record)
+                        if split.amount is not None:
+                            row_num += 1
+                            balance += split.amount
+                            record = {
+                                "#": row_num,
+                                "Date": tx.isodate,
+                                "Memo": split.memo,
+                                "Amount": f"{split.amount:10.2f}",
+                                "Ok": "⚫" if split.reconciled else "⚪",
+                                "Balance": f"{balance:10.2f}",
+                            }
+                            lod.append(record)
             if self.lod_grid is None:
                 key_col = "#"
                 grid_config = GridConfig(
