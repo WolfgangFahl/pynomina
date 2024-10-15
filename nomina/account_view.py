@@ -17,6 +17,9 @@ class AccountView:
     """
 
     def __init__(self, solution: InputWebSolution,grid_row):
+        """
+        constructor
+        """
         self.solution = solution
         self.lod_grid = None
         self.grid_row=grid_row

@@ -146,4 +146,4 @@ class BookView:
                     extensions=extensions,
                 )
         with ui.row() as self.account_row:
-            self.account_view = AccountView(self, self.account_row)
+            self.account_view = AccountView(self.solution, self.account_row)
