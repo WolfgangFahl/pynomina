@@ -17,6 +17,7 @@ from nomina.beancount_ledger import BeancountToLedgerConverter
 from nomina.msmoney_ledger import MicrosoftMoneyToLedgerConverter
 from nomina.money_zip import MnyToZipConverter
 from nomina.qif_ledger import QifToLedgerConverter
+from nomina.gnc_ledger import GnuCashToLedgerConverter
 class BookView:
     """
     view a Ledger Book (of any accounting file format)
@@ -65,6 +66,9 @@ class BookView:
                 elif self.file_format.acronym == "QIF":
                     qif2lg = QifToLedgerConverter()
                     self.book=qif2lg.convert_to_ledger(self.file_path)
+                elif self.file_format.acronym == "GC-XML":
+                    gcx2lg = GnuCashToLedgerConverter()
+                    self.book=gcx2lg.convert_to_ledger(self.file_path)
                 else:
                     ui.notify(
                         f"can not handle file format {self.file_format.acronym} (yet)"
@@ -130,6 +134,7 @@ class BookView:
             if not self.is_local:
                 extensions = {
                     "Ledgerbook": ".yaml",
+                    "GnuCash": ".xml",
                     "beancount": ".beancount",
                     "MSMoney-Zip":".zip",
                     "MSMoney": ".mny",
