@@ -40,12 +40,12 @@ class Test_Ledger_BankingZV(Basetest):
             example_path=Path(self.examples_path),
             do_log=True,
             expected_stats=Stats(
-                accounts=6,
+                accounts=7,
                 transactions=3,
                 start_date="2022-09-08",
                 end_date="2024-10-06",
                 currencies={
-                    "EUR": 6,
+                    "EUR": 7,
                 },
             ),
         )

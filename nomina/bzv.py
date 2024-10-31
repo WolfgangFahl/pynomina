@@ -91,6 +91,7 @@ class Book:
     owner: Optional[str] = (None,)
     url: Optional[str] = (None,)
     since: Optional[str] = (None,)
+    default_category="UndefinedCategory"
     account_json_exports: Dict[str, str] = field(default_factory=dict)
 
     def __post_init__(self):
@@ -200,10 +201,13 @@ class Book:
         """
         create the category accounts
         """
+        self.add_category_account(self.default_category)
         for transaction in self.transactions:
             category = transaction.Category
             if category:
                 self.add_category_account(category)
+            else:
+                transaction.Category=self.default_category
 
     @staticmethod
     def load_transactions_from_json_file(json_file_path: str) -> List[Transaction]:

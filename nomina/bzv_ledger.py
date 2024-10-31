@@ -63,6 +63,7 @@ class BankingZVToLedgerConverter(BaseToLedgerConverter):
         create the ledger split
         """
         amount = float(transaction.Amt)
+        # CRDT or DBIT?
         if transaction.CdtDbtInd == "DBIT":
             amount = -amount
 
@@ -82,6 +83,8 @@ class BankingZVToLedgerConverter(BaseToLedgerConverter):
                     memo=transaction.RmtInf or "",
                 )
             )
+        else:
+            pass
 
         return splits
 
