@@ -23,7 +23,7 @@ class Test_Beancount(Basetest):
         beancount = Beancount()
         for fq_name, expected_sanitized in [
             ("Assets:[Cash]", "Assets:Cash"),
-            ("Assets:4240-Gas,-Strom,-Wasser", "Assets:4240-Gas--Strom--Wasser"),
+            ("Expense:4240-Gas,-Strom,-Wasser", "Expense:4240-Gas--Strom--Wasser"),
             (
                 "4660-Reisekosten-Arbeitnehmer:Auto-0.52",
                 "4660-Reisekosten-Arbeitnehmer:Auto-0-52",

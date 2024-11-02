@@ -16,13 +16,13 @@ class AccountView:
     account display
     """
 
-    def __init__(self, solution: InputWebSolution,grid_row):
+    def __init__(self, solution: InputWebSolution, grid_row):
         """
         constructor
         """
         self.solution = solution
         self.lod_grid = None
-        self.grid_row=grid_row
+        self.grid_row = grid_row
         self.setup_ui()
 
     def setup_ui(self):

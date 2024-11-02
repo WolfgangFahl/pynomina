@@ -7,17 +7,20 @@ Created on 2024-10-12
 import os
 
 from ngwidgets.combobox import ComboBox
+from ngwidgets.file_selector import FileSelector
 from ngwidgets.input_webserver import InputWebSolution
 from nicegui import background_tasks, run, ui
-from ngwidgets.file_selector import FileSelector
+
 from nomina.account_view import AccountView
-from nomina.file_formats import AccountingFileFormats
-from nomina.ledger import Book as LedgerBook
 from nomina.beancount_ledger import BeancountToLedgerConverter
-from nomina.msmoney_ledger import MicrosoftMoneyToLedgerConverter
-from nomina.money_zip import MnyToZipConverter
-from nomina.qif_ledger import QifToLedgerConverter
+from nomina.file_formats import AccountingFileFormats
 from nomina.gnc_ledger import GnuCashToLedgerConverter
+from nomina.ledger import Book as LedgerBook
+from nomina.money_zip import MnyToZipConverter
+from nomina.msmoney_ledger import MicrosoftMoneyToLedgerConverter
+from nomina.qif_ledger import QifToLedgerConverter
+
+
 class BookView:
     """
     view a Ledger Book (of any accounting file format)
@@ -59,16 +62,16 @@ class BookView:
                     self.book = m2lg.convert_to_target()
                 elif self.file_format.acronym == "MS-MONEY":
                     mny2zip = MnyToZipConverter()
-                    mny_zip=mny2zip.export_mny_to_zip(self.file_path)
+                    mny_zip = mny2zip.export_mny_to_zip(self.file_path)
                     m2lg = MicrosoftMoneyToLedgerConverter()
                     _mszip = m2lg.load(mny_zip)
                     self.book = m2lg.convert_to_target()
                 elif self.file_format.acronym == "QIF":
                     qif2lg = QifToLedgerConverter()
-                    self.book=qif2lg.convert_to_ledger(self.file_path)
+                    self.book = qif2lg.convert_to_ledger(self.file_path)
                 elif self.file_format.acronym == "GC-XML":
                     gcx2lg = GnuCashToLedgerConverter()
-                    self.book=gcx2lg.convert_to_ledger(self.file_path)
+                    self.book = gcx2lg.convert_to_ledger(self.file_path)
                 else:
                     ui.notify(
                         f"can not handle file format {self.file_format.acronym} (yet)"
@@ -76,7 +79,7 @@ class BookView:
                     return
                 self.stats = self.book.get_stats()
                 with ui.card() as self.summary_card:
-                    filename=os.path.basename(self.file_path)
+                    filename = os.path.basename(self.file_path)
                     ui.label(f"{filename} ({self.file_format.acronym})")
                     ui.label(f"{self.stats.start_date}-{self.stats.end_date}")
                     ui.label(
@@ -136,9 +139,9 @@ class BookView:
                     "Ledgerbook": ".yaml",
                     "GnuCash": ".xml",
                     "beancount": ".beancount",
-                    "MSMoney-Zip":".zip",
+                    "MSMoney-Zip": ".zip",
                     "MSMoney": ".mny",
-                    "Quicken": ".qif"
+                    "Quicken": ".qif",
                 }
                 self.example_selector = FileSelector(
                     path=self.solution.root_path,

@@ -4,7 +4,6 @@ Created on 2024-10-07
 @author: wf
 """
 
-import re
 from datetime import datetime
 from typing import Dict, Optional
 
@@ -203,7 +202,7 @@ class LedgerToBeancountConverter(BaseFromLedgerConverter):
             "EQUITY": "Equity",
             "ASSET": "Assets",
         }
-        prefix = self.account_type_map.get(account.account_type, "Assets")
+        prefix = self.account_type_map.get(account.account_type, "Expenses")
         fq_name = self.lbook.fq_account_name(account)
         fq_name = self.beancount.sanitize_account_name(fq_name)
         if fq_name in self.account_type_map.keys():

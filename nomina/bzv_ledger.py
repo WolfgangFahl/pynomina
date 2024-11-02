@@ -4,6 +4,7 @@ Created on 2024-10-05
 @author: wf
 """
 
+import re
 from pathlib import Path
 from typing import List
 
@@ -44,14 +45,26 @@ class BankingZVToLedgerConverter(BaseToLedgerConverter):
         self.source = self.bzv_book
         return self.source
 
+    def map_account_type(self, bzv_account: Account) -> str:
+        """
+        get the account type
+        """
+        account_type = "CATEGORY"
+        if bzv_account.parent_account_id is None:
+            # name is a pure number
+            if re.fullmatch(r"\d+", bzv_account.name):
+                account_type = "BANK"
+        return account_type
+
     def create_ledger_account(self, bzv_account: Account) -> LedgerAccount:
         """
         create a ledger account from a banking ZV account
         """
+        account_type = self.map_account_type(bzv_account)
         account = LedgerAccount(
             account_id=bzv_account.account_id,
             name=bzv_account.name,
-            account_type="BANK" if ":" not in bzv_account.account_id else "CATEGORY",
+            account_type=account_type,
             description=f"",
             currency="EUR",
             parent_account_id=bzv_account.parent_account_id,

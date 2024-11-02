@@ -1,0 +1,33 @@
+# Created on 2024-11-02
+# @author: wf
+'AccountSummary':
+  # Query to get a summary of a single account and its total
+  param_list:
+    - name: account
+      type: str
+      default_value: 'Expenses:Food:Groceries'
+  sql: |
+    select account, sum(position) as total
+    where account = '{{ account }}'
+    group by account
+
+'TotalSum':
+  # Query to get the total sum for a single account
+  param_list:
+    - name: account
+      type: str
+      default_value: 'Expenses:Home:Rent'
+  sql: |
+    select sum(position) as total
+    where account = '{{ account }}'
+
+'PayeeSummary':
+  # Query to summarize payees for a single account
+  param_list:
+    - name: account
+      type: str
+      default_value: 'Expenses:Transport:Tram'
+  sql: |
+    select payee, sum(position) as total
+    where account = '{{ account }}'
+    group by payee

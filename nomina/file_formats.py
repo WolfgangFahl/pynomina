@@ -94,7 +94,7 @@ class AccountingFileFormats:
                 acronym="QIF",
                 ext=".qif",
                 wikidata_id="Q750657",
-                content_pattern=r"(?:\^.*?){5}", # at least five ^ entries
+                content_pattern=r"(?:\^.*?){5}",  # at least five ^ entries
             ),
             AccountingFileFormat(
                 name="Subsembly JSON",

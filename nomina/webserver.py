@@ -74,8 +74,8 @@ class NominaSolution(InputWebSolution):
             client (Client): The client instance this context is associated with.
         """
         super().__init__(webserver, client)  # Call to the superclass constructor
-        self.book_view=None
-        self.root_path=self.webserver.root_path
+        self.book_view = None
+        self.root_path = self.webserver.root_path
         self.input = "example.beancount"
 
     def prepare_ui(self):
@@ -113,9 +113,9 @@ class NominaSolution(InputWebSolution):
         configure additional non-standard menu entries
         """
         self.tool_button(
-                tooltip="reload",
-                icon="refresh",
-                handler=self.reload_file,
+            tooltip="reload",
+            icon="refresh",
+            handler=self.reload_file,
         )
         if self.is_local:
             self.tool_button(
