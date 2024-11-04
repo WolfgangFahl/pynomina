@@ -24,7 +24,7 @@ class Account:
 
     account_id: str
     name: str
-    account_type: str
+    account_type: str # e.g. beancount compatible "Assets", "Liabilities", "Equity", "Income", "Expenses"
     description: Optional[str] = ""
     currency: str = "EUR"  # Default to EUR
     parent_account_id: Optional[str] = None

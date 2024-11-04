@@ -200,6 +200,54 @@ class Transaction(ParseRecord):
         """
         return sum(self.split_amounts_float)
 
+class QifField:
+    """
+    A QIF field with possible
+    context-dependent meanings for the marker used e.g. D for isodate or description and
+    T for amount or account_type
+    marker meaning might also be unclear - denoted by a None field_name
+
+    """
+    def __init__(self,
+        marker: str,
+        field_name: str = None,
+        context_fields: Dict[str, str] = None):
+        """
+        Args:
+            marker: QIF marker character
+            field_name: default field name, None if unclear
+            context_fields: optional mapping of record_type to field_name
+        """
+        self.marker = marker
+        self.field_name = f"{marker}?" if field_name is None else field_name
+        self.context_fields = context_fields if context_fields else {}
+
+    def resolve(self, record_type: str) -> str:
+        """get field name based on record type context"""
+        field_name = self.context_fields.get(record_type, self.field_name)
+        return field_name
+
+    def add_line_value_to_record(self, line: str, record_type: str, current_record: dict):
+        """
+        handle a QIF line for this field by adding the value
+        to the record with the field being resolved according
+        to our marker and the record type it should be applied to
+
+        Args:
+            line: the raw QIF line
+            record_type: the record type context
+            current_record: the record being built
+        """
+        value = line[1:].strip()
+        key = self.resolve(record_type)
+        if key in ["split_category", "split_memo", "split_amount"]:
+            if key == "split_category":
+                value = SplitCategory(value)
+            if key not in current_record:
+                current_record[key] = []
+            current_record[key].append(value)
+        else:
+            current_record[key] = value
 
 @lod_storable
 class SimpleQifParser:
@@ -221,33 +269,33 @@ class SimpleQifParser:
 
     def __post_init__(self):
         self.current_account = None
-        self.field_names = {
-            "$": "split_amount",
-            "~": "~?",
-            "&": "&?",
-            "%": "%?",
-            "@": "@?",
-            "A": "address",
-            "B": "B?",
-            "C": "cleared",
-            "D": "isodate", # or description
-            "E": "split_memo",
-            "F": "F?",
-            "G": "G?",
-            "I": "I?",
-            "K": "K?",
-            "L": "category",
-            "M": "memo",
-            "N": "name",
-            "O": "O?",
-            "R": "R?",
-            "P": "payee",
-            "Q": "Q?",
-            "S": "split_category",
-            "T": "amount",
-            "U": "amount_unknown",
-            "V": "V?",
-            "Y": "Y?",
+        self.qif_fields = {
+            "$": QifField("$", "split_amount"),
+            "~": QifField("~"),
+            "&": QifField("&"),
+            "%": QifField("%"),
+            "@": QifField("@"),
+            "A": QifField("A", "address"),
+            "B": QifField("B"),
+            "C": QifField("C", "cleared"),
+            "D": QifField("D", "isodate", {"Cat": "description", "Class": "description"}),
+            "E": QifField("E", "split_memo"),
+            "F": QifField("F"),
+            "G": QifField("G"),
+            "I": QifField("I"),
+            "K": QifField("K"),
+            "L": QifField("L", "category"),
+            "M": QifField("M", "memo"),
+            "N": QifField("N", "name"),
+            "O": QifField("O"),
+            "R": QifField("R"),
+            "P": QifField("P", "payee"),
+            "Q": QifField("Q"),
+            "S": QifField("S", "split_category"),
+            "T": QifField("T", "amount", {"Account": "account_type"}),
+            "U": QifField("U", "amount_unknown"),
+            "V": QifField("V"),
+            "Y": QifField("Y")
         }
 
     def parse_file(
@@ -317,24 +365,10 @@ class SimpleQifParser:
                 current_record = {}
                 start_line = line_num + 1
 
-            elif line[0] in self.field_names:
-                first = line[0]
-                key = self.field_names.get(first)
-                value = line[1:].strip()
-                if key == "name":
-                    pass
-                if key == "isodate":
-                    # fix D ambiguity
-                    if record_type in ["Cat","Class"]:
-                        key="description"
-                if key in ["split_category", "split_memo", "split_amount"]:
-                    if key == "split_category":
-                        value = SplitCategory(value)
-                    if key not in current_record:
-                        current_record[key] = []
-                    current_record[key].append(value)
-                else:
-                    current_record[key] = value
+            elif line[0] in self.qif_fields:
+                marker = line[0]
+                qif_field = self.qif_fields[marker]
+                qif_field.add_line_value_to_record(line, record_type, current_record)
             else:
                 error = ErrorRecord(start_line=start_line, end_line=line_num, line=line)
                 err_msg = f"parser can not handle line {line_num}: {line}"
