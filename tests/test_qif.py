@@ -4,7 +4,7 @@ Created on 2024-09-30
 @author: wf
 """
 
-from nomina.qif import SplitCategory
+from nomina.qif import SplitCategory, SimpleQifParser
 from tests.basetest import Basetest
 from tests.example_testcases import NominaExample
 
@@ -72,3 +72,24 @@ class Test_QifParser(Basetest):
                         stats.start_date, example.expected_stats.start_date
                     )
                     self.assertEqual(stats.end_date, example.expected_stats.end_date)
+
+    def test_account_types(self):
+        """
+        test account type handling
+        """
+        test_cases = [
+            ("!Account\nNMy Cash\nTCash\n^", "Cash"),
+            ("!Account\nNMy Bank\nTBank\n^", "Bank"),
+            ("!Account\nNMy CCard\nTCCard\n^", "CCard"),
+            ("!Account\nNMy Invst\nTInvst\n^", "Invst"),
+            ("!Account\nNMy Asset\nTOth A\n^", "Oth A"),
+            ("!Account\nNMy Liability\nTOth L\n^", "Oth L"),
+            ("!Account\nNMy Invoice\nTInvoice\n^", "Invoice")
+        ]
+        for qif_text, expected_type in test_cases:
+            with self.subTest(f"Testing account type {expected_type}"):
+                parser = SimpleQifParser()
+                parser.parse(qif_text.splitlines())
+                # Get first (and only) account
+                account = next(iter(parser.accounts.values()))
+                self.assertEqual(expected_type, account.account_type)
