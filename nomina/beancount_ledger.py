@@ -244,7 +244,9 @@ class LedgerToBeancountConverter(BaseFromLedgerConverter):
         Returns:
             Optional[data.Transaction]: The Beancount Transaction directive, or None if conversion fails.
         """
-        date = DateUtils.parse_date(transaction.isodate)
+        date=None
+        if transaction.isodate:
+            date = DateUtils.parse_date(transaction.isodate)
         if date is None:
             self.log.log(
                 "⚠️", "date_parse", f"Unable to parse date: {transaction.isodate}"

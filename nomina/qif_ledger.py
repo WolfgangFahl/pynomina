@@ -54,9 +54,9 @@ class QifToLedgerConverter(BaseToLedgerConverter):
             for lookup
         """
         # Create root accounts for classes and categories
-        ledger_book.create_account("Class", account_type="CLASS")
-        ledger_book.create_account("Category", account_type="CATEGORY")
-        ledger_book.create_account("Dangling", account_type="ERROR")
+        ledger_book.create_account("Class", account_type="CLASS",description="root class")
+        ledger_book.create_account("Category", account_type="CATEGORY",description="root category")
+        ledger_book.create_account("Dangling", account_type="ERROR",description="dangling-error accounts")
 
         # Create accounts from QIF data
         for account_name, account_data in self.qif_parser.accounts.items():
@@ -64,20 +64,25 @@ class QifToLedgerConverter(BaseToLedgerConverter):
             ledger_book.create_account(
                 name=account_name,
                 account_type=account_data.account_type,
+                description=account_data.description,
                 parent_account_id=parent_account_id,
             )
 
         # Create accounts for classes
-        for class_name, _class_data in self.qif_parser.classes.items():
+        for class_name, class_data in self.qif_parser.classes.items():
             ledger_book.create_account(
-                name=class_name, account_type="CLASS", parent_account_id="Class"
+                name=class_name,
+                account_type="CLASS",
+                description=class_data.description,
+                parent_account_id="Class"
             )
 
         # Create accounts for categories
-        for category_name, _category_data in self.qif_parser.categories.items():
+        for category_name, category_data in self.qif_parser.categories.items():
             ledger_book.create_account(
                 name=category_name,
                 account_type="CATEGORY",
+                description=category_data.description,
                 parent_account_id="Category",
             )
 
@@ -126,6 +131,7 @@ class QifToLedgerConverter(BaseToLedgerConverter):
             msg = f"invalid split category {split_category} for {qt_msg}"
             self.log.log("⚠️", "split", msg)
             account = ledger_book.lookup_account("Dangling")
+            pass
 
         if amount is None:
             self.log.log(f"⚠️", "amount", f"no amount for {qt_msg}")

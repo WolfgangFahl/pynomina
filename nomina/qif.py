@@ -141,6 +141,9 @@ class Transaction(ParseRecord):
     category: Optional[Category] = None
 
     def __post_init__(self):
+        """
+        extract details
+        """
         self.amount_float: Optional[float] = None
         self.split_amounts_float: List[float] = []
         self.normalize()
@@ -207,6 +210,7 @@ class SimpleQifParser:
     name: Optional[str] = None
     currency: str = "EUR"
     default_account_type = "EXPENSE"
+    default_category = "UndefinedCategory"
     options: Dict[str, str] = field(default_factory=dict)
     classes: Dict[str, QifClass] = field(default_factory=dict)
     categories: Dict[str, Category] = field(default_factory=dict)
@@ -226,7 +230,7 @@ class SimpleQifParser:
             "A": "address",
             "B": "B?",
             "C": "cleared",
-            "D": "isodate",
+            "D": "isodate", # or description
             "E": "split_memo",
             "F": "F?",
             "G": "G?",
@@ -319,6 +323,10 @@ class SimpleQifParser:
                 value = line[1:].strip()
                 if key == "name":
                     pass
+                if key == "isodate":
+                    # fix D ambiguity
+                    if record_type in ["Cat","Class"]:
+                        key="description"
                 if key in ["split_category", "split_memo", "split_amount"]:
                     if key == "split_category":
                         value = SplitCategory(value)

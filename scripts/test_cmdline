@@ -6,6 +6,7 @@ input_files=(
     "nomina_examples/empty.yaml"
     "nomina_examples/empty_xml.gnucash"
     "nomina_examples/example.beancount"
+    "nomina_examples/qifparser_test_file.qif"
     "nomina_examples/expenses.qif"
     "nomina_examples/expenses.yaml"
     "nomina_examples/expenses2024_bzv.yaml"

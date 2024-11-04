@@ -1,0 +1,108 @@
+file_type: NOMINA-LEDGER-BOOK-YAML
+version: '0.1'
+name: qifparser_test_file.qif
+owner: Giacomo Spettoli
+url: https://raw.githubusercontent.com/giacomos/qifparse/refs/heads/master/qifparse/tests/file.qif
+accounts:
+  Class:
+    account_id: Class
+    name: Class
+    account_type: CLASS
+    description: root class
+    currency: EUR
+  Category:
+    account_id: Category
+    name: Category
+    account_type: CATEGORY
+    description: root category
+    currency: EUR
+  Dangling:
+    account_id: Dangling
+    name: Dangling
+    account_type: ERROR
+    description: dangling-error accounts
+    currency: EUR
+  My Cash:
+    account_id: My Cash
+    name: My Cash
+    account_type: EXPENSE
+    description: ''
+    currency: EUR
+  My Cc:
+    account_id: My Cc
+    name: My Cc
+    account_type: EXPENSE
+    description: ''
+    currency: EUR
+  Class:my class:
+    account_id: Class:my class
+    name: my class
+    account_type: CLASS
+    description: example class
+    currency: EUR
+    parent_account_id: Class
+  Category:food:
+    account_id: Category:food
+    name: food
+    account_type: CATEGORY
+    description: ''
+    currency: EUR
+    parent_account_id: Category
+  Category:food:lunch:
+    account_id: Category:food:lunch
+    name: food:lunch
+    account_type: CATEGORY
+    description: ''
+    currency: EUR
+    parent_account_id: Category
+transactions:
+  My Cash:2013-10-23:13:
+    isodate: '2013-10-23'
+    splits:
+    - amount: -6.5
+      account_id: My Cash
+      reconciled: false
+  My Cash:2013-10-11:17:
+    isodate: '2013-10-11'
+    splits:
+    - amount: 31.0
+      account_id: My Cash
+      reconciled: false
+  My Cash:2013-10-11:21:
+    isodate: '2013-10-11'
+    splits:
+    - amount: -48.0
+      account_id: My Cash
+      reconciled: false
+  My Cc:1993-07-25:36:
+    isodate: '1993-07-25'
+    description: ShrsIn:Opening
+    splits:
+    - amount: 1000.0
+      account_id: My Cc
+      memo: ShrsIn:Opening
+      reconciled: false
+    memo: ShrsIn:Opening
+  My Cc:1993-08-25:45:
+    isodate: '1993-08-25'
+    description: BuyX:Est. price as of 8/25/93
+    splits:
+    - amount: 100.0
+      account_id: My Cc
+      memo: BuyX:Est. price as of 8/25/93
+      reconciled: false
+    memo: BuyX:Est. price as of 8/25/93
+  My Cc:None:56:
+    description: Rent
+    splits:
+    - amount: -50.0
+      account_id: My Cc
+      memo: Rent
+      reconciled: false
+    payee: Joe Hayes
+    memo: Rent
+  My Cc:None:61:
+    splits:
+    - amount: -25.0
+      account_id: My Cc
+      reconciled: false

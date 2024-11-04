@@ -48,7 +48,7 @@ class Transaction:
     Represents a transaction in the ledger.
     """
 
-    isodate: str
+    isodate: str=None
     description: Optional[str] = None
     splits: List[Split] = field(default_factory=list)
     payee: Optional[str] = None
@@ -175,6 +175,7 @@ class Book:
     def create_account(
         self,
         name: str,
+        description: str,
         account_type: str = "EXPENSE",
         parent_account_id: Optional[str] = None,
     ) -> Account:
@@ -183,6 +184,7 @@ class Book:
 
         Args:
             name (str): The name of the account.
+            description(str): the description of the account
             account_type (str): The type of the account. Defaults to "EXPENSE".
             parent_account_id (Optional[str]): The id of the parent account, if any.
 
@@ -203,6 +205,7 @@ class Book:
         account = Account(
             account_id=account_id,
             name=name,
+            description=description,
             account_type=account_type,
             parent_account_id=parent_account_id,
         )

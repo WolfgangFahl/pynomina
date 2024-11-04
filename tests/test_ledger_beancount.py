@@ -94,7 +94,7 @@ class Test_LedgerBeancount(Basetest):
                         print(f"{i:3}:{error}")
                 self.assertEqual(
                     error_count,
-                    0,
+                    example.expected_stats.errors,
                     f"Errors in Beancount conversion for {name}: {beancount.errors}",
                 )
 

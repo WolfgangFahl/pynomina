@@ -43,10 +43,11 @@ class DateUtils:
         """
         if date_formats is None:
             date_formats = [
-                "%m.%d.%y",
+                #"%m.%d.%y",
                 "%d.%m.%y",
-                "%m/%d/%y",
+                #"%m/%d/%y",
                 "%d/%m/%y",
+                "%d/%m/%Y", # 23/10/2013
                 "%Y-%m-%d",
                 "%Y/%m/%d",
                 "%Y-%m-%d %H:%M:%S %z",  # Added to handle the GnuCash XML format
@@ -56,7 +57,8 @@ class DateUtils:
         for date_format in date_formats:
             try:
                 date_obj = datetime.strptime(date_str, date_format)
-                return cls.iso_date(date_obj)
+                iso_date_str= cls.iso_date(date_obj)
+                return iso_date_str
             except ValueError:
                 continue
 
