@@ -5,14 +5,14 @@ Created on 2024-10-09
 """
 
 import os
-from json import JSONDecodeError
+import json
 from typing import Any, Dict
 from zipfile import ZipFile
 
 from lodstorage.yamlable import lod_storable
 
 from nomina.date_utils import DateUtils
-from nomina.graph import Graph
+from mogwai.core.mogwaigraph import MogwaiGraph
 from nomina.stats import Stats
 
 
@@ -34,7 +34,7 @@ class MsMoney:
 
     def __init__(self):
         self.header = None
-        self.graph = Graph()
+        self.graph = MogwaiGraph()
 
     def load(self, path: str):
         """
@@ -76,10 +76,32 @@ class MsMoney:
             elif file_name.endswith(".json"):
                 try:
                     # Load JSON files as networkx nodes
-                    self.graph.add_nodes_from_json(file_name, file_content)
-                except JSONDecodeError as e:
+                    self.add_nodes_from_json(file_name, file_content)
+                except json.JSONDecodeError as e:
                     print(f"Error decoding JSON in file {file_name}: {e}")
                     continue
+
+    def add_nodes_from_json(self, file_name, file_content):
+        """
+        Add nodes from JSON data to the graph
+        """
+        table_name = file_name.split(".")[0]  # Remove the .json extension
+
+        for line in file_content:
+            line = line.strip()
+            if line:  # Skip empty lines
+                try:
+                    json_data = json.loads(line)
+                    self.add_node(table_name, json_data)
+                except json.JSONDecodeError as e:
+                    print(f"Error decoding JSON object in file {file_name}: {e}")
+
+    def add_node(self, table_name, data):
+        """
+        Add a single node to the graph
+        """
+        node_id = data.get("id", str(len(self.graph)))
+        self.graph.add_labeled_node(node_id, type=table_name, **data)
 
     def to_transaction_dict(self, data) -> Dict[str, Any]:
         """
