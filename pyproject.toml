@@ -14,15 +14,15 @@ maintainers = [
 ]
 readme = "README.md"
 license = "Apache-2.0"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Web Environment",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Intended Audience :: Developers",
@@ -33,13 +33,13 @@ classifiers = [
 
 dependencies = [
     # https://pypi.org/project/pylodstorage/
-    "pylodstorage>=0.13.3",
+    "pylodstorage>=0.14.3",
     # https://pypi.org/project/networkx/
     "networkx>=3.3",
     # https://pypi.org/project/py-sidif/
     "py-sidif>=0.2.0",
     # NiceGUI widgets
-    "ngwidgets>=0.19.2",
+    "ngwidgets>=0.23.0",
     # xsdata for XML data binding
     "xsdata>=24.9",
     # https://pypi.org/project/piecash/
@@ -60,7 +60,7 @@ dependencies = [
     "beanquery",
     # mogwai
     # https://github.com/juupje/pyMogwai
-    "mogwai>0.0.9"
+    "pyMogwai>=0.0.9"
 
 ]
 

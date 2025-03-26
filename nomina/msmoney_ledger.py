@@ -6,7 +6,6 @@ Created on 09.10.2024
 
 from pathlib import Path
 
-from nomina.date_utils import DateUtils
 from nomina.ledger import Account, Book, Split, Transaction
 from nomina.msmoney import MsMoney
 from nomina.nomina_converter import BaseToLedgerConverter
@@ -43,15 +42,15 @@ class MicrosoftMoneyToLedgerConverter(BaseToLedgerConverter):
         book = Book()
         book.name = self.ms_money.header.name if self.ms_money.header else "Unknown"
         book.since = self.ms_money.header.date if self.ms_money.header else None
-        graph = self.ms_money.graph.graph
-        self.log.log("✅", "graph", f"Total nodes: {len(graph.nodes)}")
+        nodes= self.ms_money.graph.nodes(data=True)
+        self.log.log("✅", "graph", f"Total nodes: {len(nodes)}")
         node_types = set(
-            data.get("type", "Unknown") for _, data in graph.nodes(data=True)
+            data.get("type", "Unknown") for _, data in nodes
         )
         self.log.log("✅", "graph", f"Node types: {node_types}")
 
         # Create accounts
-        for node, data in graph.nodes(data=True):
+        for node, data in nodes:
             if data.get("type") == "ACCT":
                 account = Account(
                     account_id=str(data.get("hacct")),
@@ -65,7 +64,7 @@ class MicrosoftMoneyToLedgerConverter(BaseToLedgerConverter):
         self.log.log("✅", "accounts", f"Accounts created: {len(book.accounts)}")
 
         # Create transactions
-        for _node, data in graph.nodes(data=True):
+        for _node, data in nodes:
             tx_dict = self.ms_money.to_transaction_dict(data)
             if tx_dict is not None:
                 isodate = tx_dict["isodate"]

@@ -101,7 +101,7 @@ class MsMoney:
         Add a single node to the graph
         """
         node_id = data.get("id", str(len(self.graph)))
-        self.graph.add_labeled_node(node_id, type=table_name, **data)
+        self.graph.add_labeled_node(node_id, name=table_name, **data)
 
     def to_transaction_dict(self, data) -> Dict[str, Any]:
         """
@@ -127,12 +127,13 @@ class MsMoney:
         Returns:
             Stats: An object containing various statistics about the data.
         """
-        graph = self.graph.graph  # Assign for clarity
+        nodes=self.graph.nodes(data=True)# Assign for clarity
 
         # Calculate date range
         dates = []
         transactions = 0
-        for _node, data in graph.nodes(data=True):
+
+        for _node, data in nodes:
             tx_dict = self.to_transaction_dict(data)
             if tx_dict is not None:
                 transactions += 1
@@ -147,7 +148,7 @@ class MsMoney:
         # Count accounts and calculate currency counts
         accounts = 0
         currency_counts = {}
-        for _node, data in graph.nodes(data=True):
+        for _node, data in nodes:
             if data.get("type") == "ACCT":
                 accounts += 1
                 currency = data.get("currency", "UNKNOWN")

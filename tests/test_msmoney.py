@@ -35,13 +35,13 @@ class Test_Microsoft_Money(Basetest):
             self.assertEqual(ms_money.header.file_type, "NOMINA-MICROSOFT-MONEY-YAML")
             self.assertEqual(ms_money.header.version, "0.1")
 
-            graph = ms_money.graph.graph
+            nodes = ms_money.graph.nodes
 
             # Assert that the graph was populated with nodes
-            self.assertGreater(len(graph.nodes), 0)
+            self.assertGreater(len(nodes), 0)
 
             if self.debug:
-                print(f"Loaded {len(graph.nodes)} nodes into the graph")
+                print(f"Loaded {len(nodes)} nodes into the graph")
                 print(f"File name: {ms_money.header.name}")
                 print(f"File date: {ms_money.header.date}")
 
