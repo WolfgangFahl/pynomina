@@ -269,11 +269,11 @@ class Book:
 
         return balances
 
-    def remove_unused_accounts(self,lenient:bool=False) -> None:
+    def remove_unused_accounts(self) -> None:
         """
         Remove accounts that have not been used in any transactions.
         """
-        balances = self.calc_balances(lenient=lenient)
+        balances = self.calc_balances()
 
         # Remove accounts that have not been used (balance is None)
         accounts_to_remove = [
