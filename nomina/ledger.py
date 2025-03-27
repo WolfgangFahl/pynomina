@@ -243,8 +243,8 @@ class Book:
         # First pass: Calculate balances from transactions
         for ti, transaction in enumerate(self.transactions.values(), start=1):
             for si, split in enumerate(transaction.splits, start=1):
-                if not split:
-                    msg = f"split {si} of transaction {ti} is None"
+                if not split or not split.amount:
+                    msg = f"split {si} (or amount) of transaction {ti} is None"
                     if lenient:
                         self.log.log("⚠️", "split", msg)
                     else:

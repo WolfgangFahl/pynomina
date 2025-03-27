@@ -102,7 +102,7 @@ class QifToLedgerConverter(BaseToLedgerConverter):
             qt(QifTransaction): the QIF transaction the split is for
             ledger_book (Book): The ledger book containing accounts.
             amount (float): The amount for the split.
-            split_category (str): The split category.
+            split_category (SplitCategory): The split category.
             memo (str): The memo for the split.
             negative(bool): if True the amount should be negated
 
@@ -113,6 +113,7 @@ class QifToLedgerConverter(BaseToLedgerConverter):
             ValueError: If the target is not found in the ledger book.
         """
         qt_msg = str(qt)
+        account=None
         # determine the account
         if split_category is None:
             return
@@ -199,12 +200,20 @@ class QifToLedgerConverter(BaseToLedgerConverter):
                 memo=qt.memo,
             )
             splits.append(debit_split)
-            # credit_split=Split(
-            #    amount=-qt.amount_float,
-            #    account_id=None,
-            #    memo=qt.memo)
             # Create credit split for the category account (source of funds)
-            # splits.append(credit_split)
+            if not qt.category:
+                category="Dangling"
+            else:
+                category=qt.category
+            split_category=SplitCategory(category)
+            credit_split=self.add_split(qt,
+                ledger_book,
+                amount=qt.amount_float,
+                split_category=split_category,
+                memo=qt.memo,
+                negative=True
+            )
+            splits.append(credit_split)
         return splits
 
     def convert_to_target(self) -> Book:
