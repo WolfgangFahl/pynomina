@@ -71,6 +71,7 @@ class Book:
 
     file_type: str = "NOMINA-LEDGER-BOOK-YAML"
     version: str = "0.1"
+    lenient=bool=False
     name: Optional[str] = None
     owner: Optional[str] = None
     since: Optional[str] = None
@@ -230,7 +231,7 @@ class Book:
         """
         return self.accounts.get(account_id)
 
-    def calc_balances(self, lenient: bool = False) -> Dict[str, Optional[float]]:
+    def calc_balances(self) -> Dict[str, Optional[float]]:
         """
         Calculate the balances for all accounts, including propagation up the account hierarchy.
         Unused accounts will have a balance of None.
@@ -245,7 +246,7 @@ class Book:
             for si, split in enumerate(transaction.splits, start=1):
                 if not split or not split.amount:
                     msg = f"split {si} (or amount) of transaction {ti} is None"
-                    if lenient:
+                    if self.lenient:
                         self.log.log("⚠️", "split", msg)
                     else:
                         raise ValueError(msg)
@@ -268,11 +269,11 @@ class Book:
 
         return balances
 
-    def remove_unused_accounts(self) -> None:
+    def remove_unused_accounts(self,lenient:bool=False) -> None:
         """
         Remove accounts that have not been used in any transactions.
         """
-        balances = self.calc_balances()
+        balances = self.calc_balances(lenient=lenient)
 
         # Remove accounts that have not been used (balance is None)
         accounts_to_remove = [
