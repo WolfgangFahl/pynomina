@@ -33,12 +33,6 @@ class NominaCmd(WebserverCmd):
         """
         parser = super().getArgParser(description, version_msg)
         parser.add_argument(
-            "-v",
-            "--verbose",
-            action="store_true",
-            help="show verbose output [default: %(default)s]",
-        )
-        parser.add_argument(
             "-rp",
             "--root_path",
             default=NominaWebServer.examples_path(),
