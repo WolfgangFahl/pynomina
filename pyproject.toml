@@ -32,8 +32,12 @@ classifiers = [
 ]
 
 dependencies = [
-    # https://pypi.org/project/pylodstorage/
-    "pylodstorage>=0.16.4", # soon 0.17.0
+  # https://pypi.org/project/pybasemkit/
+  # https://github.com/WolfgangFahl/pybasemkit
+  # Python base module kit: YAML/JSON I/O, structured logging, CLI tooling, shell execution, and remote pydevd debug support.
+  "pybasemkit>=0.0.2",
+  # https://pypi.org/project/pylodstorage/
+  "pylodstorage>=0.16.4", # soon 0.17.0
     # https://pypi.org/project/networkx/
     "networkx>=3.3",
     # https://pypi.org/project/py-sidif/
