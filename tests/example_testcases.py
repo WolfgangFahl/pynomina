@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Dict, Iterable
 
 import requests
-from lodstorage.persistent_log import Log
+from basemkit.persistent_log import Log
 
 from nomina.gnucash import GncV2, GnuCashXml
 from nomina.ledger import Book
@@ -148,7 +148,7 @@ class NominaExample:
         """
         read the ledger book
         """
-        ledger_book = Book.load_from_yaml_file(self.ledger_file)
+        ledger_book = Book.load_from_yaml_file(self.ledger_file) # @UndefinedVariable
         return ledger_book
 
     def get_parsed_qif(self) -> SimpleQifParser:
