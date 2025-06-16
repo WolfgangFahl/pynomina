@@ -21,7 +21,7 @@ class NominaWebServer(InputWebserver):
 
     @classmethod
     def get_config(cls) -> WebserverConfig:
-        copy_right = "(c)2024 Wolfgang Fahl"
+        copy_right = "(c)2024-2025 Wolfgang Fahl"
         config = WebserverConfig(
             copy_right=copy_right,
             version=Version(),

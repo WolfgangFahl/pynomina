@@ -63,12 +63,12 @@ class NominaCmd(WebserverCmd):
         )
         return parser
 
-    def handle_args(self) -> bool:
+    def handle_args(self,args) -> bool:
         """
         handle the command line args
         """
         # Call the superclass handle_args to maintain base class behavior
-        handled = super().handle_args()
+        handled = super().handle_args(args)
         self.debug = self.args.debug
         args = self.args
         if args.convert:
