@@ -6,7 +6,7 @@ Created on 2024-10-06
 
 from typing import Optional, TextIO
 
-from lodstorage.persistent_log import Log
+from basemkit.persistent_log import Log
 
 from nomina.file_formats import AccountingFileFormat, AccountingFileFormats
 from nomina.ledger import Book
