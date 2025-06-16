@@ -9,8 +9,8 @@ from dataclasses import field
 from datetime import datetime
 from typing import Dict, List, Optional
 
-from lodstorage.persistent_log import Log
-from lodstorage.yamlable import lod_storable
+from basemkit.persistent_log import Log
+from basemkit.yamlable import lod_storable
 
 from nomina.date_utils import DateUtils
 from nomina.stats import Stats

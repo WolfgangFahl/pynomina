@@ -145,7 +145,7 @@ class LedgerToBeancountConverter(BaseFromLedgerConverter):
         Returns:
             LedgerBook: the ledger book
         """
-        lbook = LedgerBook.load_from_yaml_file(input_path)
+        lbook = LedgerBook.load_from_yaml_file(input_path) # # @UndefinedVariable
         self.set_source(lbook)
         return lbook
 

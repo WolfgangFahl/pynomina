@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from lodstorage.yamlable import lod_storable
+from basemkit.yamlable import lod_storable
 
 from nomina.date_utils import DateUtils
 from nomina.stats import Stats

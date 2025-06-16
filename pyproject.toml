@@ -33,13 +33,13 @@ classifiers = [
 
 dependencies = [
     # https://pypi.org/project/pylodstorage/
-    "pylodstorage>=0.14.3",
+    "pylodstorage>=0.16.4", # soon 0.17.0
     # https://pypi.org/project/networkx/
     "networkx>=3.3",
     # https://pypi.org/project/py-sidif/
     "py-sidif>=0.2.0",
     # NiceGUI widgets
-    "ngwidgets>=0.23.0",
+    "ngwidgets>=0.26.0",
     # xsdata for XML data binding
     "xsdata>=24.9",
     # https://pypi.org/project/piecash/

@@ -13,7 +13,7 @@ from datetime import datetime
 from typing import Dict, List, Optional
 
 from dacite import from_dict
-from lodstorage.yamlable import lod_storable
+from basemkit.yamlable import lod_storable
 from tabulate import tabulate
 
 from nomina.stats import Stats

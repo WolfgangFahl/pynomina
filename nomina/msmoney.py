@@ -9,7 +9,7 @@ import json
 from typing import Any, Dict
 from zipfile import ZipFile
 
-from lodstorage.yamlable import lod_storable
+from basemkit.yamlable import lod_storable
 
 from nomina.date_utils import DateUtils
 from mogwai.core.mogwaigraph import MogwaiGraph

@@ -7,7 +7,7 @@ Created on 2024-10-06
 from dataclasses import field
 from typing import Any, Dict, Optional
 
-from lodstorage.yamlable import lod_storable
+from basemkit.yamlable import lod_storable
 
 
 @lod_storable
