@@ -486,6 +486,15 @@ class SimpleQifParser:
         """
         lod = []
         for tx in self.transactions.values():
+            split_category=None
+            if tx.split_categories:
+                split_category=",".join(tx.split_categories)
+            split_memo=None
+            if tx.split_memos:
+                split_memo=",".join(tx.split_memos)
+            split_amount=None
+            if tx.split_amounts:
+                split_amount=",".join(map(str, tx.split_amounts))
             record = {
                 # "tx_id": f"{self.current_account.name}:{tx.isodate}:{tx.start_line}",
                 # "account": self.current_account.name,
@@ -497,13 +506,9 @@ class SimpleQifParser:
                 "number": tx.number,
                 "cleared": tx.cleared,
                 "address": tx.address,
-                "split_category": (
-                    ",".join(tx.split_category) if tx.split_category else None
-                ),
-                "split_memo": ",".join(tx.split_memo) if tx.split_memo else None,
-                "split_amount": (
-                    ",".join(map(str, tx.split_amount)) if tx.split_amount else None
-                ),
+                "split_category": split_category,
+                "split_memo": split_memo,
+                "split_amount": split_amount,
                 "qif_class": tx.qif_class.name if tx.qif_class else None,
             }
             lod.append(record)
