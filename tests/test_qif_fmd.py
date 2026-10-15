@@ -18,6 +18,15 @@ FMD_SAMPLE = """!Option:MDY
 NMKOP
 DMarketing Operations
 ^
+!Type:Cat
+N4980 Betriebsausstattung
+DBetriebsausstattung
+E
+^
+N4910 Porto
+DPorto
+E
+^
 !Account
 NKasse
 TBar
