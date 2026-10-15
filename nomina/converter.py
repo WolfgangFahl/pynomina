@@ -31,6 +31,8 @@ class Converter:
         self.to_ledger: Dict[str, Type[BaseToLedgerConverter]] = {
             "GC-XML": GnuCashToLedgerConverter,
             "QIF": QifToLedgerConverter,
+            # Finanzmanager Deluxe exports are QIF with !Option:MDY and class/category markup
+            "FMD": QifToLedgerConverter,
             "BEAN": BeancountToLedgerConverter,
             "BZV-YAML": BankingZVToLedgerConverter,
             "MONEY": MicrosoftMoneyToLedgerConverter,

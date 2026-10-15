@@ -54,9 +54,15 @@ class QifToLedgerConverter(BaseToLedgerConverter):
             for lookup
         """
         # Create root accounts for classes and categories
-        ledger_book.create_account("Class", account_type="CLASS",description="root class")
-        ledger_book.create_account("Category", account_type="CATEGORY",description="root category")
-        ledger_book.create_account("Dangling", account_type="ERROR",description="dangling-error accounts")
+        ledger_book.create_account(
+            "Class", account_type="CLASS", description="root class"
+        )
+        ledger_book.create_account(
+            "Category", account_type="CATEGORY", description="root category"
+        )
+        ledger_book.create_account(
+            "Dangling", account_type="ERROR", description="dangling-error accounts"
+        )
 
         # Create accounts from QIF data
         for account_name, account_data in self.qif_parser.accounts.items():
@@ -74,7 +80,7 @@ class QifToLedgerConverter(BaseToLedgerConverter):
                 name=class_name,
                 account_type="CLASS",
                 description=class_data.description,
-                parent_account_id="Class"
+                parent_account_id="Class",
             )
 
         # Create accounts for categories
@@ -113,7 +119,7 @@ class QifToLedgerConverter(BaseToLedgerConverter):
             ValueError: If the target is not found in the ledger book.
         """
         qt_msg = str(qt)
-        account=None
+        account = None
         # determine the account
         if split_category is None:
             return
@@ -166,7 +172,8 @@ class QifToLedgerConverter(BaseToLedgerConverter):
 
         # Handle split transactions
         if qt.split_categories and qt.split_amounts_float:
-            total_amount = qt.total_split_amount()
+            # sum of cents, not of floats
+            total_amount = round(qt.total_split_amount(), 2)
 
             # Create debit split for the main transaction account
             splits.append(
@@ -178,10 +185,16 @@ class QifToLedgerConverter(BaseToLedgerConverter):
             )
 
             # Create credit splits for each split category
-            for i in range(len(qt.split_category)):
-                split_category = qt.split_category[i]
+            for i in range(len(qt.split_categories)):
+                split_category = qt.split_categories[i]
                 split_amount = qt.split_amounts_float[i]
-                split_memo = qt.split_memo[i] if i < len(qt.split_memo) else ""
+                split_memo = qt.split_memos[i] if i < len(qt.split_memos) else ""
+                if split_category.split_class:
+                    split_memo = (
+                        f"{split_memo}/{split_category.split_class}"
+                        if split_memo
+                        else split_category.split_class
+                    )
 
                 splits.append(
                     self.add_split(
@@ -202,16 +215,17 @@ class QifToLedgerConverter(BaseToLedgerConverter):
             splits.append(debit_split)
             # Create credit split for the category account (source of funds)
             if not qt.category:
-                category="Dangling"
+                category = "Dangling"
             else:
-                category=qt.category
-            split_category=SplitCategory(category)
-            credit_split=self.add_split(qt,
+                category = qt.category
+            split_category = SplitCategory(category)
+            credit_split = self.add_split(
+                qt,
                 ledger_book,
                 amount=qt.amount_float,
                 split_category=split_category,
                 memo=qt.memo,
-                negative=True
+                negative=True,
             )
             splits.append(credit_split)
         return splits

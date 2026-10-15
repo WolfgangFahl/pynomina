@@ -149,13 +149,16 @@ class Transaction(ParseRecord):
         self.normalize()
         pass
 
-    def normalize(self):
+    def normalize(self, date_formats: Optional[List[str]] = None):
         """
         Normalize the transaction data, converting string amounts to floats.
+
+        Args:
+            date_formats: the date formats to try, e.g. month first for !Option:MDY files
         """
         try:
             if self.isodate:
-                self.isodate = DateUtils.parse_date(self.isodate)
+                self.isodate = DateUtils.parse_date(self.isodate, date_formats)
         except Exception as ex:
             self.errors["date"] = ex
 
@@ -200,6 +203,7 @@ class Transaction(ParseRecord):
         """
         return sum(self.split_amounts_float)
 
+
 class QifField:
     """
     A QIF field with possible
@@ -208,10 +212,10 @@ class QifField:
     marker meaning might also be unclear - denoted by a None field_name
 
     """
-    def __init__(self,
-        marker: str,
-        field_name: str = None,
-        context_fields: Dict[str, str] = None):
+
+    def __init__(
+        self, marker: str, field_name: str = None, context_fields: Dict[str, str] = None
+    ):
         """
         Args:
             marker: QIF marker character
@@ -227,7 +231,9 @@ class QifField:
         field_name = self.context_fields.get(record_type, self.field_name)
         return field_name
 
-    def add_line_value_to_record(self, line: str, record_type: str, current_record: dict):
+    def add_line_value_to_record(
+        self, line: str, record_type: str, current_record: dict
+    ):
         """
         handle a QIF line for this field by adding the value
         to the record with the field being resolved according
@@ -248,6 +254,7 @@ class QifField:
             current_record[key].append(value)
         else:
             current_record[key] = value
+
 
 @lod_storable
 class SimpleQifParser:
@@ -278,7 +285,9 @@ class SimpleQifParser:
             "A": QifField("A", "address"),
             "B": QifField("B"),
             "C": QifField("C", "cleared"),
-            "D": QifField("D", "isodate", {"Cat": "description", "Class": "description"}),
+            "D": QifField(
+                "D", "isodate", {"Cat": "description", "Class": "description"}
+            ),
             "E": QifField("E", "split_memo"),
             "F": QifField("F"),
             "G": QifField("G"),
@@ -295,7 +304,7 @@ class SimpleQifParser:
             "T": QifField("T", "amount", {"Account": "account_type"}),
             "U": QifField("U", "amount_unknown"),
             "V": QifField("V"),
-            "Y": QifField("Y")
+            "Y": QifField("Y"),
         }
 
     def parse_file(
@@ -469,13 +478,31 @@ class SimpleQifParser:
         convert the transaction record
         """
         transaction = Transaction(start_line=t["_start_line"], end_line=t["_end_line"])
-
+        # the S, E and $ lines are collected under the singular field names
+        plural_keys = {
+            "split_category": "split_categories",
+            "split_memo": "split_memos",
+            "split_amount": "split_amounts",
+        }
         for key, value in t.items():
             if key.startswith("_"):
                 continue
-            setattr(transaction, key, value)
-        transaction.normalize()
+            setattr(transaction, plural_keys.get(key, key), value)
+        transaction.normalize(date_formats=self.date_formats())
         return transaction
+
+    def date_formats(self) -> Optional[List[str]]:
+        """
+        the date formats of this file: month first when the file declares !Option:MDY
+        (Finanzmanager Deluxe and Quicken exports), else the defaults of DateUtils
+
+        Returns:
+            list: the formats or None for the defaults
+        """
+        date_formats = None
+        if self.options.get("MDY"):
+            date_formats = ["%m.%d.%y", "%m/%d/%y", "%m/%d/%Y", "%Y-%m-%d"]
+        return date_formats
 
     def get_lod(self) -> List[Dict[str, Any]]:
         """
@@ -486,15 +513,15 @@ class SimpleQifParser:
         """
         lod = []
         for tx in self.transactions.values():
-            split_category=None
+            split_category = None
             if tx.split_categories:
-                split_category=",".join(tx.split_categories)
-            split_memo=None
+                split_category = ",".join(tx.split_categories)
+            split_memo = None
             if tx.split_memos:
-                split_memo=",".join(tx.split_memos)
-            split_amount=None
+                split_memo = ",".join(tx.split_memos)
+            split_amount = None
             if tx.split_amounts:
-                split_amount=",".join(map(str, tx.split_amounts))
+                split_amount = ",".join(map(str, tx.split_amounts))
             record = {
                 # "tx_id": f"{self.current_account.name}:{tx.isodate}:{tx.start_line}",
                 # "account": self.current_account.name,
