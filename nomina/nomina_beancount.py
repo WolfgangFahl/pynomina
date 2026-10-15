@@ -95,10 +95,16 @@ class Beancount:
         """
         # Remove square brackets but keep the content inside using a named group
         fq_name = re.sub(r"\[(?P<content>.*?)\]", r"\g<content>", fq_name)
-        # Replace spaces, slashes, dots, and commas with hyphens
-        fixed_name = re.sub(r"[ /\.,%]", "-", fq_name)
-        # uppercase first char
-        fixed_name = self.firstToUpperCaseForSplits(fixed_name)
+        # every character that is not a letter, a digit or a dash becomes a dash
+        # (Beancount 3 accepts Unicode letters, so umlauts stay)
+        fixed_name = re.sub(r"[^\w:-]", "-", fq_name).replace("_", "-")
+        # each component starts with an upper case letter or a digit, see issue #15
+        parts = []
+        for part in fixed_name.split(":"):
+            if part and not (part[0].isupper() or part[0].isdigit()):
+                part = part[0].upper() + part[1:] if part[0].isalpha() else "X" + part
+            parts.append(part)
+        fixed_name = ":".join(parts)
         return fixed_name
 
     def create_open_directive(

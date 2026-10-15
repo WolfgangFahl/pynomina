@@ -30,6 +30,15 @@ class Test_Beancount(Basetest):
             ),
             ("3300-Wareneinkauf-7%", "3300-Wareneinkauf-7-"),
             ("4610-Werbung:newsletter", "4610-Werbung:Newsletter"),
+            # issue #15: components start with an upper case letter or a digit,
+            # only letters, digits and dashes inside
+            ("Expenses:Class:_Paket1_2002", "Expenses:Class:X-Paket1-2002"),
+            ("Expenses:Class:eSolutions (2003)", "Expenses:Class:ESolutions--2003-"),
+            (
+                "Expenses:Category:4110-Löhne+Gehälter",
+                "Expenses:Category:4110-Löhne-Gehälter",
+            ),
+            ("Expenses:Category:Möbel", "Expenses:Category:Möbel"),
         ]:
             sanitized = beancount.sanitize_account_name(fq_name)
             self.assertEqual(expected_sanitized, sanitized)
