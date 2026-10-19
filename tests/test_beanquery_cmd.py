@@ -90,28 +90,16 @@ class Test_NamedParameterizedBeanQueries(Basetest):
         test_cases = [
             (
                 "Expenses:Food:Groceries",
-                {
-                    "TotalSum": 1,
-                    "PayeeSummary": 4,
-                    "AccountSummary": 1
-                }
+                {"TotalSum": 1, "PayeeSummary": 4, "AccountSummary": 1},
             ),
             (
                 "Expenses:Home:Rent",
-                {
-                    "TotalSum": 1,
-                    "PayeeSummary": 1,
-                    "AccountSummary": 1
-                }
+                {"TotalSum": 1, "PayeeSummary": 1, "AccountSummary": 1},
             ),
             (
                 "Expenses:Transport:Tram",
-                {
-                    "TotalSum": 1,
-                    "PayeeSummary": 1,
-                    "AccountSummary": 1
-                }
-            )
+                {"TotalSum": 1, "PayeeSummary": 1, "AccountSummary": 1},
+            ),
         ]
 
         for account, expected_results in test_cases:
@@ -119,7 +107,9 @@ class Test_NamedParameterizedBeanQueries(Basetest):
                 if self.debug:
                     print(f"\n=== Testing Account: {account} ===")
 
-                for i, (qname, query) in enumerate(self.qm.queriesByName.items(), start=1):
+                for i, (qname, query) in enumerate(
+                    self.qm.queriesByName.items(), start=1
+                ):
                     with self.subTest(qname=qname):
                         params = {"account": account}
                         query = query.params.apply_parameters_with_check(params)
@@ -132,13 +122,15 @@ class Test_NamedParameterizedBeanQueries(Basetest):
 
                         if self.debug and lod:
                             print("\nResults:")
-                            print(tabulate(
-                                lod,
-                                headers="keys",
-                                tablefmt="plain",
-                                numalign="right",
-                                floatfmt=".2f"
-                            ))
+                            print(
+                                tabulate(
+                                    lod,
+                                    headers="keys",
+                                    tablefmt="plain",
+                                    numalign="right",
+                                    floatfmt=".2f",
+                                )
+                            )
 
                         self.assertTrue(qname in expected_results)
                         expected_len = expected_results[qname]
@@ -149,5 +141,5 @@ class Test_NamedParameterizedBeanQueries(Basetest):
                             len(lod),
                             expected_len,
                             f"For account {account}, query {qname}: "
-                            f"expected {expected_len} results, got {len(lod)}"
+                            f"expected {expected_len} results, got {len(lod)}",
                         )

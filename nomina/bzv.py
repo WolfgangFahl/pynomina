@@ -12,8 +12,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict, List, Optional
 
-from dacite import from_dict
 from basemkit.yamlable import lod_storable
+from dacite import from_dict
 from tabulate import tabulate
 
 from nomina.stats import Stats

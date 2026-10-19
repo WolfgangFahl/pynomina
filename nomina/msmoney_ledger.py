@@ -42,11 +42,9 @@ class MicrosoftMoneyToLedgerConverter(BaseToLedgerConverter):
         book = Book()
         book.name = self.ms_money.header.name if self.ms_money.header else "Unknown"
         book.since = self.ms_money.header.date if self.ms_money.header else None
-        nodes= self.ms_money.graph.nodes(data=True)
+        nodes = self.ms_money.graph.nodes(data=True)
         self.log.log("✅", "graph", f"Total nodes: {len(nodes)}")
-        node_types = set(
-            data.get("type", "Unknown") for _, data in nodes
-        )
+        node_types = set(data.get("type", "Unknown") for _, data in nodes)
         self.log.log("✅", "graph", f"Node types: {node_types}")
 
         # Create accounts

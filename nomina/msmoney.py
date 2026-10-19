@@ -4,15 +4,15 @@ Created on 2024-10-09
 @author: wf
 """
 
-import os
 import json
+import os
 from typing import Any, Dict
 from zipfile import ZipFile
 
 from basemkit.yamlable import lod_storable
+from mogwai.core.mogwaigraph import MogwaiGraph
 
 from nomina.date_utils import DateUtils
-from mogwai.core.mogwaigraph import MogwaiGraph
 from nomina.stats import Stats
 
 
@@ -127,7 +127,7 @@ class MsMoney:
         Returns:
             Stats: An object containing various statistics about the data.
         """
-        nodes=self.graph.nodes(data=True)# Assign for clarity
+        nodes = self.graph.nodes(data=True)  # Assign for clarity
 
         # Calculate date range
         dates = []

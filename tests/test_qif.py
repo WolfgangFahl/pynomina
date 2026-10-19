@@ -4,7 +4,7 @@ Created on 2024-09-30
 @author: wf
 """
 
-from nomina.qif import SplitCategory, SimpleQifParser
+from nomina.qif import SimpleQifParser, SplitCategory
 from tests.basetest import Basetest
 from tests.example_testcases import NominaExample
 
@@ -84,7 +84,7 @@ class Test_QifParser(Basetest):
             ("!Account\nNMy Invst\nTInvst\n^", "Invst"),
             ("!Account\nNMy Asset\nTOth A\n^", "Oth A"),
             ("!Account\nNMy Liability\nTOth L\n^", "Oth L"),
-            ("!Account\nNMy Invoice\nTInvoice\n^", "Invoice")
+            ("!Account\nNMy Invoice\nTInvoice\n^", "Invoice"),
         ]
         for qif_text, expected_type in test_cases:
             with self.subTest(f"Testing account type {expected_type}"):

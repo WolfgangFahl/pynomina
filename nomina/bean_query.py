@@ -4,8 +4,8 @@ Created on 2024-11-02
 @author: wf
 """
 
-from beanquery.shell import BQLShell
 from beancount.core.inventory import Inventory
+from beanquery.shell import BQLShell
 
 
 class BeanQueryHandler:
@@ -57,9 +57,9 @@ class BeanQueryHandler:
         for row in rows:
             row_dict = {}
             for i, value in enumerate(row):
-                col=column_names[i]
+                col = column_names[i]
                 row_dict[col] = value
-                if isinstance(value,Inventory):
+                if isinstance(value, Inventory):
                     position = value.get_only_position()
                     if position:
                         amount = position.units.number
@@ -69,4 +69,3 @@ class BeanQueryHandler:
             lod.append(row_dict)
 
         return lod
-

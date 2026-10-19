@@ -71,7 +71,7 @@ class NominaExample:
                     start_date="2014-01-02",
                     end_date="2014-01-02",
                     currencies={"EUR": 2},
-                    errors=0
+                    errors=0,
                 ),
             ),
             (
@@ -85,7 +85,7 @@ class NominaExample:
                     start_date="1993-07-25",
                     end_date="2013-10-23",
                     currencies={"EUR": 8},
-                    errors=5
+                    errors=5,
                 ),
             ),
             (
@@ -99,7 +99,7 @@ class NominaExample:
                     start_date="2024-10-06",
                     end_date="2024-10-06",
                     currencies={"EUR": 2},
-                    errors=0
+                    errors=0,
                 ),
             ),
             (
@@ -113,7 +113,7 @@ class NominaExample:
                     start_date="2014-11-30",
                     end_date="2014-12-24",
                     currencies={"EUR": 5},
-                    errors=0
+                    errors=0,
                 ),
             ),
             (
@@ -127,7 +127,7 @@ class NominaExample:
                     start_date=None,
                     end_date=None,
                     currencies={},
-                    errors=0
+                    errors=0,
                 ),
             ),
         ]:
@@ -148,7 +148,7 @@ class NominaExample:
         """
         read the ledger book
         """
-        ledger_book = Book.load_from_yaml_file(self.ledger_file) # @UndefinedVariable
+        ledger_book = Book.load_from_yaml_file(self.ledger_file)  # @UndefinedVariable
         return ledger_book
 
     def get_parsed_qif(self) -> SimpleQifParser:

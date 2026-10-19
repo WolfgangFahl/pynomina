@@ -24,12 +24,12 @@ class Test_LedgerQif(Basetest):
         """
         test the expenses example
         """
-        for name,accounts_diff,currencies_diff in [
-             ("qifparser_test_file",0,0),
-             ("expenses",2,5)
+        for name, accounts_diff, currencies_diff in [
+            ("qifparser_test_file", 0, 0),
+            ("expenses", 2, 5),
         ]:
             example = self.examples[name]
-            qif_example = str(example.example_path) + "/"+name+".qif"
+            qif_example = str(example.example_path) + "/" + name + ".qif"
             converter = QifToLedgerConverter()
             converter.load(qif_example)
             book = converter.convert_to_target()

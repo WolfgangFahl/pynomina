@@ -6,8 +6,10 @@ Created on 2024-11-02
 
 import sys
 from argparse import ArgumentParser, Namespace
+
+from lodstorage.query_cmd import Format, QueryCmd
+
 from nomina.bean_query import BeanQueryHandler
-from lodstorage.query_cmd import QueryCmd, Format
 
 
 class BeanQueryCmd(QueryCmd):
@@ -17,7 +19,7 @@ class BeanQueryCmd(QueryCmd):
     """
 
     def __init__(self, args: Namespace):
-        args.language="sql"
+        args.language = "sql"
         super().__init__(args, with_default_queries=False)
 
     def handle_args(self) -> bool:
@@ -31,11 +33,11 @@ class BeanQueryCmd(QueryCmd):
             # Parameters should have already been parsed and applied in the base class
             if self.args.debug or self.args.showQuery:
                 print(f"Final query after parameter substitution:\n{self.query.query}")
-            endpoint=self.endpoints.get(self.args.endpointName)
+            endpoint = self.endpoints.get(self.args.endpointName)
             if not endpoint:
                 raise ValueError(f"unknown endpoint {self.args.endpointName}")
-            query_handler=BeanQueryHandler(beancount_file=endpoint.endpoint)
-            qlod=query_handler.execute_query(self.queryCode)
+            query_handler = BeanQueryHandler(beancount_file=endpoint.endpoint)
+            qlod = query_handler.execute_query(self.queryCode)
             self.format_output(qlod)
         return handled
 
@@ -50,10 +52,10 @@ def main(argv: list = None):
     BeanQueryCmd.add_args(parser)
     # @FIXME - redundannt argument handling
     parser.add_argument(
-            "-en",
-            "--endpointName",
-            default="example_beancount",
-            help=f"Name of the endpoint to use for queries. - use -el option to list available endpoints",
+        "-en",
+        "--endpointName",
+        default="example_beancount",
+        help=f"Name of the endpoint to use for queries. - use -el option to list available endpoints",
     )
     parser.add_argument("-f", "--format", type=Format, choices=list(Format))
 
