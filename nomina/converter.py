@@ -18,6 +18,7 @@ from nomina.ledger import Book
 from nomina.msmoney_ledger import MicrosoftMoneyToLedgerConverter
 from nomina.nomina_converter import BaseFromLedgerConverter, BaseToLedgerConverter
 from nomina.qif_ledger import QifToLedgerConverter
+from nomina.vat_codes import VatCodes
 
 
 class Converter:
@@ -73,7 +74,14 @@ class Converter:
         from_ledger_cls = self.from_ledger[output_format]
 
         # Convert to LedgerBook
-        if to_ledger_cls is not None:
+        if to_ledger_cls is QifToLedgerConverter:
+            vat_codes_path = getattr(self.args, "vat_codes", None)
+            vat_codes = VatCodes.of_yaml(
+                str(vat_codes_path) if vat_codes_path else None
+            )
+            to_ledger = to_ledger_cls(debug=self.args.debug, vat_codes=vat_codes)
+            ledger_book = to_ledger.convert_to_ledger(input_path)
+        elif to_ledger_cls is not None:
             to_ledger = to_ledger_cls(debug=self.args.debug)
             ledger_book = to_ledger.convert_to_ledger(input_path)
         else:

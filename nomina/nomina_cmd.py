@@ -55,9 +55,15 @@ class NominaCmd(WebserverCmd):
             type=Path,
             help="Output file",
         )
+        parser.add_argument(
+            "--vat-codes",
+            dest="vat_codes",
+            type=Path,
+            help="VAT code map yaml file [default: nomina_examples/vat_codes.yaml]",
+        )
         return parser
 
-    def handle_args(self,args) -> bool:
+    def handle_args(self, args) -> bool:
         """
         handle the command line args
         """

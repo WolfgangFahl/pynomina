@@ -24,7 +24,7 @@ class Account:
 
     account_id: str
     name: str
-    account_type: str # e.g. beancount compatible "Assets", "Liabilities", "Equity", "Income", "Expenses"
+    account_type: str  # e.g. beancount compatible "Assets", "Liabilities", "Equity", "Income", "Expenses"
     description: Optional[str] = ""
     currency: str = "EUR"  # Default to EUR
     parent_account_id: Optional[str] = None
@@ -40,6 +40,7 @@ class Split:
     account_id: str
     memo: Optional[str] = ""
     reconciled: bool = False
+    vat_code: Optional[str] = None  # e.g. N1_O see nomina.vat_codes
 
 
 @lod_storable
@@ -48,7 +49,7 @@ class Transaction:
     Represents a transaction in the ledger.
     """
 
-    isodate: str=None
+    isodate: str = None
     description: Optional[str] = None
     splits: List[Split] = field(default_factory=list)
     payee: Optional[str] = None
@@ -71,7 +72,7 @@ class Book:
 
     file_type: str = "NOMINA-LEDGER-BOOK-YAML"
     version: str = "0.1"
-    lenient=bool=False
+    lenient = bool = False
     name: Optional[str] = None
     owner: Optional[str] = None
     since: Optional[str] = None

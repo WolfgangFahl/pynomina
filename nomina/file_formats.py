@@ -186,7 +186,8 @@ class AccountingFileFormats:
         Detect the encoding of the raw data and decode it into a string.
         """
         result = chardet.detect(raw_data)
-        encoding = result.get("encoding", "utf-8")
+        # chardet returns None as encoding for undetectable e.g. binary content
+        encoding = result.get("encoding") or "utf-8"
         try:
             return raw_data.decode(encoding)
         except UnicodeDecodeError:

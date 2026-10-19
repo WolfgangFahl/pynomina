@@ -1,0 +1,49 @@
+#
+# VAT codes of Finanzmanager Deluxe QIF exports
+# split markup: S[Mehrwertsteuer]/_VATCode_<code>_<dir>
+# dir I: input tax on expense splits, O: output VAT on income splits
+# rates measured in a 2276 split export, see
+# https://github.com/WolfgangFahl/pynomina/issues/16
+#
+# WF 2026-10-19
+#
+name: Finanzmanager Deluxe VAT codes
+codes:
+  N:
+    code: N
+    description: standard rate
+    rates:
+    - rate: 19.0
+      valid_from: '2007-01-01'
+      valid_until: '2020-06-30'
+    - rate: 19.0
+      valid_from: '2021-01-01'
+  N1:
+    code: N1
+    description: standard rate 16%
+    rates:
+    - rate: 16.0
+      valid_until: '2006-12-31'
+    - rate: 16.0
+      valid_from: '2020-07-01'
+      valid_until: '2020-12-31'
+  H:
+    code: H
+    description: reduced rate
+    rates:
+    - rate: 7.0
+  '7':
+    code: '7'
+    description: reduced rate 7%
+    rates:
+    - rate: 7.0
+  B:
+    code: B
+    description: exempt
+    rates:
+    - rate: 0.0
+  '2':
+    code: '2'
+    description: VAT only amount, the split carries the tax itself
+    rates:
+    - rate:

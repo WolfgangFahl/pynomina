@@ -133,7 +133,7 @@ class Beancount:
         self,
         date: date,
         description: str,
-        postings: List[Tuple[str, float, str]],
+        postings: List[Tuple],
         payee: str = None,
         metadata: Dict = None,
     ) -> data.Transaction:
@@ -143,7 +143,7 @@ class Beancount:
         Args:
             date (date): Transaction date
             description (str): Transaction description
-            postings (List[Tuple[str, float, str]]): List of (account, amount, currency) tuples
+            postings (List[Tuple]): List of (account, amount, currency) or (account, amount, currency, posting_meta) tuples
             payee (str, optional): Payee name
             metadata (Dict, optional): Transaction metadata
 
@@ -152,14 +152,18 @@ class Beancount:
         """
         meta = data.new_metadata("", 0, metadata)
         txn_postings = []
-        for account, amount_value, currency in postings:
+        for posting in postings:
+            account, amount_value, currency = posting[:3]
+            posting_meta = posting[3] if len(posting) > 3 else None
             if amount_value is None:
                 pass
             else:
                 amount_str = str(amount_value)
                 amount_d = amount.D(amount_str)
                 amt = amount.Amount(amount_d, currency)
-                txn_postings.append(data.Posting(account, amt, None, None, None, None))
+                txn_postings.append(
+                    data.Posting(account, amt, None, None, None, posting_meta)
+                )
 
         tx = data.Transaction(
             meta,

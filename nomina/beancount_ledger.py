@@ -98,8 +98,9 @@ class BeancountToLedgerConverter(BaseToLedgerConverter):
             split = LedgerSplit(
                 amount=float(amount),
                 account_id=account_id,
-                memo=posting.meta.get("memo", ""),
+                memo=posting.meta.get("memo", "") if posting.meta else "",
                 reconciled=False,  # Beancount doesn't have a direct equivalent to Ledger's reconciled flag
+                vat_code=posting.meta.get("vat_code") if posting.meta else None,
             )
             splits.append(split)
 
@@ -145,7 +146,7 @@ class LedgerToBeancountConverter(BaseFromLedgerConverter):
         Returns:
             LedgerBook: the ledger book
         """
-        lbook = LedgerBook.load_from_yaml_file(input_path) # # @UndefinedVariable
+        lbook = LedgerBook.load_from_yaml_file(input_path)  # # @UndefinedVariable
         self.set_source(lbook)
         return lbook
 
@@ -244,7 +245,7 @@ class LedgerToBeancountConverter(BaseFromLedgerConverter):
         Returns:
             Optional[data.Transaction]: The Beancount Transaction directive, or None if conversion fails.
         """
-        date=None
+        date = None
         if transaction.isodate:
             date = DateUtils.parse_date(transaction.isodate)
         if date is None:
@@ -262,8 +263,14 @@ class LedgerToBeancountConverter(BaseFromLedgerConverter):
                 continue
             split_account = self.lbook.accounts[split.account_id]
             beancount_account_name = self.get_beancount_name_for_account(split_account)
+            posting_meta = {"vat_code": split.vat_code} if split.vat_code else None
             postings.append(
-                (beancount_account_name, split.amount, split_account.currency or "EUR")
+                (
+                    beancount_account_name,
+                    split.amount,
+                    split_account.currency or "EUR",
+                    posting_meta,
+                )
             )
 
         if not postings:

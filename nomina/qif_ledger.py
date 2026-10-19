@@ -4,12 +4,13 @@ Created on 2024-10-04
 @author: wf
 """
 
-from typing import List
+from typing import List, Optional
 
 from nomina.ledger import Account, Book, Split, Transaction
 from nomina.nomina_converter import BaseToLedgerConverter
 from nomina.qif import SimpleQifParser, SplitCategory
 from nomina.qif import Transaction as QifTransaction
+from nomina.vat_codes import VatCodes
 
 
 class QifToLedgerConverter(BaseToLedgerConverter):
@@ -17,15 +18,40 @@ class QifToLedgerConverter(BaseToLedgerConverter):
     Convert Quicken QIF file to a Ledger Book.
     """
 
-    def __init__(self, debug: bool = False):
+    def __init__(self, debug: bool = False, vat_codes: Optional[VatCodes] = None):
         """
         Constructor for QIF to Ledger Book conversion.
 
         Args:
             debug (bool): Whether to enable debug logging.
+            vat_codes (VatCodes): the VAT code map, None for the default map
         """
         super().__init__(from_format_acronym="QIF", debug=debug)
         self.qif_parser = SimpleQifParser()
+        self.vat_codes = vat_codes if vat_codes is not None else VatCodes.of_yaml()
+
+    def vat_code_for(
+        self, qt: QifTransaction, split_class: Optional[str]
+    ) -> Optional[str]:
+        """
+        get the VAT code for the given split class
+
+        Args:
+            qt(QifTransaction): the QIF transaction the split is for
+            split_class(str): the class markup of the split e.g. _VATCode_N1_I
+
+        Returns:
+            Optional[str]: the VAT code with direction e.g. N1_I or None if the class is no VAT code
+        """
+        vat_code = None
+        parsed = VatCodes.parse(split_class)
+        if parsed:
+            code, direction = parsed
+            vat_code = f"{code}_{direction}"
+            if self.vat_codes.lookup(code) is None:
+                msg = f"unknown VAT code {code} at line {qt.start_line} {qt.isodate}"
+                self.log.log("⚠️", "vat_code", msg)
+        return vat_code
 
     def load(self, input_path: str):
         """
@@ -189,22 +215,24 @@ class QifToLedgerConverter(BaseToLedgerConverter):
                 split_category = qt.split_categories[i]
                 split_amount = qt.split_amounts_float[i]
                 split_memo = qt.split_memos[i] if i < len(qt.split_memos) else ""
-                if split_category.split_class:
+                vat_code = self.vat_code_for(qt, split_category.split_class)
+                if split_category.split_class and not vat_code:
                     split_memo = (
                         f"{split_memo}/{split_category.split_class}"
                         if split_memo
                         else split_category.split_class
                     )
 
-                splits.append(
-                    self.add_split(
-                        qt,
-                        ledger_book=ledger_book,
-                        amount=-split_amount,
-                        split_category=split_category,
-                        memo=split_memo,
-                    )
+                split = self.add_split(
+                    qt,
+                    ledger_book=ledger_book,
+                    amount=-split_amount,
+                    split_category=split_category,
+                    memo=split_memo,
                 )
+                if split is not None:
+                    split.vat_code = vat_code
+                splits.append(split)
         else:
             # Handle non-split transactions
             debit_split = Split(
