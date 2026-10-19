@@ -4,6 +4,7 @@ Created on 2024-10-06
 @author: wf
 """
 
+import gzip
 import os
 import re
 import zipfile
@@ -170,7 +171,11 @@ class AccountingFileFormats:
         """
         with open(file_path, "rb") as file:
             raw_data = file.read(10000)  # Read the first 10000 bytes
-            content = self._decode_content(raw_data)
+        if raw_data[:2] == b"\x1f\x8b":
+            # gzipped e.g. GnuCash XML saved compressed, see issue #31
+            with gzip.open(file_path, "rb") as file:
+                raw_data = file.read(10000)
+        content = self._decode_content(raw_data)
 
         if content:
             for fformat in self.formats:

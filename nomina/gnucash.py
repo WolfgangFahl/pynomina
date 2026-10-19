@@ -4,6 +4,7 @@ Created on 2024-10-02
 @author: wf
 """
 
+import gzip
 import io
 import re
 from dataclasses import dataclass, field
@@ -18,6 +19,9 @@ from xsdata.models.datatype import XmlDate
 
 from nomina.date_utils import DateUtils
 from nomina.stats import Stats
+
+# first two bytes of a gzip stream
+GZIP_MAGIC = b"\x1f\x8b"
 
 
 @dataclass
@@ -474,10 +478,15 @@ class GnuCashXml:
 
     def parse_gnucash_xml(self, xml_file: str) -> GncV2:
         """
-        parse the given gnucash xml file
+        parse the given gnucash xml file - plain or gzipped as GnuCash saves by default, see issue #31
         """
         parser = XmlParser(config=ParserConfig(fail_on_unknown_properties=False))
-        return parser.parse(xml_file, GncV2)
+        with open(xml_file, "rb") as f:
+            xml_bytes = f.read()
+        if xml_bytes[:2] == GZIP_MAGIC:
+            xml_bytes = gzip.decompress(xml_bytes)
+        gnc_v2 = parser.from_bytes(xml_bytes, GncV2)
+        return gnc_v2
 
     def xml_format(self, xml_string: str) -> str:
         """
