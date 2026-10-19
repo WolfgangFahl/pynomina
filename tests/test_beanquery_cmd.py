@@ -42,11 +42,14 @@ class Test_NamedParameterizedBeanQueries(Basetest):
         Create endpoints.yaml on the fly for testing.
         """
         endpoints_yaml_path = str(os.path.join(yaml_path, "endpoints.yaml"))
+        # pylodstorage >= 0.17.0 expects the endpoints under a top-level endpoints key
         endpoint_data = {
-            "example_beancount": {
-                "database": "beancount",
-                "lang": "sql",
-                "endpoint": examples_beancount_path,
+            "endpoints": {
+                "example_beancount": {
+                    "database": "beancount",
+                    "lang": "sql",
+                    "endpoint": examples_beancount_path,
+                }
             }
         }
         with open(endpoints_yaml_path, "w") as f:
