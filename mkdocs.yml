@@ -1,4 +1,4 @@
-site_name: pynomaina API Documentation
+site_name: pynomina API Documentation
 theme:
   name: material
 plugins:

@@ -1,4 +1,4 @@
-# pynomaina API Documentation
+# pynomina API Documentation
 
 ::: nomina
     options:
