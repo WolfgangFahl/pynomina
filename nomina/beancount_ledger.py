@@ -112,9 +112,9 @@ class BeancountToLedgerConverter(BaseToLedgerConverter):
             memo=entry.meta.get("memo", ""),
         )
 
-        # Generate a unique ID for the transaction
+        # date and description are not unique - the running number is, see issue #32
         transaction_id = (
-            f"{ledger_transaction.isodate}:{hash(ledger_transaction.description)}"
+            f"{ledger_transaction.isodate}:{len(self.ledger_book.transactions)}"
         )
         self.ledger_book.transactions[transaction_id] = ledger_transaction
 

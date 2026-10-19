@@ -110,10 +110,13 @@ class GnuCashToLedgerConverter(BaseToLedgerConverter):
         # Convert transactions
         for gnc_transaction in self.gnc_v2.book.transactions:
             ledger_transaction = self.create_ledger_transaction(gnc_transaction)
-            # Using a simple transaction ID for demonstration
-            transaction_id = (
-                f"{ledger_transaction.isodate}:{ledger_transaction.description}"
-            )
+            # the GnuCash guid - date and description are not unique, see issue #32
+            if gnc_transaction.id and gnc_transaction.id.value:
+                transaction_id = gnc_transaction.id.value
+            else:
+                transaction_id = (
+                    f"{ledger_transaction.isodate}:{len(ledger_book.transactions)}"
+                )
             ledger_book.transactions[transaction_id] = ledger_transaction
 
         return ledger_book

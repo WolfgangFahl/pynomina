@@ -46,7 +46,8 @@ class Test_LedgerBeancount(Basetest):
             do_log=True,
             expected_stats=Stats(
                 accounts=63,
-                transactions=966,
+                # beancount loader count - 966 before issue #32 dropped same date and description
+                transactions=1102,
                 start_date="2022-01-01",
                 end_date="2024-10-04",
                 currencies={
